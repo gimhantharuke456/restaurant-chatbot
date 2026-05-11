@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -10,4 +5,144 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  id                 String        @id @default(uuid())
+  firebaseUid        String        @unique
+  email              String        @unique
+  name               String?
+  phone              String?
+  avatarUrl          String?
+  role               Role          @default(CUSTOMER)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  reservations       Reservation[]
+  payments           Payment[]
+  reviews            Review[]
+  chatSessions       ChatSession[]
+  managedRestaurants Restaurant[]  @relation("RestaurantAdmin")
+}
+
+enum Role {
+  CUSTOMER
+  RESTAURANT_ADMIN
+  SYSTEM_ADMIN
+}
+
+model Restaurant {
+  id           String                      @id @default(uuid())
+  name         String
+  description  String?
+  address      String
+  area         String
+  phone        String?
+  email        String?
+  website      String?
+  cuisineTypes String                      @default("[]") // JSON string: ["Sri Lankan","Seafood"]
+  priceRange   PriceRange
+  openingHours Json
+  imageUrls    String                      @default("[]") // JSON string: ["url1.jpg","url2.jpg"]
+  isActive     Boolean                     @default(true)
+  isVerified   Boolean                     @default(false)
+  avgRating    Float?
+  totalReviews Int          @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  adminId      String
+  admin        User         @relation("RestaurantAdmin", fields: [adminId], references: [id])
+  menuItems    MenuItem[]
+  reservations Reservation[]
+  reviews      Review[]
+
+  @@index([area])
+}
+
+enum PriceRange {
+  BUDGET
+  MODERATE
+  EXPENSIVE
+  FINE_DINING
+}
+
+model MenuItem {
+  id           String                      @id @default(uuid())
+  restaurantId String
+  restaurant   Restaurant                  @relation(fields: [restaurantId], references: [id])
+  name         String
+  description  String?
+  price        Float
+  category     String
+  dietaryInfo  String                      @default("[]") // JSON string: ["Vegetarian","Halal"]
+  isAvailable  Boolean  @default(true)
+  imageUrl     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Reservation {
+  id              String            @id @default(uuid())
+  userId          String
+  user            User              @relation(fields: [userId], references: [id])
+  restaurantId    String
+  restaurant      Restaurant        @relation(fields: [restaurantId], references: [id])
+  date            DateTime
+  time            String
+  partySize       Int
+  specialRequests String?
+  status          ReservationStatus @default(PENDING)
+  firestoreId     String?           @unique
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  payment         Payment?
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  reservationId   String        @unique
+  reservation     Reservation   @relation(fields: [reservationId], references: [id])
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  amount          Float
+  currency        String        @default("LKR")
+  stripePaymentId String?       @unique
+  status          PaymentStatus @default(PENDING)
+  receiptUrl      String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+model Review {
+  id           String     @id @default(uuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id])
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  rating       Int
+  comment      String?
+  createdAt    DateTime   @default(now())
+}
+
+model ChatSession {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  messages  Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
