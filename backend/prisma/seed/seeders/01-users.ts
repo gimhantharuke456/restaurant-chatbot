@@ -1,8 +1,9 @@
-import { prisma } from "../utils/prisma";
+import { prisma } from "../../../lib/db";
 import { randomSLName } from "../constants/sri-lankan-names";
 import { randomInt } from "../utils/faker";
 import { SeedUser } from "../types";
-import { Prisma } from "@prisma/client";
+import { prisma } from "../../../lib/db";
+import { Prisma, PriceRange } from "../../../generated/prisma/client";
 
 // 20 restaurant admins + 60 customers = 80 users total
 export async function seedUsers(): Promise<SeedUser[]> {

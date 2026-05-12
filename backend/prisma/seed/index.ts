@@ -1,17 +1,13 @@
-import dotenv from "dotenv";
-dotenv.config();
-
-import { prisma } from "./utils/prisma";
 import { seedUsers } from "./seeders/01-users";
 import { seedRestaurants } from "./seeders/02-restaurants";
 import { seedMenuItems } from "./seeders/03-menu-items";
 import { seedReviews } from "./seeders/04-reviews";
 import { seedReservations } from "./seeders/05-reservations";
 import { seedPayments } from "./seeders/06-payments";
-import { seedEmbeddings } from "./seeders/07-embeddings";
 import { seedNeo4j } from "./seeders/08-neo4j";
 import { seedFirestore } from "./seeders/09-firestore";
 import { SeedUser, SeedReservation } from "./types";
+import { prisma } from "../../lib/db";
 
 async function main() {
   console.log("\n🌱 Starting knowledge base seeding...\n");
@@ -31,15 +27,12 @@ async function main() {
     const reservations = await seedReservations(restaurants, customers);
     await seedPayments(reservations);
 
-    // ── pgvector ────────────────────────────────────────
-    console.log("\n🔢 pgvector embeddings");
-    await seedEmbeddings(restaurants, menuItems);
-
     // ── Neo4j ───────────────────────────────────────────
     console.log("\n🕸️  Neo4j");
-    const allReservations: SeedReservation[] = await prisma.reservation.findMany({
-      include: { user: true, restaurant: true },
-    });
+    const allReservations: SeedReservation[] =
+      await prisma.reservation.findMany({
+        include: { user: true, restaurant: true },
+      });
     await seedNeo4j(restaurants, customers, allReservations);
 
     // ── Firestore ───────────────────────────────────────

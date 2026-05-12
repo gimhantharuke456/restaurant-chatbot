@@ -1,6 +1,6 @@
 import { db } from "../utils/firestore";
 import { randomInt } from "../utils/faker";
-import { Restaurant } from "@prisma/client";
+import { Restaurant } from "../../../generated/prisma/client";
 
 interface TimeSlot {
   time: string;
@@ -64,7 +64,7 @@ export async function seedFirestore(restaurants: Restaurant[]): Promise<void> {
   const DAYS_AHEAD = 60;
   let docCount = 0;
 
-  const batch = db.batch();
+  let batch = db.batch();
   let batchSize = 0;
   const MAX_BATCH = 400; // Firestore batch limit is 500
 
@@ -106,9 +106,10 @@ export async function seedFirestore(restaurants: Restaurant[]): Promise<void> {
       batchSize++;
       docCount++;
 
-      // commit batch when approaching limit
+      // commit batch when approaching limit and start a new one
       if (batchSize >= MAX_BATCH) {
         await batch.commit();
+        batch = db.batch();
         batchSize = 0;
         process.stdout.write(`  firestore: ${docCount} docs written...\r`);
       }

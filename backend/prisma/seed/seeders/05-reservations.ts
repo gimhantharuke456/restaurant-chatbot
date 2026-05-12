@@ -1,7 +1,13 @@
-import { prisma } from "../utils/prisma";
-import { randomInt, randomItem, pastDate, futureDate, weightedRandom } from "../utils/faker";
+import { prisma } from "../../../lib/db";
+import {
+  randomInt,
+  randomItem,
+  pastDate,
+  futureDate,
+  weightedRandom,
+} from "../utils/faker";
 import { SeedRestaurant, SeedUser, SeedReservation } from "../types";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../../generated/prisma/client";
 
 const TIME_SLOTS = [
   "12:00",
@@ -28,7 +34,10 @@ const SPECIAL_REQUESTS = [
   null, // most have no special requests
 ];
 
-export async function seedReservations(restaurants: SeedRestaurant[], customers: SeedUser[]): Promise<SeedReservation[]> {
+export async function seedReservations(
+  restaurants: SeedRestaurant[],
+  customers: SeedUser[],
+): Promise<SeedReservation[]> {
   console.log("  Seeding reservations...");
 
   const reservations: Prisma.ReservationCreateManyInput[] = [];
@@ -47,7 +56,12 @@ export async function seedReservations(restaurants: SeedRestaurant[], customers:
       const restaurant = selectedRestaurants[i];
       if (!restaurant) continue;
       const statusWeights = [0.02, 0.88, 0.07, 0.03]; // PENDING, COMPLETED, CANCELLED, NO_SHOW
-      const statuses = ["PENDING", "COMPLETED", "CANCELLED", "NO_SHOW"] as const;
+      const statuses = [
+        "PENDING",
+        "COMPLETED",
+        "CANCELLED",
+        "NO_SHOW",
+      ] as const;
       const status = statuses[weightedRandom(statusWeights)];
 
       reservations.push({
@@ -75,12 +89,12 @@ export async function seedReservations(restaurants: SeedRestaurant[], customers:
         partySize: randomInt(1, 6),
         specialRequests: randomItem(SPECIAL_REQUESTS),
         status: "CONFIRMED",
-        firestoreId: `fs_future_${customer.id.slice(0, 8)}_${i}`,
+        firestoreId: `fs_future_${customer.id.slice(0, 8)}_${restaurant.id.slice(0, 8)}_${i}`,
       });
     }
   }
 
-  await prisma.reservation.createMany({ data: reservations });
+  await prisma.reservation.createMany({ data: reservations, skipDuplicates: true });
   console.log(`  ✓ ${reservations.length} reservations created`);
 
   return prisma.reservation.findMany({

@@ -1,7 +1,7 @@
 import { runCypher, driver } from "../utils/neo4j";
 import { CUISINE_TYPES } from "../constants/cuisine";
-import { Restaurant, User } from "@prisma/client";
 import { SeedReservation } from "../types";
+import { Restaurant, User } from "../../../generated/prisma/client";
 
 export async function seedNeo4j(
   restaurants: Restaurant[],

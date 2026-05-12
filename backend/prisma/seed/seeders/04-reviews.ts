@@ -1,7 +1,12 @@
-import { prisma } from "../utils/prisma";
-import { randomInt, randomItem, pastDate, weightedRandom } from "../utils/faker";
+import { prisma } from "../../../lib/db";
+import {
+  randomInt,
+  randomItem,
+  pastDate,
+  weightedRandom,
+} from "../utils/faker";
 import { SeedRestaurant, SeedUser, SeedMenuItem } from "../types";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../../generated/prisma/client";
 
 const REVIEW_TEMPLATES = {
   5: [
