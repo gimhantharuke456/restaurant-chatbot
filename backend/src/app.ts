@@ -8,6 +8,7 @@ import authRoutes from "./modules/auth/auth.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import restaurantRoutes from "./modules/restaurant/restaurant.routes.js";
 import reservationRoutes from "./modules/reservation/reservation.routes.js";
+import paymentRoutes from "./modules/payment/payment.routes.js";
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/reservations", reservationRoutes);
+app.use("/api/payments", paymentRoutes);
 
 // more module routes added in later phases
 

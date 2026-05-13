@@ -8,6 +8,7 @@ import "../modules/auth/auth.schema.js";
 import "../modules/user/user.schema.js";
 import "../modules/restaurant/restaurant.schema.js";
 import "../modules/reservation/reservation.schema.js";
+import "../modules/payment/payment.schema.js";
 
 registry.registerComponent("securitySchemes", "bearerAuth", {
   type: "http",
