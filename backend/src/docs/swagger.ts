@@ -9,6 +9,7 @@ import "../modules/user/user.schema.js";
 import "../modules/restaurant/restaurant.schema.js";
 import "../modules/reservation/reservation.schema.js";
 import "../modules/payment/payment.schema.js";
+import "../modules/chat/chat.schema.js";
 
 registry.registerComponent("securitySchemes", "bearerAuth", {
   type: "http",
