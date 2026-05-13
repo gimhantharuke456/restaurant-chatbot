@@ -6,6 +6,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { setupSwagger } from "./docs/swagger.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
+import restaurantRoutes from "./modules/restaurant/restaurant.routes.js";
 
 const app = express();
 
@@ -25,6 +26,7 @@ setupSwagger(app);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/restaurants", restaurantRoutes);
 
 // more module routes added in later phases
 
