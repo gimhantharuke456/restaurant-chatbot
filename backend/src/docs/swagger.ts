@@ -5,6 +5,7 @@ import { registry } from "./registry.js";
 
 // Side-effect imports — each registers its paths with the registry
 import "../modules/auth/auth.schema.js";
+import "../modules/user/user.schema.js";
 
 registry.registerComponent("securitySchemes", "bearerAuth", {
   type: "http",

@@ -5,6 +5,7 @@ import { rateLimiter } from "./middleware/rateLimiter.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { setupSwagger } from "./docs/swagger.js";
 import authRoutes from "./modules/auth/auth.routes.js";
+import userRoutes from "./modules/user/user.routes.js";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get("/health", (_req, res) => {
 setupSwagger(app);
 
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 // more module routes added in later phases
 
