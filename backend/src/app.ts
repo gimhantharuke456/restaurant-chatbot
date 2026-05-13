@@ -10,6 +10,7 @@ import restaurantRoutes from "./modules/restaurant/restaurant.routes.js";
 import reservationRoutes from "./modules/reservation/reservation.routes.js";
 import paymentRoutes from "./modules/payment/payment.routes.js";
 import chatRoutes from "./modules/chat/chat.routes.js";
+import adminRoutes from "./modules/admin/admin.routes.js";
 
 const app = express();
 
@@ -33,8 +34,7 @@ app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/reservations", reservationRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/chat", chatRoutes);
-
-// more module routes added in later phases
+app.use("/api/admin", adminRoutes);
 
 app.use(errorHandler);
 
