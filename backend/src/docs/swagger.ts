@@ -3,9 +3,15 @@ import swaggerUi from "swagger-ui-express";
 import type { Express } from "express";
 import { registry } from "./registry.js";
 
-// Side-effect imports — each file registers its paths with the registry.
-// Add a new import here whenever a new module schema file is created.
-// (populated in later phases)
+// Side-effect imports — each registers its paths with the registry
+import "../modules/auth/auth.schema.js";
+
+registry.registerComponent("securitySchemes", "bearerAuth", {
+  type: "http",
+  scheme: "bearer",
+  bearerFormat: "JWT",
+  description: "Firebase ID token",
+});
 
 export const buildSwaggerDocument = () => {
   const generator = new OpenApiGeneratorV3(registry.definitions);
@@ -17,9 +23,7 @@ export const buildSwaggerDocument = () => {
       description:
         "Agentic restaurant discovery and reservation system for the Colombo district.",
     },
-    servers: [
-      { url: "http://localhost:3000", description: "Local development" },
-    ],
+    servers: [{ url: "http://localhost:3000", description: "Local development" }],
   });
 };
 
