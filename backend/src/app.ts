@@ -7,6 +7,7 @@ import { setupSwagger } from "./docs/swagger.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import restaurantRoutes from "./modules/restaurant/restaurant.routes.js";
+import reservationRoutes from "./modules/reservation/reservation.routes.js";
 
 const app = express();
 
@@ -27,6 +28,7 @@ setupSwagger(app);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/restaurants", restaurantRoutes);
+app.use("/api/reservations", reservationRoutes);
 
 // more module routes added in later phases
 
