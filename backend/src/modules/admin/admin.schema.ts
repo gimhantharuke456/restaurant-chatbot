@@ -20,9 +20,11 @@ export const UpdateRoleBodySchema = z
 const DashboardStatsSchema = z
   .object({
     totalUsers: z.number(),
-    activeRestaurants: z.number(),
-    totalReservations: z.number(),
-    totalRevenueLKR: z.number(),
+    totalRestaurants: z.number(),
+    activeReservations: z.number(),
+    totalPayments: z.number(),
+    totalRevenue: z.number(),
+    verificationPending: z.number(),
   })
   .openapi("DashboardStats");
 
@@ -64,18 +66,12 @@ registry.registerPath({
 });
 
 registry.registerPath({
-  method: "patch",
+  method: "post",
   path: "/api/admin/restaurants/{id}/verify",
   tags: ["Admin"],
-  summary: "Set restaurant verified status",
+  summary: "Mark restaurant as verified",
   security: [{ bearerAuth: [] }],
-  request: {
-    params: z.object({ id: z.string().uuid() }),
-    body: {
-      content: { "application/json": { schema: VerifyRestaurantBodySchema } },
-      required: true,
-    },
-  },
+  request: { params: z.object({ id: z.string().uuid() }) },
   responses: {
     200: { description: "Updated restaurant" },
     403: { description: "Forbidden" },

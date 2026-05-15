@@ -6,19 +6,50 @@ export const getDashboardStats = async (_req: Request, res: Response): Promise<v
 };
 
 export const getAllRestaurants = async (req: Request, res: Response): Promise<void> => {
-  res.json(await adminService.getAllRestaurants(req.query.includeInactive === "true"));
+  const { page, limit, search, verified, active } = req.query;
+  res.json(
+    await adminService.getAllRestaurants({
+      page: page ? Number(page) : undefined,
+      limit: limit ? Number(limit) : undefined,
+      search: search as string | undefined,
+      verified: verified !== undefined ? verified === "true" : undefined,
+      active: active !== undefined ? active === "true" : undefined,
+    }),
+  );
 };
 
+export const getRestaurantById = async (req: Request, res: Response): Promise<void> => {
+  res.json(await adminService.getRestaurantById(req.params.id));
+};
+
+// POST /admin/restaurants/:id/verify — sets isVerified: true
 export const verifyRestaurant = async (req: Request, res: Response): Promise<void> => {
-  res.json(await adminService.verifyRestaurant(req.params.id, req.body.isVerified as boolean));
+  res.json(await adminService.verifyRestaurant(req.params.id));
 };
 
+// PATCH /admin/restaurants/:id — general field update (handles isActive toggle too)
+export const updateRestaurant = async (req: Request, res: Response): Promise<void> => {
+  res.json(await adminService.updateRestaurant(req.params.id, req.body as Record<string, unknown>));
+};
+
+// PATCH /admin/restaurants/:id/active — legacy route kept for compat
 export const toggleRestaurantActive = async (req: Request, res: Response): Promise<void> => {
   res.json(await adminService.toggleRestaurantActive(req.params.id, req.body.isActive as boolean));
 };
 
-export const getAllUsers = async (_req: Request, res: Response): Promise<void> => {
-  res.json(await adminService.getAllUsers());
+export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+  const { page, limit, role } = req.query;
+  res.json(
+    await adminService.getAllUsers({
+      page: page ? Number(page) : undefined,
+      limit: limit ? Number(limit) : undefined,
+      role: role as string | undefined,
+    }),
+  );
+};
+
+export const getUserById = async (req: Request, res: Response): Promise<void> => {
+  res.json(await adminService.getUserById(req.params.id));
 };
 
 export const updateUserRole = async (req: Request, res: Response): Promise<void> => {
