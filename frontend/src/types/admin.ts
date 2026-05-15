@@ -20,3 +20,31 @@ export interface PaginatedResponse<T> {
   page: number;
   limit: number;
 }
+
+export interface AdminRestaurantDetail extends AdminRestaurant {
+  description: string | null;
+  address: string;
+  website: string | null;
+  openingHours: Record<string, string>;
+  imageUrls: string[];
+  reviews: AdminReview[];
+  menuItems: MenuItem[];
+}
+
+export interface AdminReview {
+  id: string;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+  user: { name: string | null; email: string };
+}
+
+export interface MenuItem {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  category: string;
+  dietaryInfo: string[];
+  isAvailable: boolean;
+}
