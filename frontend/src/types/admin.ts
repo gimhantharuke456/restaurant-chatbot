@@ -48,3 +48,31 @@ export interface MenuItem {
   dietaryInfo: string[];
   isAvailable: boolean;
 }
+
+export type UserRole = "CUSTOMER" | "RESTAURANT_ADMIN" | "SYSTEM_ADMIN";
+
+export interface AdminUser {
+  id: string;
+  email: string;
+  name: string | null;
+  phone: string | null;
+  avatarUrl: string | null;
+  role: UserRole;
+  createdAt: string;
+  _count: {
+    reservations: number;
+    reviews: number;
+    managedRestaurants: number;
+  };
+}
+
+export interface AdminUserDetail extends AdminUser {
+  reservations: Array<{
+    id: string;
+    date: string;
+    time: string;
+    status: string;
+    restaurant: { name: string };
+  }>;
+  managedRestaurants: Array<{ id: string; name: string; isVerified: boolean }>;
+}
