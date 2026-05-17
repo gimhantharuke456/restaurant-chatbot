@@ -49,6 +49,32 @@ export interface MenuItem {
   isAvailable: boolean;
 }
 
+export type PaymentStatus = "PENDING" | "SUCCEEDED" | "FAILED" | "REFUNDED";
+
+export interface AdminPayment {
+  id: string;
+  amount: number;
+  currency: string;
+  stripePaymentId: string | null;
+  receiptUrl: string | null;
+  status: PaymentStatus;
+  createdAt: string;
+  user: { name: string | null; email: string };
+  reservation: {
+    id: string;
+    date: string;
+    time: string;
+    restaurant: { name: string };
+  };
+}
+
+export interface PaymentSummaryStats {
+  totalRevenue: number;
+  succeeded: number;
+  failed: number;
+  refunded: number;
+}
+
 export type ReservationStatus =
   | "PENDING"
   | "CONFIRMED"
