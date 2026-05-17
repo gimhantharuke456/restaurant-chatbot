@@ -146,3 +146,23 @@ export interface AdminUserDetail extends AdminUser {
   }>;
   managedRestaurants: Array<{ id: string; name: string; isVerified: boolean }>;
 }
+
+
+export interface SystemSettings {
+  maintenanceMode: boolean;
+  registrationEnabled: boolean;
+  maxReservationsPerDay: number;
+  supportEmail: string;
+  ngrokUrl: string | null;
+}
+
+export interface AuditLog {
+  id: string;
+  adminEmail: string;
+  action: string;
+  targetType: string;
+  targetId: string | null;
+  details: string | null;
+  createdAt: string;
+  ipAddress: string | null;
+}

@@ -151,3 +151,17 @@ export const getUserById = async (id: string) => {
 export const updateUserRole = async (id: string, data: UpdateRoleInput) => {
   return prisma.user.update({ where: { id }, data: { role: data.role } });
 };
+
+export const logAdminAction = async (
+  adminId: string,
+  adminEmail: string,
+  action: string,
+  targetType: string,
+  targetId?: string,
+  details?: string,
+  ipAddress?: string
+) => {
+  await prisma.adminLog.create({
+    data: { adminId, adminEmail, action, targetType, targetId, details, ipAddress },
+  });
+};
