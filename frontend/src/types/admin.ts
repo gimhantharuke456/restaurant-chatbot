@@ -95,6 +95,30 @@ export interface AdminReservation {
   payment: { status: string; amount: number } | null;
 }
 
+export interface TimeSeriesPoint {
+  date: string;
+  count?: number;
+  amount?: number;
+}
+
+export interface CuisinePoint {
+  cuisine: string;
+  count: number;
+}
+
+export interface StatusPoint {
+  status: string;
+  count: number;
+}
+
+export interface AnalyticsData {
+  reservationsTrend: TimeSeriesPoint[];
+  revenueTrend: TimeSeriesPoint[];
+  cuisinePopularity: CuisinePoint[];
+  userGrowth: TimeSeriesPoint[];
+  reservationStatus: StatusPoint[];
+}
+
 export type UserRole = "CUSTOMER" | "RESTAURANT_ADMIN" | "SYSTEM_ADMIN";
 
 export interface AdminUser {
