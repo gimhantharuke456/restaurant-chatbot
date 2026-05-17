@@ -49,6 +49,26 @@ export interface MenuItem {
   isAvailable: boolean;
 }
 
+export type ReservationStatus =
+  | "PENDING"
+  | "CONFIRMED"
+  | "CANCELLED"
+  | "COMPLETED"
+  | "NO_SHOW";
+
+export interface AdminReservation {
+  id: string;
+  date: string;
+  time: string;
+  partySize: number;
+  specialRequests: string | null;
+  status: ReservationStatus;
+  createdAt: string;
+  user: { id: string; name: string | null; email: string };
+  restaurant: { id: string; name: string; area: string };
+  payment: { status: string; amount: number } | null;
+}
+
 export type UserRole = "CUSTOMER" | "RESTAURANT_ADMIN" | "SYSTEM_ADMIN";
 
 export interface AdminUser {
