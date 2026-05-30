@@ -2,6 +2,12 @@ import { prisma } from "../../../lib/db.js";
 import type { z } from "zod";
 import type { UpdateRoleBodySchema } from "./admin.schema.js";
 
+const parseRestaurant = <T extends { cuisineTypes: string; imageUrls: string }>(r: T) => ({
+  ...r,
+  cuisineTypes: JSON.parse(r.cuisineTypes) as string[],
+  imageUrls: JSON.parse(r.imageUrls) as string[],
+});
+
 export type UpdateRoleInput = z.infer<typeof UpdateRoleBodySchema>;
 
 export const getDashboardStats = async () => {
@@ -68,11 +74,11 @@ export const getAllRestaurants = async (opts: RestaurantListOptions = {}) => {
     prisma.restaurant.count({ where }),
   ]);
 
-  return { data, total, page, limit };
+  return { data: data.map(parseRestaurant), total, page, limit };
 };
 
 export const getRestaurantById = async (id: string) => {
-  return prisma.restaurant.findUniqueOrThrow({
+  const r = await prisma.restaurant.findUniqueOrThrow({
     where: { id },
     include: {
       admin: { select: { id: true, name: true, email: true } },
@@ -83,6 +89,7 @@ export const getRestaurantById = async (id: string) => {
       },
     },
   });
+  return parseRestaurant(r);
 };
 
 export const verifyRestaurant = async (id: string) => {
@@ -150,6 +157,240 @@ export const getUserById = async (id: string) => {
 
 export const updateUserRole = async (id: string, data: UpdateRoleInput) => {
   return prisma.user.update({ where: { id }, data: { role: data.role } });
+};
+
+export interface ReservationListOptions {
+  page?: number;
+  limit?: number;
+  status?: string;
+  from?: string;
+  to?: string;
+}
+
+export const getAllReservations = async (opts: ReservationListOptions = {}) => {
+  const page = opts.page ?? 1;
+  const limit = opts.limit ?? 25;
+  const skip = (page - 1) * limit;
+
+  const where: Record<string, unknown> = {};
+  if (opts.status) where.status = opts.status;
+  if (opts.from || opts.to) {
+    where.date = {
+      ...(opts.from ? { gte: new Date(opts.from) } : {}),
+      ...(opts.to ? { lte: new Date(opts.to) } : {}),
+    };
+  }
+
+  const [data, total] = await Promise.all([
+    prisma.reservation.findMany({
+      where,
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+        restaurant: { select: { id: true, name: true, area: true } },
+        payment: { select: { status: true, amount: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.reservation.count({ where }),
+  ]);
+
+  return { data, total, page, limit };
+};
+
+export interface PaymentListOptions {
+  page?: number;
+  limit?: number;
+  status?: string;
+  from?: string;
+  to?: string;
+}
+
+export const getAllPayments = async (opts: PaymentListOptions = {}) => {
+  const page = opts.page ?? 1;
+  const limit = opts.limit ?? 25;
+  const skip = (page - 1) * limit;
+
+  const where: Record<string, unknown> = {};
+  if (opts.status) where.status = opts.status;
+  if (opts.from || opts.to) {
+    where.createdAt = {
+      ...(opts.from ? { gte: new Date(opts.from) } : {}),
+      ...(opts.to ? { lte: new Date(opts.to) } : {}),
+    };
+  }
+
+  const [data, total] = await Promise.all([
+    prisma.payment.findMany({
+      where,
+      include: {
+        user: { select: { name: true, email: true } },
+        reservation: {
+          select: {
+            id: true,
+            date: true,
+            time: true,
+            restaurant: { select: { name: true } },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.payment.count({ where }),
+  ]);
+
+  return { data, total, page, limit };
+};
+
+export const getPaymentSummary = async () => {
+  const [totalRevenueAgg, succeeded, failed, refunded] = await Promise.all([
+    prisma.payment.aggregate({ _sum: { amount: true }, where: { status: "SUCCEEDED" } }),
+    prisma.payment.count({ where: { status: "SUCCEEDED" } }),
+    prisma.payment.count({ where: { status: "FAILED" } }),
+    prisma.payment.count({ where: { status: "REFUNDED" } }),
+  ]);
+
+  return {
+    totalRevenue: totalRevenueAgg._sum.amount ?? 0,
+    succeeded,
+    failed,
+    refunded,
+  };
+};
+
+export const getAnalyticsReservations = async () => {
+  const days = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (29 - i));
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
+
+  const counts = await Promise.all(
+    days.map((day) => {
+      const next = new Date(day);
+      next.setDate(next.getDate() + 1);
+      return prisma.reservation.count({ where: { createdAt: { gte: day, lt: next } } });
+    }),
+  );
+
+  return days.map((d, i) => ({ date: d.toISOString().slice(0, 10), count: counts[i] }));
+};
+
+export const getAnalyticsRevenue = async () => {
+  const days = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (29 - i));
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
+
+  const totals = await Promise.all(
+    days.map(async (day) => {
+      const next = new Date(day);
+      next.setDate(next.getDate() + 1);
+      const agg = await prisma.payment.aggregate({
+        _sum: { amount: true },
+        where: { status: "SUCCEEDED", createdAt: { gte: day, lt: next } },
+      });
+      return agg._sum.amount ?? 0;
+    }),
+  );
+
+  return days.map((d, i) => ({ date: d.toISOString().slice(0, 10), amount: totals[i] }));
+};
+
+export const getAnalyticsCuisines = async () => {
+  const restaurants = await prisma.restaurant.findMany({ select: { cuisineTypes: true, _count: { select: { reservations: true } } } });
+
+  const tally: Record<string, number> = {};
+  for (const r of restaurants) {
+    const types = JSON.parse(r.cuisineTypes) as string[];
+    for (const t of types) {
+      tally[t] = (tally[t] ?? 0) + r._count.reservations;
+    }
+  }
+
+  return Object.entries(tally)
+    .map(([cuisine, count]) => ({ cuisine, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10);
+};
+
+export const getAnalyticsUsers = async () => {
+  const days = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (29 - i));
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
+
+  const counts = await Promise.all(
+    days.map((day) => {
+      const next = new Date(day);
+      next.setDate(next.getDate() + 1);
+      return prisma.user.count({ where: { createdAt: { gte: day, lt: next } } });
+    }),
+  );
+
+  return days.map((d, i) => ({ date: d.toISOString().slice(0, 10), count: counts[i] }));
+};
+
+export const getAnalyticsReservationStatus = async () => {
+  const statuses = ["PENDING", "CONFIRMED", "CANCELLED", "COMPLETED", "NO_SHOW"] as const;
+  const counts = await Promise.all(
+    statuses.map((s) => prisma.reservation.count({ where: { status: s } })),
+  );
+  return statuses.map((status, i) => ({ status, count: counts[i] }));
+};
+
+interface SystemSettings {
+  maintenanceMode: boolean;
+  registrationEnabled: boolean;
+  maxReservationsPerDay: number;
+  supportEmail: string;
+  ngrokUrl: string | null;
+}
+
+let systemSettings: SystemSettings = {
+  maintenanceMode: false,
+  registrationEnabled: true,
+  maxReservationsPerDay: 100,
+  supportEmail: "support@restaurant.com",
+  ngrokUrl: null,
+};
+
+export const getSettings = () => ({ ...systemSettings });
+
+export const updateSettings = (patch: Partial<SystemSettings>) => {
+  systemSettings = { ...systemSettings, ...patch };
+  return { ...systemSettings };
+};
+
+export const getLogs = async (opts: { page?: number; limit?: number; search?: string } = {}) => {
+  const page = opts.page ?? 1;
+  const limit = opts.limit ?? 50;
+  const skip = (page - 1) * limit;
+
+  const where = opts.search
+    ? {
+        OR: [
+          { adminEmail: { contains: opts.search, mode: "insensitive" as const } },
+          { action: { contains: opts.search, mode: "insensitive" as const } },
+          { targetType: { contains: opts.search, mode: "insensitive" as const } },
+        ],
+      }
+    : {};
+
+  const [data, total] = await Promise.all([
+    prisma.adminLog.findMany({ where, orderBy: { createdAt: "desc" }, skip, take: limit }),
+    prisma.adminLog.count({ where }),
+  ]);
+
+  return { data, total, page, limit };
 };
 
 export const logAdminAction = async (

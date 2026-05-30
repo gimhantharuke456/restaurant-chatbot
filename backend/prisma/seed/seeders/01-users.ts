@@ -1,4 +1,3 @@
-import { prisma } from "../../../lib/db";
 import { randomSLName } from "../constants/sri-lankan-names";
 import { randomInt } from "../utils/faker";
 import { SeedUser } from "../types";

@@ -9,6 +9,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "seed": "tsx prisma/seed/index.ts",
+    "seed:admin": "tsx prisma/seed/seed-admin.ts",
+    "seed:restaurant-admin": "tsx prisma/seed/seed-restaurant-admin.ts",
     "seed:reset": "npx prisma migrate reset --force && tsx prisma/seed/index.ts"
   },
   "prisma": {

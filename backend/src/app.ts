@@ -11,6 +11,7 @@ import reservationRoutes from "./modules/reservation/reservation.routes.js";
 import paymentRoutes from "./modules/payment/payment.routes.js";
 import chatRoutes from "./modules/chat/chat.routes.js";
 import adminRoutes from "./modules/admin/admin.routes.js";
+import portalRoutes from "./modules/restaurant-portal/portal.routes.js";
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use("/api/reservations", reservationRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/restaurant-portal", portalRoutes);
 
 app.use(errorHandler);
 

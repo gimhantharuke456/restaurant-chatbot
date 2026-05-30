@@ -1,0 +1,45 @@
+import { serverFetch } from "@/lib/server/api";
+
+interface PortalStats {
+  restaurantName: string;
+  avgRating: number | null;
+  totalReviews: number;
+  totalReservations: number;
+  activeReservations: number;
+  pendingReservations: number;
+  totalRevenue: number;
+}
+
+function StatCard({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="rounded-xl border bg-white p-6 shadow-sm">
+      <p className="text-sm text-slate-500">{label}</p>
+      <p className="mt-1 text-3xl font-semibold text-slate-900">{value}</p>
+    </div>
+  );
+}
+
+export default async function RestaurantDashboard() {
+  const stats = await serverFetch<PortalStats>("restaurant-portal/stats");
+
+  return (
+    <div className="p-8 space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold text-slate-900">{stats.restaurantName}</h1>
+        <p className="text-sm text-slate-500 mt-1">Restaurant dashboard</p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <StatCard label="Total Reservations" value={stats.totalReservations} />
+        <StatCard label="Active Reservations" value={stats.activeReservations} />
+        <StatCard label="Pending Confirmation" value={stats.pendingReservations} />
+        <StatCard label="Total Revenue (LKR)" value={stats.totalRevenue.toLocaleString()} />
+        <StatCard
+          label="Average Rating"
+          value={stats.avgRating != null ? `${stats.avgRating.toFixed(1)} ⭐` : "No ratings yet"}
+        />
+        <StatCard label="Total Reviews" value={stats.totalReviews} />
+      </div>
+    </div>
+  );
+}
