@@ -1,4 +1,4 @@
-from ..config.neo4j import get_session
+from config.neo4j import get_session
 
 
 def get_user_preferences(user_id: str) -> dict:

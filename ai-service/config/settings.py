@@ -4,7 +4,7 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     # PostgreSQL
-    database_url: str = "postgresql://postgres:postgres@postgres:5432/restaurant_chatbot"
+    database_url: str = "postgresql://gimhanrajapaksha@localhost:5432/agent_platform"
 
     # Redis
     redis_url: str = "redis://redis:6379"
@@ -18,8 +18,9 @@ class Settings(BaseSettings):
     google_application_credentials: str = "/app/credentials/gcp-key.json"
     vertex_project_id: str = "your-gcp-project-id"
     vertex_location: str = "us-central1"
-    gemini_model: str = "gemini-1.5-pro"
+    gemini_model: str = "gemini-2.5-flash"
     gemini_embedding_model: str = "text-embedding-004"
+    use_fake_embeddings: bool = False
 
     # Firebase / Firestore
     firebase_project_id: str = "your-firebase-project-id"

@@ -2,8 +2,8 @@ import json
 from langchain_google_vertexai import ChatVertexAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
-from ..config.settings import settings
-from ..knowledge.prompts import ORCHESTRATOR_SYSTEM_PROMPT
+from config.settings import settings
+from knowledge.prompts import ORCHESTRATOR_SYSTEM_PROMPT
 
 llm = ChatVertexAI(
     model_name=settings.gemini_model,

@@ -16,10 +16,10 @@ export function PortalShell({ children, email, name }: PortalShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-slate-50">
+    <div className="flex h-screen bg-background">
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50 md:hidden"
+          className="fixed inset-0 z-30 bg-black/60 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -33,7 +33,7 @@ export function PortalShell({ children, email, name }: PortalShellProps) {
       </div>
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        <div className="flex h-16 items-center border-b bg-white px-4 md:hidden">
+        <div className="flex h-16 items-center border-b bg-card px-4 md:hidden">
           <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)}>
             <Menu className="h-5 w-5" />
           </Button>

@@ -22,12 +22,12 @@ export function AdminTopBar({ email, name }: AdminTopBarProps) {
   };
 
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-white px-6">
+    <header className="flex h-16 items-center justify-between border-b border-border bg-card px-6">
       <div />
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 text-sm">
-          <User className="h-4 w-4 text-slate-500" />
-          <span className="text-slate-700">{name ?? email}</span>
+          <User className="h-4 w-4 text-muted-foreground" />
+          <span className="text-foreground">{name ?? email}</span>
         </div>
         <Button variant="outline" size="sm" onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />

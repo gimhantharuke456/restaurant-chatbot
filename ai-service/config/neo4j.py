@@ -1,5 +1,5 @@
 from neo4j import GraphDatabase
-from .settings import settings
+from config.settings import settings
 
 _driver = None
 

@@ -2,10 +2,23 @@
 
 import { useState, useCallback, useRef } from "react";
 
+export interface RestaurantResult {
+  id: string;
+  name: string;
+  description?: string;
+  address: string;
+  area: string;
+  cuisineTypes: string;
+  priceRange: string;
+  avgRating?: number;
+  imageUrls: string;
+}
+
 export interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
+  data?: RestaurantResult[];
   timestamp: Date;
 }
 
@@ -34,11 +47,24 @@ export function useChat(sessionId: string) {
       });
 
       if (!res.ok) throw new Error("Request failed");
-      const data = await res.json() as { message: string };
+      const data = await res.json() as { message: string; data?: RestaurantResult[] };
 
-      const aiMsg: Message = { id: uid(), role: "assistant", content: data.message, timestamp: new Date() };
+      const aiMsg: Message = {
+        id: uid(),
+        role: "assistant",
+        content: data.message,
+        data: data.data ?? undefined,
+        timestamp: new Date(),
+      };
       setMessages(prev => [...prev, aiMsg]);
-      historyRef.current = [...historyRef.current, { role: "assistant", content: data.message }];
+
+      // Store a meaningful summary in history so the AI remembers what was shown
+      let historyContent = data.message;
+      if (data.message === "__RESTAURANT_LIST__" && data.data?.length) {
+        const names = data.data.map(r => r.name).join(", ");
+        historyContent = `Here are the restaurants I found: ${names}`;
+      }
+      historyRef.current = [...historyRef.current, { role: "assistant", content: historyContent }];
     } catch {
       const errMsg: Message = {
         id: uid(),

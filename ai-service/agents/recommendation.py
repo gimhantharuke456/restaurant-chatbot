@@ -3,10 +3,10 @@ import asyncio
 from langchain_google_vertexai import ChatVertexAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
-from ..config.settings import settings
-from ..knowledge.prompts import RECOMMENDATION_SYSTEM_PROMPT
-from ..tools.neo4j_tools import get_user_preferences
-from ..tools.search_tools import semantic_search
+from config.settings import settings
+from knowledge.prompts import RECOMMENDATION_SYSTEM_PROMPT
+from tools.neo4j_tools import get_user_preferences
+from tools.search_tools import semantic_search
 
 llm = ChatVertexAI(
     model_name=settings.gemini_model,

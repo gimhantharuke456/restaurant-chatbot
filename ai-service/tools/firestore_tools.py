@@ -1,7 +1,7 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-from ..config.settings import settings
+from config.settings import settings
 
 _initialized = False
 
@@ -35,6 +35,17 @@ def get_availability(restaurant_id: str, date: str) -> list[dict]:
     if doc.exists:
         return doc.to_dict().get("slots", [])
     return []
+
+
+def lookup_restaurant_by_name(name: str) -> dict | None:
+    """Return the first restaurant whose name contains `name` (case-insensitive scan)."""
+    name_lower = name.lower().strip()
+    docs = _db().collection("restaurants").limit(200).get()
+    for doc in docs:
+        data = doc.to_dict()
+        if name_lower in (data.get("name") or "").lower():
+            return {"restaurant_id": doc.id, **data}
+    return None
 
 
 def update_slot(restaurant_id: str, date: str, time: str, delta: int) -> None:

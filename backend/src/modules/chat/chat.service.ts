@@ -30,7 +30,13 @@ export const sendMessage = async (
       },
     );
     aiResponse = data;
-  } catch {
+  } catch (e: unknown) {
+    const axiosErr = e as { response?: { status: number; data: unknown }; message?: string };
+    if (axiosErr.response) {
+      console.error("[chat] AI service HTTP error:", axiosErr.response.status, JSON.stringify(axiosErr.response.data));
+    } else {
+      console.error("[chat] AI service call failed:", axiosErr.message);
+    }
     const err = new Error("AI service unavailable") as Error & { status: number };
     err.status = 502;
     throw err;
