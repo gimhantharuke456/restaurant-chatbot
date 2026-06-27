@@ -1,17 +1,17 @@
 from pydantic import BaseModel
-from typing import Optional, List, Any
+from typing import Optional, Any
 
 
-class ChatMessage(BaseModel):
-    role: str  # "user" | "assistant"
+class Message(BaseModel):
+    role: str
     content: str
 
 
 class ChatRequest(BaseModel):
-    user_id: str
+    user_id: Optional[str] = None
     session_id: str
     message: str
-    history: List[ChatMessage] = []
+    history: list[Message] = []
 
 
 class ChatResponse(BaseModel):
@@ -19,10 +19,11 @@ class ChatResponse(BaseModel):
     message: str
     intent: Optional[str] = None
     data: Optional[Any] = None
+    guest_limit_reached: bool = False
 
 
 class EmbedRequest(BaseModel):
     name: str
     description: Optional[str] = None
-    cuisine_types: List[str] = []
+    cuisine_types: list[str] = []
     area: str

@@ -7,7 +7,7 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = settings.google_application_crede
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_core.messages import HumanMessage, AIMessage
 
@@ -36,9 +36,24 @@ def health():
     return {"status": "ok"}
 
 
+GUEST_MESSAGE_LIMIT = 3
+
+
 @app.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
+async def chat(request: ChatRequest, authorization: str = Header(default=None)):
     try:
+        is_guest = not request.user_id or request.user_id.strip() == ""
+
+        if is_guest:
+            guest_message_count = len([m for m in request.history if m.role == "user"]) + 1
+            if guest_message_count > GUEST_MESSAGE_LIMIT:
+                return ChatResponse(
+                    session_id=request.session_id,
+                    message="You've reached the free message limit. Please sign in or create an account to continue chatting.",
+                    intent="AUTH_REQUIRED",
+                    guest_limit_reached=True,
+                )
+
         history = [
             HumanMessage(content=m.content) if m.role == "user"
             else AIMessage(content=m.content)
@@ -46,8 +61,14 @@ async def chat(request: ChatRequest):
         ]
         history.append(HumanMessage(content=request.message))
 
+        auth_token = None
+        if authorization and authorization.startswith("Bearer "):
+            auth_token = authorization.split("Bearer ", 1)[1]
+
+        user_id = request.user_id if not is_guest else f"guest_{request.session_id}"
+
         result = await agent_graph.ainvoke({
-            "user_id": request.user_id,
+            "user_id": user_id,
             "session_id": request.session_id,
             "messages": history,
             "intent": None,
@@ -58,6 +79,7 @@ async def chat(request: ChatRequest):
             "payment_details": None,
             "final_response": None,
             "error": None,
+            "auth_token": auth_token,
         })
 
         return ChatResponse(
@@ -65,6 +87,7 @@ async def chat(request: ChatRequest):
             message=result.get("final_response") or "I couldn't process that request. Please try again.",
             intent=result.get("intent"),
             data=result.get("search_results") or result.get("recommendation_results"),
+            guest_limit_reached=False,
         )
     except Exception as e:
         logger.error("Chat handler error: %s", str(e))

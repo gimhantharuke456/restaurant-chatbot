@@ -6,17 +6,19 @@ from agents.discovery import search_restaurants
 from agents.recommendation import recommend_restaurants
 from agents.reservation import handle_reservation
 from agents.payment import handle_payment
+from agents.general import handle_general
 
 _ROUTE_MAP = {
     "SEARCH": "discovery",
     "RECOMMEND": "recommendation",
     "RESERVE": "reservation",
     "PAYMENT": "payment",
+    "GENERAL": "general",
 }
 
 
 def _route(state: AgentState) -> str:
-    return _ROUTE_MAP.get(state.get("intent", "GENERAL"), END)
+    return _ROUTE_MAP.get(state.get("intent", "GENERAL"), "general")
 
 
 def build_graph():
@@ -27,6 +29,7 @@ def build_graph():
     g.add_node("recommendation", recommend_restaurants)
     g.add_node("reservation", handle_reservation)
     g.add_node("payment", handle_payment)
+    g.add_node("general", handle_general)
 
     g.set_entry_point("orchestrator")
 
@@ -38,15 +41,14 @@ def build_graph():
             "recommendation": "recommendation",
             "reservation": "reservation",
             "payment": "payment",
-            END: END,
+            "general": "general",
         },
     )
 
-    for node in ("discovery", "recommendation", "reservation", "payment"):
+    for node in ("discovery", "recommendation", "reservation", "payment", "general"):
         g.add_edge(node, END)
 
     return g.compile()
 
 
-# Module-level singleton — imported by main.py
 agent_graph = build_graph()
