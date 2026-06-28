@@ -29,6 +29,7 @@ model User {
   favorites          Favorite[]
   notifications      Notification[]
   waitlistEntries    Waitlist[]
+  complaints         Complaint[]
 }
 
 enum Role {
@@ -54,6 +55,10 @@ model Restaurant {
   isVerified    Boolean       @default(false)
   avgRating     Float?
   totalReviews  Int           @default(0)
+  latitude      Float?
+  longitude     Float?
+  socialMedia   Json?
+  totalSeats    Int?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   adminId       String
@@ -65,6 +70,8 @@ model Restaurant {
   waitlistEntries Waitlist[]
   promotions    Promotion[]
   reviewReplies ReviewReply[]
+  holidays      RestaurantHoliday[]
+  complaints    Complaint[]
 
   @@index([area])
 }
@@ -290,4 +297,41 @@ enum PromotionType {
   SPECIAL_EVENT
   SEASONAL
   COUPON
+}
+
+model RestaurantHoliday {
+  id           String     @id @default(uuid())
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  date         DateTime   @db.Date
+  reason       String?
+  createdAt    DateTime   @default(now())
+
+  @@unique([restaurantId, date])
+  @@index([restaurantId])
+}
+
+model Complaint {
+  id           String          @id @default(uuid())
+  userId       String
+  user         User            @relation(fields: [userId], references: [id])
+  restaurantId String?
+  restaurant   Restaurant?     @relation(fields: [restaurantId], references: [id])
+  subject      String
+  description  String
+  status       ComplaintStatus @default(OPEN)
+  adminNote    String?
+  resolvedAt   DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+enum ComplaintStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED
+  CLOSED
 }

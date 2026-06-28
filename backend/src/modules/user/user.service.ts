@@ -174,3 +174,26 @@ export const getUserInsights = async (userId: string) => {
 export const deleteAccount = async (userId: string) => {
   await prisma.user.delete({ where: { id: userId } });
 };
+
+export const createComplaint = async (
+  userId: string,
+  input: { subject: string; description: string; restaurantId?: string },
+) => {
+  return prisma.complaint.create({
+    data: {
+      userId,
+      subject: input.subject,
+      description: input.description,
+      restaurantId: input.restaurantId ?? null,
+    },
+    include: { restaurant: { select: { name: true } } },
+  });
+};
+
+export const getMyComplaints = async (userId: string) => {
+  return prisma.complaint.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    include: { restaurant: { select: { name: true } } },
+  });
+};

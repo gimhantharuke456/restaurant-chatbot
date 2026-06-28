@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { Eye } from "lucide-react";
 import { UserRoleSelect } from "./UserRoleSelect";
+import { SuspendUserButton } from "./SuspendUserButton";
 import { AdminUser } from "@/types/admin";
 
 interface UserTableProps {
@@ -42,7 +43,8 @@ export function UserTable({ users }: UserTableProps) {
         <TableHeader>
           <TableRow className="bg-muted/50">
             <TableHead>User</TableHead>
-            <TableHead>Current Role</TableHead>
+            <TableHead>Role</TableHead>
+            <TableHead>Status</TableHead>
             <TableHead>Reservations</TableHead>
             <TableHead>Reviews</TableHead>
             <TableHead>Joined</TableHead>
@@ -74,6 +76,11 @@ export function UserTable({ users }: UserTableProps) {
                   {user.role.replace("_", " ")}
                 </Badge>
               </TableCell>
+              <TableCell>
+                <Badge variant={user.isActive ? "default" : "secondary"}>
+                  {user.isActive ? "Active" : "Suspended"}
+                </Badge>
+              </TableCell>
               <TableCell className="text-sm">
                 {user._count.reservations}
               </TableCell>
@@ -85,11 +92,14 @@ export function UserTable({ users }: UserTableProps) {
                 <UserRoleSelect userId={user.id} currentRole={user.role} />
               </TableCell>
               <TableCell className="text-right">
-                <Link href={`/admin/users/${user.id}`}>
-                  <Button variant="ghost" size="sm">
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                </Link>
+                <div className="flex justify-end gap-1">
+                  <SuspendUserButton userId={user.id} isActive={user.isActive} />
+                  <Link href={`/admin/users/${user.id}`}>
+                    <Button variant="ghost" size="sm">
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
               </TableCell>
             </TableRow>
           ))}

@@ -12,6 +12,8 @@ import {
   Settings,
   ScrollText,
   ShieldCheck,
+  Star,
+  Bell,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +24,8 @@ const NAV = [
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/reservations", label: "Reservations", icon: CalendarDays },
   { href: "/admin/payments", label: "Payments", icon: CreditCard },
+  { href: "/admin/reviews", label: "Reviews", icon: Star },
+  { href: "/admin/notifications", label: "Notifications", icon: Bell },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/settings", label: "Settings", icon: Settings },
   { href: "/admin/logs", label: "Audit Logs", icon: ScrollText },

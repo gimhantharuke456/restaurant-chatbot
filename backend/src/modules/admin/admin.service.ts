@@ -502,3 +502,44 @@ export const broadcastAnnouncement = async (title: string, message: string, role
   });
   return { sent: users.length };
 };
+
+export const getAllComplaints = async (opts: { page: number; limit: number; status?: string }) => {
+  const { page, limit, status } = opts;
+  const where = status ? { status: status as "OPEN" | "UNDER_REVIEW" | "RESOLVED" | "CLOSED" } : {};
+  const [data, total] = await Promise.all([
+    prisma.complaint.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+      include: {
+        user: { select: { name: true, email: true } },
+        restaurant: { select: { name: true } },
+      },
+    }),
+    prisma.complaint.count({ where }),
+  ]);
+  return { data, total, page, limit };
+};
+
+export const updateComplaint = async (
+  id: string,
+  updates: { status?: string; adminNote?: string },
+) => {
+  const data: Record<string, unknown> = {};
+  if (updates.status) {
+    data.status = updates.status;
+    if (updates.status === "RESOLVED" || updates.status === "CLOSED") {
+      data.resolvedAt = new Date();
+    }
+  }
+  if (updates.adminNote !== undefined) data.adminNote = updates.adminNote;
+  return prisma.complaint.update({
+    where: { id },
+    data,
+    include: {
+      user: { select: { name: true, email: true } },
+      restaurant: { select: { name: true } },
+    },
+  });
+};

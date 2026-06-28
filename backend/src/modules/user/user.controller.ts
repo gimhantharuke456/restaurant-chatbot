@@ -89,3 +89,14 @@ export const getUserInsights = async (req: AuthRequest, res: Response): Promise<
   const insights = await userService.getUserInsights(req.user!.dbId);
   res.json(insights);
 };
+
+export const createComplaint = async (req: AuthRequest, res: Response): Promise<void> => {
+  const { subject, description, restaurantId } = req.body as { subject: string; description: string; restaurantId?: string };
+  if (!subject || !description) { res.status(400).json({ error: "subject and description are required" }); return; }
+  const complaint = await userService.createComplaint(req.user!.dbId, { subject, description, restaurantId });
+  res.status(201).json(complaint);
+};
+
+export const getMyComplaints = async (req: AuthRequest, res: Response): Promise<void> => {
+  res.json(await userService.getMyComplaints(req.user!.dbId));
+};

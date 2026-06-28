@@ -81,3 +81,26 @@ export const clearSession = async (
     where: { id: sessionId, userId },
   });
 };
+
+export const sendGuestMessage = async (input: SendMessageInput): Promise<AiServiceResponse> => {
+  const aiServiceUrl = process.env.AI_SERVICE_URL ?? "http://localhost:8000";
+  try {
+    const { data } = await axios.post<AiServiceResponse>(`${aiServiceUrl}/chat`, {
+      user_id: "",
+      session_id: input.sessionId,
+      message: input.message,
+      history: input.history,
+    });
+    return data;
+  } catch (e: unknown) {
+    const axiosErr = e as { response?: { status: number; data: unknown }; message?: string };
+    if (axiosErr.response) {
+      console.error("[chat/guest] AI service HTTP error:", axiosErr.response.status, JSON.stringify(axiosErr.response.data));
+    } else {
+      console.error("[chat/guest] AI service call failed:", axiosErr.message);
+    }
+    const err = new Error("AI service unavailable") as Error & { status: number };
+    err.status = 502;
+    throw err;
+  }
+};

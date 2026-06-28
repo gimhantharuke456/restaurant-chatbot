@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { SuspendUserButton } from "./SuspendUserButton";
 import { AdminUserDetail } from "@/types/admin";
 
 interface UserProfileCardProps {
@@ -10,8 +11,13 @@ interface UserProfileCardProps {
 export function UserProfileCard({ user }: UserProfileCardProps) {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-base">Profile</CardTitle>
+        <SuspendUserButton
+          userId={user.id}
+          isActive={user.isActive}
+          size="default"
+        />
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center gap-4">
@@ -33,6 +39,12 @@ export function UserProfileCard({ user }: UserProfileCardProps) {
           <div>
             <span className="font-medium text-muted-foreground">Role:</span>{" "}
             <Badge variant="secondary">{user.role.replace("_", " ")}</Badge>
+          </div>
+          <div>
+            <span className="font-medium text-muted-foreground">Status:</span>{" "}
+            <Badge variant={user.isActive ? "default" : "destructive"}>
+              {user.isActive ? "Active" : "Suspended"}
+            </Badge>
           </div>
           {user.phone && (
             <div>

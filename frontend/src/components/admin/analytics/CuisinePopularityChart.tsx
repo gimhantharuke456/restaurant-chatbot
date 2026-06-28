@@ -19,7 +19,7 @@ export function CuisinePopularityChart({ data }: CuisinePopularityChartProps) {
   return (
     <ResponsiveContainer width="100%" height={250}>
       <BarChart data={data} layout="vertical">
-        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
         <XAxis type="number" tick={{ fontSize: 12 }} />
         <YAxis
           type="category"

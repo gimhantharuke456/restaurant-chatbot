@@ -1,5 +1,4 @@
 import json
-import asyncio
 from langchain_google_vertexai import ChatVertexAI
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
@@ -49,7 +48,7 @@ def _clarifying_questions_already_asked(messages: list) -> bool:
     return False
 
 
-def recommend_restaurants(state: dict) -> dict:
+async def recommend_restaurants(state: dict) -> dict:
     user_id = state["user_id"]
     messages = state["messages"]
     user_message = messages[-1].content
@@ -60,7 +59,7 @@ def recommend_restaurants(state: dict) -> dict:
     if user_prefs["preferences"]:
         top_cuisines = [p["cuisine"] for p in user_prefs["preferences"][:3]]
         query = f"restaurants serving {', '.join(top_cuisines)} cuisine in Colombo"
-        results = asyncio.run(semantic_search(query=query, limit=8))
+        results = await semantic_search(query=query, limit=8)
         visited_ids = {r["id"] for r in user_prefs["visited"]}
         fresh = [r for r in results if r["id"] not in visited_ids][:3]
         context = {
@@ -102,7 +101,7 @@ def recommend_restaurants(state: dict) -> dict:
                 query_parts.append(f"for {occasion}")
             query = f"restaurants in Colombo serving {' '.join(query_parts)}"
 
-            results = asyncio.run(semantic_search(query=query, limit=5))
+            results = await semantic_search(query=query, limit=5)
             context = {
                 "user_preferences": [{"cuisine": c} for c in cuisines],
                 "occasion": occasion,

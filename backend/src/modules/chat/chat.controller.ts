@@ -1,4 +1,4 @@
-import type { Response } from "express";
+import type { Request, Response } from "express";
 import type { AuthRequest } from "../../types/index.js";
 import * as chatService from "./chat.service.js";
 
@@ -29,4 +29,12 @@ export const clearSession = async (
 ): Promise<void> => {
   await chatService.clearSession(req.params.id, req.user!.dbId);
   res.json({ success: true });
+};
+
+export const sendGuestMessage = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const result = await chatService.sendGuestMessage(req.body as chatService.SendMessageInput);
+  res.json(result);
 };

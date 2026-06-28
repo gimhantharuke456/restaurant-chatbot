@@ -129,12 +129,23 @@ export interface AdminUser {
   phone: string | null;
   avatarUrl: string | null;
   role: UserRole;
+  isActive: boolean;
   createdAt: string;
   _count: {
     reservations: number;
     reviews: number;
     managedRestaurants: number;
   };
+}
+
+export interface AdminReviewFull {
+  id: string;
+  rating: number;
+  comment: string | null;
+  isVisible: boolean;
+  createdAt: string;
+  user: { name: string | null; email: string };
+  restaurant: { name: string };
 }
 
 export interface AdminUserDetail extends AdminUser {

@@ -22,6 +22,10 @@ export const registerRestaurant = async (
     priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "FINE_DINING";
     openingHours: object;
     imageUrls?: string[];
+    latitude?: number;
+    longitude?: number;
+    socialMedia?: object;
+    totalSeats?: number;
   },
 ) => {
   const existing = await prisma.restaurant.findFirst({ where: { adminId } });
@@ -40,6 +44,10 @@ export const registerRestaurant = async (
       priceRange: input.priceRange,
       openingHours: input.openingHours,
       imageUrls: JSON.stringify(input.imageUrls ?? []),
+      latitude: input.latitude ?? null,
+      longitude: input.longitude ?? null,
+      socialMedia: input.socialMedia ?? undefined,
+      totalSeats: input.totalSeats ?? null,
     },
   });
 };
@@ -94,6 +102,10 @@ export const updateMyRestaurant = async (
     openingHours?: object;
     imageUrls?: string[];
     isActive?: boolean;
+    latitude?: number;
+    longitude?: number;
+    socialMedia?: object;
+    totalSeats?: number;
   },
 ) => {
   const restaurant = await prisma.restaurant.findFirst({ where: { adminId } });
@@ -544,4 +556,32 @@ export const deleteMenuItem = async (adminId: string, itemId: string) => {
   const item = await prisma.menuItem.findFirst({ where: { id: itemId, restaurantId: restaurant.id } });
   if (!item) throw Object.assign(new Error("Menu item not found"), { status: 404 });
   return prisma.menuItem.delete({ where: { id: itemId } });
+};
+
+export const getMyHolidays = async (adminId: string) => {
+  const restaurant = await prisma.restaurant.findFirst({ where: { adminId } });
+  if (!restaurant) return [];
+  return prisma.restaurantHoliday.findMany({
+    where: { restaurantId: restaurant.id },
+    orderBy: { date: "asc" },
+  });
+};
+
+export const addHoliday = async (adminId: string, date: string, reason?: string) => {
+  const restaurant = await prisma.restaurant.findFirst({ where: { adminId } });
+  if (!restaurant) throw Object.assign(new Error("Restaurant not found"), { status: 404 });
+  const d = new Date(date);
+  return prisma.restaurantHoliday.upsert({
+    where: { restaurantId_date: { restaurantId: restaurant.id, date: d } },
+    create: { restaurantId: restaurant.id, date: d, reason: reason ?? null },
+    update: { reason: reason ?? null },
+  });
+};
+
+export const removeHoliday = async (adminId: string, date: string) => {
+  const restaurant = await prisma.restaurant.findFirst({ where: { adminId } });
+  if (!restaurant) throw Object.assign(new Error("Restaurant not found"), { status: 404 });
+  await prisma.restaurantHoliday.deleteMany({
+    where: { restaurantId: restaurant.id, date: new Date(date) },
+  });
 };

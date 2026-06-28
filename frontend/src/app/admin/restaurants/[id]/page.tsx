@@ -69,10 +69,7 @@ export default async function RestaurantDetailPage({
               value: "reviews",
               label: `Reviews (${restaurant.reviews.length})`,
               content: (
-                <ReviewsTable
-                  reviews={restaurant.reviews}
-                  restaurantId={restaurant.id}
-                />
+                <ReviewsTable reviews={restaurant.reviews} />
               ),
             },
           ]}

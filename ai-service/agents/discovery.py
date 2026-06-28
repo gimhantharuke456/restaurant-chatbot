@@ -1,5 +1,4 @@
 import json
-import asyncio
 from langchain_google_vertexai import ChatVertexAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
@@ -21,7 +20,7 @@ _FILTER_PROMPT = (
 )
 
 
-def search_restaurants(state: dict) -> dict:
+async def search_restaurants(state: dict) -> dict:
     messages = state["messages"]
     user_message = messages[-1].content
 
@@ -41,7 +40,7 @@ def search_restaurants(state: dict) -> dict:
     query_text = filters.pop("query_text", user_message) or user_message
     active_filters = {k: v for k, v in filters.items() if v}
 
-    results = asyncio.run(semantic_search(query=query_text, limit=5, filters=active_filters))
+    results = await semantic_search(query=query_text, limit=5, filters=active_filters)
 
     if results:
         final_response = "__RESTAURANT_LIST__"

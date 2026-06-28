@@ -38,4 +38,8 @@ router.delete("/promotions/:id", portalController.deletePromotion);
 
 router.post("/ai/message", portalController.askPortalAI);
 
+router.get("/holidays", portalController.getMyHolidays);
+router.post("/holidays", portalController.addHoliday);
+router.delete("/holidays/:date", portalController.removeHoliday);
+
 export default router;

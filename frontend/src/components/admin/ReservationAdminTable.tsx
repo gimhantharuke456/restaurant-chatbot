@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { AdminReservation } from "@/types/admin";
-import { ReservationStatusButton } from "./ReservationStatusButton";
 import { Star } from "lucide-react";
 
 interface ReservationAdminTableProps {
@@ -69,7 +68,6 @@ export function ReservationAdminTable({
             <TableHead>Payment</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Review</TableHead>
-            <TableHead>Change Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -116,12 +114,6 @@ export function ReservationAdminTable({
               </TableCell>
               <TableCell>
                 <ReviewCell review={r.review} />
-              </TableCell>
-              <TableCell>
-                <ReservationStatusButton
-                  reservationId={r.id}
-                  currentStatus={r.status}
-                />
               </TableCell>
             </TableRow>
           ))}

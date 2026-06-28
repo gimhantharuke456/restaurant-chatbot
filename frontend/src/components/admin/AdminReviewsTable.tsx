@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -10,22 +11,24 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AdminReview } from "@/types/admin";
-import { useState } from "react";
 import { Trash2, EyeOff } from "lucide-react";
+import { AdminReviewFull } from "@/types/admin";
 
-interface ReviewsTableProps {
-  reviews: AdminReview[];
+interface AdminReviewsTableProps {
+  reviews: AdminReviewFull[];
 }
 
-export function ReviewsTable({ reviews }: ReviewsTableProps) {
+export function AdminReviewsTable({ reviews }: AdminReviewsTableProps) {
   const [items, setItems] = useState(reviews);
 
   const hideReview = async (id: string) => {
     const res = await fetch(`/api/proxy/admin/reviews/${id}/hide`, {
       method: "PATCH",
     });
-    if (res.ok) setItems((prev) => prev.filter((r) => r.id !== id));
+    if (res.ok)
+      setItems((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, isVisible: false } : r))
+      );
   };
 
   const deleteReview = async (id: string) => {
@@ -36,7 +39,11 @@ export function ReviewsTable({ reviews }: ReviewsTableProps) {
   };
 
   if (items.length === 0) {
-    return <p className="py-8 text-center text-muted-foreground">No reviews yet</p>;
+    return (
+      <div className="rounded-lg border bg-card py-16 text-center text-muted-foreground">
+        No reviews found
+      </div>
+    );
   }
 
   return (
@@ -44,9 +51,11 @@ export function ReviewsTable({ reviews }: ReviewsTableProps) {
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/50">
-            <TableHead>User</TableHead>
+            <TableHead>Customer</TableHead>
+            <TableHead>Restaurant</TableHead>
             <TableHead>Rating</TableHead>
             <TableHead>Comment</TableHead>
+            <TableHead>Visible</TableHead>
             <TableHead>Date</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -55,31 +64,46 @@ export function ReviewsTable({ reviews }: ReviewsTableProps) {
           {items.map((review) => (
             <TableRow key={review.id}>
               <TableCell>
-                <div className="text-sm font-medium text-foreground">
+                <div className="text-sm font-medium">
                   {review.user.name ?? review.user.email}
                 </div>
+                <div className="text-xs text-muted-foreground">
+                  {review.user.email}
+                </div>
+              </TableCell>
+              <TableCell className="text-sm font-medium">
+                {review.restaurant.name}
               </TableCell>
               <TableCell>
                 <Badge variant="secondary">{review.rating} / 5</Badge>
               </TableCell>
               <TableCell className="max-w-xs">
-                <p className="truncate text-sm text-foreground">
-                  {review.comment ?? <span className="text-muted-foreground">—</span>}
+                <p className="truncate text-sm">
+                  {review.comment ?? (
+                    <span className="text-muted-foreground">—</span>
+                  )}
                 </p>
+              </TableCell>
+              <TableCell>
+                <Badge variant={review.isVisible ? "default" : "secondary"}>
+                  {review.isVisible ? "Visible" : "Hidden"}
+                </Badge>
               </TableCell>
               <TableCell className="text-sm text-muted-foreground">
                 {new Date(review.createdAt).toLocaleDateString("en-LK")}
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-foreground"
-                    onClick={() => hideReview(review.id)}
-                  >
-                    <EyeOff className="h-4 w-4" />
-                  </Button>
+                  {review.isVisible && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-muted-foreground hover:text-foreground"
+                      onClick={() => hideReview(review.id)}
+                    >
+                      <EyeOff className="h-4 w-4" />
+                    </Button>
+                  )}
                   <Button
                     variant="ghost"
                     size="sm"

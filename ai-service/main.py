@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from langchain_core.messages import HumanMessage, AIMessage
 
 from schemas.models import ChatRequest, ChatResponse, EmbedRequest, PortalAIRequest, PortalAIResponse
-from graph.graph import agent_graph
+from chain.pipeline import run_pipeline
 from config.neo4j import close_driver
 
 app = FastAPI(title="Restaurant Chatbot AI Service", version="1.0.0")
@@ -67,7 +67,7 @@ async def chat(request: ChatRequest, authorization: str = Header(default=None)):
 
         user_id = request.user_id if not is_guest else f"guest_{request.session_id}"
 
-        result = await agent_graph.ainvoke({
+        result = await run_pipeline({
             "user_id": user_id,
             "session_id": request.session_id,
             "messages": history,

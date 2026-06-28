@@ -142,3 +142,19 @@ export const askPortalAI = async (req: AuthRequest, res: Response): Promise<void
   const reply = await portalService.askPortalAI(req.user!.dbId, message, history ?? []);
   res.json({ message: reply });
 };
+
+export const getMyHolidays = async (req: AuthRequest, res: Response): Promise<void> => {
+  res.json(await portalService.getMyHolidays(req.user!.dbId));
+};
+
+export const addHoliday = async (req: AuthRequest, res: Response): Promise<void> => {
+  const { date, reason } = req.body as { date: string; reason?: string };
+  if (!date) { res.status(400).json({ error: "date is required" }); return; }
+  const holiday = await portalService.addHoliday(req.user!.dbId, date, reason);
+  res.status(201).json(holiday);
+};
+
+export const removeHoliday = async (req: AuthRequest, res: Response): Promise<void> => {
+  await portalService.removeHoliday(req.user!.dbId, req.params.date);
+  res.json({ success: true });
+};

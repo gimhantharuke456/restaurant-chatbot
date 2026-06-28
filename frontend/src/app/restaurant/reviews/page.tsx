@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Star } from "lucide-react";
 import { serverFetch } from "@/lib/server/api";
 import { PaginationBar } from "@/components/admin/PaginationBar";
+import { ReviewReplyForm } from "@/components/restaurant-portal/ReviewReplyForm";
 
 interface Review {
   id: string;
@@ -10,6 +11,7 @@ interface Review {
   comment: string | null;
   imageUrls: string;
   createdAt: string;
+  reply: string | null;
   user: { name: string | null; email: string };
   reservation: { date: string; time: string } | null;
 }
@@ -165,6 +167,14 @@ export default async function PortalReviewsPage({
                     ))}
                   </div>
                 )}
+
+                {review.reply && (
+                  <div className="rounded-lg bg-muted/40 border border-border px-4 py-2 text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">Your reply: </span>
+                    {review.reply}
+                  </div>
+                )}
+                <ReviewReplyForm reviewId={review.id} existingReply={review.reply} />
               </div>
             );
           })}

@@ -60,4 +60,8 @@ router.post("/payments/:id/refund", adminController.refundPayment);
 // Announcements
 router.post("/notifications", adminController.broadcastAnnouncement);
 
+// Complaints
+router.get("/complaints", adminController.getAllComplaints);
+router.patch("/complaints/:id", adminController.updateComplaint);
+
 export default router;

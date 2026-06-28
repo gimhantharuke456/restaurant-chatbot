@@ -27,4 +27,7 @@ router.patch("/me/notifications/:id/read", userController.markNotificationRead);
 
 router.get("/me/insights", userController.getUserInsights);
 
+router.post("/me/complaints", userController.createComplaint);
+router.get("/me/complaints", userController.getMyComplaints);
+
 export default router;

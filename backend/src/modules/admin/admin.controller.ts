@@ -185,3 +185,21 @@ export const broadcastAnnouncement = async (req: Request, res: Response): Promis
   );
   res.json(result);
 };
+
+export const getAllComplaints = async (req: Request, res: Response): Promise<void> => {
+  const { page, limit, status } = req.query;
+  res.json(await adminService.getAllComplaints({
+    page: page ? Number(page) : 1,
+    limit: limit ? Number(limit) : 25,
+    status: status as string | undefined,
+  }));
+};
+
+export const updateComplaint = async (req: Request, res: Response): Promise<void> => {
+  const { status, adminNote } = req.body as { status?: string; adminNote?: string };
+  const complaint = await adminService.updateComplaint(req.params.id, { status, adminNote });
+  await adminService.logAdminAction(
+    (req as any).user.id, (req as any).user.email, "UPDATE_COMPLAINT", "Complaint", req.params.id, status, req.ip,
+  );
+  res.json(complaint);
+};
