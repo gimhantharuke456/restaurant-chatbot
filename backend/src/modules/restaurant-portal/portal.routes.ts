@@ -36,4 +36,6 @@ router.post("/promotions", portalController.createPromotion);
 router.put("/promotions/:id", portalController.updatePromotion);
 router.delete("/promotions/:id", portalController.deletePromotion);
 
+router.post("/ai/message", portalController.askPortalAI);
+
 export default router;

@@ -11,7 +11,7 @@ from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_core.messages import HumanMessage, AIMessage
 
-from schemas.models import ChatRequest, ChatResponse, EmbedRequest
+from schemas.models import ChatRequest, ChatResponse, EmbedRequest, PortalAIRequest, PortalAIResponse
 from graph.graph import agent_graph
 from config.neo4j import close_driver
 
@@ -93,6 +93,68 @@ async def chat(request: ChatRequest, authorization: str = Header(default=None)):
         logger.error("Chat handler error: %s", str(e))
         logger.error(traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/portal/message", response_model=PortalAIResponse)
+async def portal_message(request: PortalAIRequest):
+    """AI assistant for restaurant panel — answers business questions using provided analytics context."""
+    from langchain_google_vertexai import ChatVertexAI
+    from langchain_core.messages import SystemMessage, HumanMessage as LCHumanMessage
+    from config.settings import settings
+    import json
+
+    ctx = request.context or {}
+    context_lines = []
+    if ctx.get("restaurantName"):
+        context_lines.append(f"Restaurant: {ctx['restaurantName']}")
+    if ctx.get("avgRating") is not None:
+        context_lines.append(f"Average rating: {ctx['avgRating']}")
+    if ctx.get("totalRevenue") is not None:
+        context_lines.append(f"Total revenue (LKR): {ctx['totalRevenue']}")
+    if ctx.get("totalReservations") is not None:
+        context_lines.append(f"Total reservations: {ctx['totalReservations']}")
+    if ctx.get("activeReservations") is not None:
+        context_lines.append(f"Active reservations: {ctx['activeReservations']}")
+    if ctx.get("peakHours"):
+        top = ctx["peakHours"][:3]
+        context_lines.append("Peak hours: " + ", ".join(f"{h['time']} ({h['count']} bookings)" for h in top))
+    if ctx.get("topMenuItems"):
+        top = ctx["topMenuItems"][:5]
+        context_lines.append("Top menu items: " + ", ".join(f"{i['name']} (x{i['count']}, LKR {i['revenue']})" for i in top))
+    if ctx.get("statusBreakdown"):
+        breakdown = ", ".join(f"{s['status']}: {s['count']}" for s in ctx["statusBreakdown"])
+        context_lines.append(f"Reservation status breakdown: {breakdown}")
+
+    context_text = "\n".join(context_lines) if context_lines else "No analytics data available."
+
+    history_lines = [
+        f"{'User' if m.role == 'user' else 'Assistant'}: {m.content}"
+        for m in request.history[-6:]
+    ]
+    history_text = "\n".join(history_lines) if history_lines else ""
+
+    system_prompt = f"""You are an AI business assistant for a restaurant management platform.
+Answer the restaurant owner's questions based on their restaurant data below.
+Be concise, specific, and data-driven. If the data doesn't contain the answer, say so honestly.
+
+Current restaurant data:
+{context_text}"""
+
+    user_content = f"{history_text}\nUser: {request.message}" if history_text else request.message
+
+    llm = ChatVertexAI(
+        model_name=settings.gemini_model,
+        project=settings.vertex_project_id,
+        location=settings.vertex_location,
+        temperature=0.3,
+    )
+
+    response = llm.invoke([
+        SystemMessage(content=system_prompt),
+        LCHumanMessage(content=user_content),
+    ])
+
+    return PortalAIResponse(message=response.content)
 
 
 @app.post("/embed/restaurant/{restaurant_id}")

@@ -27,3 +27,13 @@ class EmbedRequest(BaseModel):
     description: Optional[str] = None
     cuisine_types: list[str] = []
     area: str
+
+
+class PortalAIRequest(BaseModel):
+    message: str
+    history: list[Message] = []
+    context: Optional[dict] = None  # restaurant analytics/stats passed from Express
+
+
+class PortalAIResponse(BaseModel):
+    message: str

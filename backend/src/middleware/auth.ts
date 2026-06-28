@@ -24,6 +24,11 @@ export const authenticate = async (
     return;
   }
 
+  if (!dbUser.isActive) {
+    res.status(403).json({ error: "Account suspended" });
+    return;
+  }
+
   req.user = {
     uid: decoded.uid,
     email: decoded.email!,

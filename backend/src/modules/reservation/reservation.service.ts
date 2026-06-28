@@ -58,12 +58,21 @@ export const createReservation = async (
     include: { restaurant: true },
   });
 
-  // Notification (best-effort)
+  // Notify customer (best-effort)
   createNotification(
     userId,
     "RESERVATION_CONFIRMED",
     "Reservation Confirmed",
     `Your reservation at ${reservation.restaurant.name} on ${input.date} at ${input.time} is confirmed.`,
+    { reservationId: reservation.id, restaurantId: input.restaurantId },
+  ).catch(() => {});
+
+  // Notify restaurant admin (best-effort)
+  createNotification(
+    reservation.restaurant.adminId,
+    "RESERVATION_CONFIRMED",
+    "New Reservation",
+    `New reservation for ${input.partySize} guest(s) on ${input.date} at ${input.time}.`,
     { reservationId: reservation.id, restaurantId: input.restaurantId },
   ).catch(() => {});
 
@@ -108,11 +117,21 @@ export const cancelReservation = async (id: string, userId: string) => {
     include: { restaurant: true },
   });
 
+  // Notify customer
   createNotification(
     reservation.userId,
     "RESERVATION_CANCELLED",
     "Reservation Cancelled",
     `Your reservation at ${reservation.restaurant.name} has been cancelled.`,
+    { reservationId: id },
+  ).catch(() => {});
+
+  // Notify restaurant admin
+  createNotification(
+    reservation.restaurant.adminId,
+    "RESERVATION_CANCELLED",
+    "Reservation Cancelled",
+    `A reservation for ${reservation.date.toISOString().split("T")[0]} at ${reservation.time} has been cancelled by the customer.`,
     { reservationId: id },
   ).catch(() => {});
 

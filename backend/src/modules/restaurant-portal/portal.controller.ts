@@ -135,3 +135,10 @@ export const checkInReservation = async (req: AuthRequest, res: Response): Promi
   const reservation = await portalService.checkInReservation(req.user!.dbId, req.params.id);
   res.json(reservation);
 };
+
+export const askPortalAI = async (req: AuthRequest, res: Response): Promise<void> => {
+  const { message, history } = req.body as { message: string; history?: portalService.PortalAIMessage[] };
+  if (!message) { res.status(400).json({ error: "message is required" }); return; }
+  const reply = await portalService.askPortalAI(req.user!.dbId, message, history ?? []);
+  res.json({ message: reply });
+};

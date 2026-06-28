@@ -448,6 +448,53 @@ export const getPortalAnalytics = async (adminId: string) => {
   };
 };
 
+// ── portal AI assistant ───────────────────────────────────────────────────────
+
+export interface PortalAIMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export const askPortalAI = async (
+  adminId: string,
+  message: string,
+  history: PortalAIMessage[] = [],
+): Promise<string> => {
+  const restaurant = await prisma.restaurant.findFirst({ where: { adminId } });
+  if (!restaurant) throw Object.assign(new Error("Restaurant not found"), { status: 404 });
+
+  // Gather context from existing analytics functions
+  const [stats, analytics] = await Promise.all([
+    getMyStats(adminId),
+    getPortalAnalytics(adminId),
+  ]);
+
+  const context = {
+    restaurantName: restaurant.name,
+    avgRating: restaurant.avgRating,
+    totalRevenue: analytics?.totalRevenue ?? 0,
+    totalReservations: stats?.totalReservations ?? 0,
+    activeReservations: stats?.activeReservations ?? 0,
+    peakHours: analytics?.peakHours ?? [],
+    topMenuItems: analytics?.topMenuItems ?? [],
+    statusBreakdown: analytics?.statusBreakdown ?? [],
+  };
+
+  const AI_SERVICE_URL = process.env.AI_SERVICE_URL ?? "http://localhost:8000";
+  const response = await fetch(`${AI_SERVICE_URL}/portal/message`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, history, context }),
+  });
+
+  if (!response.ok) {
+    throw Object.assign(new Error("AI service unavailable"), { status: 503 });
+  }
+
+  const data = await response.json() as { message: string };
+  return data.message;
+};
+
 // ── menu mutations ────────────────────────────────────────────────────────────
 
 interface MenuItemInput {

@@ -1,4 +1,5 @@
 import { prisma } from "../../../lib/db.js";
+import { createNotification } from "../../../lib/notifications.js";
 import type { z } from "zod";
 import type { CreateReviewSchema, UpdateReviewSchema } from "./review.schema.js";
 
@@ -25,18 +26,36 @@ export const createReview = async (reservationId: string, userId: string, input:
   const existing = await prisma.review.findUnique({ where: { reservationId } });
   if (existing) throw Object.assign(new Error("Review already exists"), { status: 409 });
 
-  const review = await prisma.review.create({
-    data: {
-      userId,
-      restaurantId: reservation.restaurantId,
-      reservationId,
-      rating: input.rating,
-      comment: input.comment ?? null,
-      imageUrls: JSON.stringify(input.imageUrls),
-    },
-  });
+  const [review, restaurant] = await Promise.all([
+    prisma.review.create({
+      data: {
+        userId,
+        restaurantId: reservation.restaurantId,
+        reservationId,
+        rating: input.rating,
+        comment: input.comment ?? null,
+        imageUrls: JSON.stringify(input.imageUrls),
+      },
+    }),
+    prisma.restaurant.findUnique({
+      where: { id: reservation.restaurantId },
+      select: { adminId: true, name: true },
+    }),
+  ]);
 
   await recalcRestaurantRating(reservation.restaurantId);
+
+  // Notify restaurant admin about new review (best-effort)
+  if (restaurant) {
+    createNotification(
+      restaurant.adminId,
+      "REVIEW_RECEIVED",
+      "New Review",
+      `A customer left a ${input.rating}-star review for ${restaurant.name}.`,
+      { reviewId: review.id, restaurantId: reservation.restaurantId },
+    ).catch(() => {});
+  }
+
   return review;
 };
 
