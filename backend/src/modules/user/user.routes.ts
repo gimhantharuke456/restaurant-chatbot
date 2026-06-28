@@ -30,4 +30,10 @@ router.get("/me/insights", userController.getUserInsights);
 router.post("/me/complaints", userController.createComplaint);
 router.get("/me/complaints", userController.getMyComplaints);
 
+router.post("/me/device-token", userController.registerDeviceToken);
+router.delete("/me/device-token", userController.removeDeviceToken);
+
+router.get("/me/loyalty", userController.getLoyalty);
+router.get("/me/loyalty/history", userController.getLoyaltyHistory);
+
 export default router;

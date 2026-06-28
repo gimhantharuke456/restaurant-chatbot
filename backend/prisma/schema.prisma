@@ -30,6 +30,8 @@ model User {
   notifications      Notification[]
   waitlistEntries    Waitlist[]
   complaints         Complaint[]
+  deviceTokens       DeviceToken[]
+  loyaltyAccount     LoyaltyAccount?
 }
 
 enum Role {
@@ -334,4 +336,55 @@ enum ComplaintStatus {
   UNDER_REVIEW
   RESOLVED
   CLOSED
+}
+
+model DeviceToken {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  platform  String   @default("web")
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model LoyaltyAccount {
+  id           String               @id @default(uuid())
+  userId       String               @unique
+  user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  points       Int                  @default(0)
+  tier         LoyaltyTier          @default(BRONZE)
+  totalEarned  Int                  @default(0)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  transactions LoyaltyTransaction[]
+}
+
+model LoyaltyTransaction {
+  id          String         @id @default(uuid())
+  accountId   String
+  account     LoyaltyAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  points      Int
+  type        LoyaltyTxType
+  description String
+  referenceId String?
+  createdAt   DateTime       @default(now())
+
+  @@index([accountId])
+}
+
+enum LoyaltyTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum LoyaltyTxType {
+  EARN_RESERVATION
+  EARN_REVIEW
+  EARN_PAYMENT
+  REDEEM
+  ADJUSTMENT
 }

@@ -100,3 +100,26 @@ export const createComplaint = async (req: AuthRequest, res: Response): Promise<
 export const getMyComplaints = async (req: AuthRequest, res: Response): Promise<void> => {
   res.json(await userService.getMyComplaints(req.user!.dbId));
 };
+
+export const registerDeviceToken = async (req: AuthRequest, res: Response): Promise<void> => {
+  const { token, platform } = req.body as { token: string; platform?: string };
+  if (!token) { res.status(400).json({ error: "token is required" }); return; }
+  await userService.registerDeviceToken(req.user!.dbId, token, platform ?? "web");
+  res.json({ success: true });
+};
+
+export const removeDeviceToken = async (req: AuthRequest, res: Response): Promise<void> => {
+  const { token } = req.body as { token: string };
+  if (!token) { res.status(400).json({ error: "token is required" }); return; }
+  await userService.removeDeviceToken(token);
+  res.json({ success: true });
+};
+
+export const getLoyalty = async (req: AuthRequest, res: Response): Promise<void> => {
+  res.json(await userService.getLoyalty(req.user!.dbId));
+};
+
+export const getLoyaltyHistory = async (req: AuthRequest, res: Response): Promise<void> => {
+  const limit = req.query.limit ? Number(req.query.limit) : 20;
+  res.json(await userService.getLoyaltyHistory(req.user!.dbId, limit));
+};

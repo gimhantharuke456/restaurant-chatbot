@@ -2,6 +2,7 @@ import { prisma } from "../../../lib/db.js";
 import { adminFirestore } from "../../config/firebase.js";
 import { sendEmail } from "../../config/nodemailer.js";
 import { createNotification } from "../../../lib/notifications.js";
+import { awardLoyaltyPoints } from "../user/user.service.js";
 import type { z } from "zod";
 import type {
   CreateReservationBodySchema,
@@ -45,6 +46,17 @@ export const createReservation = async (
   userId: string,
   userEmail: string,
 ) => {
+  const restaurant = await prisma.restaurant.findUnique({ where: { id: input.restaurantId } });
+  if (!restaurant || !restaurant.isActive) {
+    throw Object.assign(new Error("Restaurant not found or inactive"), { status: 404 });
+  }
+  if (restaurant.totalSeats && input.partySize > restaurant.totalSeats) {
+    throw Object.assign(
+      new Error(`Party size exceeds restaurant capacity of ${restaurant.totalSeats}`),
+      { status: 400 },
+    );
+  }
+
   const reservation = await prisma.reservation.create({
     data: {
       userId,
@@ -75,6 +87,9 @@ export const createReservation = async (
     `New reservation for ${input.partySize} guest(s) on ${input.date} at ${input.time}.`,
     { reservationId: reservation.id, restaurantId: input.restaurantId },
   ).catch(() => {});
+
+  // Award loyalty points (best-effort)
+  awardLoyaltyPoints(userId, 100, "EARN_RESERVATION", `Reservation at ${reservation.restaurant.name}`, reservation.id).catch(() => {});
 
   // Firestore sync (best-effort)
   adminFirestore

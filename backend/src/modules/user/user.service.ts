@@ -197,3 +197,60 @@ export const getMyComplaints = async (userId: string) => {
     include: { restaurant: { select: { name: true } } },
   });
 };
+
+export const registerDeviceToken = async (userId: string, token: string, platform: string) => {
+  await prisma.deviceToken.upsert({
+    where: { token },
+    create: { userId, token, platform },
+    update: { userId, platform },
+  });
+};
+
+export const removeDeviceToken = async (token: string) => {
+  await prisma.deviceToken.deleteMany({ where: { token } });
+};
+
+const TIER_THRESHOLDS = { BRONZE: 0, SILVER: 500, GOLD: 2000, PLATINUM: 5000 } as const;
+const getTier = (points: number): "BRONZE" | "SILVER" | "GOLD" | "PLATINUM" =>
+  points >= 5000 ? "PLATINUM" : points >= 2000 ? "GOLD" : points >= 500 ? "SILVER" : "BRONZE";
+
+export const awardLoyaltyPoints = async (
+  userId: string,
+  points: number,
+  type: "EARN_RESERVATION" | "EARN_REVIEW" | "EARN_PAYMENT" | "ADJUSTMENT",
+  description: string,
+  referenceId?: string,
+) => {
+  const account = await prisma.loyaltyAccount.upsert({
+    where: { userId },
+    create: { userId, points, totalEarned: points, tier: getTier(points) },
+    update: {
+      points: { increment: points },
+      totalEarned: { increment: points },
+    },
+  });
+  const newPoints = account.points;
+  const newTier = getTier(newPoints);
+  if (newTier !== account.tier) {
+    await prisma.loyaltyAccount.update({ where: { userId }, data: { tier: newTier } });
+  }
+  await prisma.loyaltyTransaction.create({
+    data: { accountId: account.id, points, type, description, referenceId: referenceId ?? null },
+  });
+};
+
+export const getLoyalty = async (userId: string) => {
+  const account = await prisma.loyaltyAccount.findUnique({ where: { userId } });
+  if (!account) return { points: 0, tier: "BRONZE", totalEarned: 0 };
+  return account;
+};
+
+export const getLoyaltyHistory = async (userId: string, limit: number) => {
+  const account = await prisma.loyaltyAccount.findUnique({ where: { userId }, select: { id: true } });
+  if (!account) return [];
+  return prisma.loyaltyTransaction.findMany({
+    where: { accountId: account.id },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+  });
+};
