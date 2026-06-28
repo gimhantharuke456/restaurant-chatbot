@@ -25,36 +25,36 @@ export function UserProfileCard({ user }: UserProfileCardProps) {
             <h2 className="text-lg font-semibold">
               {user.name ?? "(no name)"}
             </h2>
-            <p className="text-sm text-slate-500">{user.email}</p>
+            <p className="text-sm text-muted-foreground">{user.email}</p>
           </div>
         </div>
 
         <div className="grid gap-3 text-sm md:grid-cols-2">
           <div>
-            <span className="font-medium text-slate-500">Role:</span>{" "}
+            <span className="font-medium text-muted-foreground">Role:</span>{" "}
             <Badge variant="secondary">{user.role.replace("_", " ")}</Badge>
           </div>
           {user.phone && (
             <div>
-              <span className="font-medium text-slate-500">Phone:</span>{" "}
+              <span className="font-medium text-muted-foreground">Phone:</span>{" "}
               {user.phone}
             </div>
           )}
           <div>
-            <span className="font-medium text-slate-500">Joined:</span>{" "}
+            <span className="font-medium text-muted-foreground">Joined:</span>{" "}
             {new Date(user.createdAt).toLocaleDateString("en-LK")}
           </div>
           <div>
-            <span className="font-medium text-slate-500">Reservations:</span>{" "}
+            <span className="font-medium text-muted-foreground">Reservations:</span>{" "}
             {user._count.reservations}
           </div>
           <div>
-            <span className="font-medium text-slate-500">Reviews:</span>{" "}
+            <span className="font-medium text-muted-foreground">Reviews:</span>{" "}
             {user._count.reviews}
           </div>
           {user.role === "RESTAURANT_ADMIN" && (
             <div>
-              <span className="font-medium text-slate-500">Managed restaurants:</span>{" "}
+              <span className="font-medium text-muted-foreground">Managed restaurants:</span>{" "}
               {user._count.managedRestaurants}
             </div>
           )}

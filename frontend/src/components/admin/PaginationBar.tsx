@@ -26,7 +26,7 @@ export function PaginationBar({ page, total, limit }: PaginationBarProps) {
 
   return (
     <div className="flex items-center justify-between px-2 py-4">
-      <p className="text-sm text-slate-500">
+      <p className="text-sm text-muted-foreground">
         Page {page} of {totalPages} &mdash; {total} total
       </p>
       <div className="flex gap-2">

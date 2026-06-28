@@ -22,11 +22,15 @@ class Settings(BaseSettings):
     gemini_embedding_model: str = "text-embedding-004"
     use_fake_embeddings: bool = False
 
+    # Backend API (Node/Express service)
+    backend_url: str = "http://localhost:3000"
+
     # Firebase / Firestore
     firebase_project_id: str = "your-firebase-project-id"
     firebase_private_key: str = ""
     firebase_client_email: str = ""
     firestore_project_id: str = "your-firebase-project-id"
+    firebase_credentials_file: str = ""  # path to Firebase Admin SDK JSON key; falls back to google_application_credentials
 
     class Config:
         env_file = ".env"

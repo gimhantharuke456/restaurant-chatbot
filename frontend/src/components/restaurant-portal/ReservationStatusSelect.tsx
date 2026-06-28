@@ -31,7 +31,7 @@ export function ReservationStatusSelect({
       defaultValue={currentStatus}
       onChange={handleChange}
       disabled={loading}
-      className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium disabled:opacity-50"
+      className="rounded-md border border-border bg-card px-2 py-1 text-xs font-medium disabled:opacity-50"
     >
       {STATUSES.map((s) => (
         <option key={s} value={s}>{s}</option>

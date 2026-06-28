@@ -146,3 +146,5 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
 }
+
+@layer utilities { .scrollbar-hide { scrollbar-width: none; } .scrollbar-hide::-webkit-scrollbar { display: none; } }

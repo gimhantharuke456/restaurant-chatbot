@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Building2, CalendarDays, UtensilsCrossed } from "lucide-react";
+import { LayoutDashboard, Building2, CalendarDays, UtensilsCrossed, CreditCard, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/restaurant", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/restaurant/reservations", label: "Reservations", icon: CalendarDays },
+  { href: "/restaurant/payments", label: "Payments", icon: CreditCard },
+  { href: "/restaurant/reviews", label: "Reviews", icon: Star },
   { href: "/restaurant/menu", label: "Menu", icon: UtensilsCrossed },
   { href: "/restaurant/profile", label: "My Restaurant", icon: Building2 },
 ];

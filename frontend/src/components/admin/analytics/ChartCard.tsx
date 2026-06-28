@@ -13,7 +13,7 @@ export function ChartCard({ title, description, children }: ChartCardProps) {
       <CardHeader className="pb-2">
         <CardTitle className="text-base font-semibold">{title}</CardTitle>
         {description && (
-          <p className="text-xs text-slate-400">{description}</p>
+          <p className="text-xs text-muted-foreground">{description}</p>
         )}
       </CardHeader>
       <CardContent>{children}</CardContent>

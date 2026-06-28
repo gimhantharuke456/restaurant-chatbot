@@ -42,7 +42,7 @@ export function ReservationStatusButton({
 
   if (allowed.length === 0) {
     return (
-      <span className="text-sm font-medium text-slate-600">
+      <span className="text-sm font-medium text-muted-foreground">
         {LABELS[status]}
       </span>
     );

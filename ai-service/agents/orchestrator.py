@@ -1,9 +1,12 @@
 import json
 from langchain_google_vertexai import ChatVertexAI
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
 from config.settings import settings
 from knowledge.prompts import ORCHESTRATOR_SYSTEM_PROMPT
+
+_BOOKING_MARKER = "Booking ref:"
+_PAYMENT_LINK_MARKER = "Payment link:"
 
 llm = ChatVertexAI(
     model_name=settings.gemini_model,
@@ -45,6 +48,16 @@ def orchestrate(state: dict) -> dict:
     except (json.JSONDecodeError, AttributeError):
         intent = "GENERAL"
         final_response = response.content
+
+    # After a booking is confirmed, force payment/ordering flow until the
+    # payment link is sent — regardless of what the user typed.
+    ai_messages = [m for m in messages if isinstance(m, AIMessage)]
+    booking_confirmed = any(_BOOKING_MARKER in m.content for m in ai_messages)
+    payment_sent = any(_PAYMENT_LINK_MARKER in m.content for m in ai_messages)
+
+    if booking_confirmed and not payment_sent:
+        intent = "PAYMENT"
+        final_response = ""  # payment agent generates the response
 
     return {
         **state,

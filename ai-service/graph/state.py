@@ -26,3 +26,6 @@ class AgentState(TypedDict):
 
     # Error propagation
     error: Optional[str]
+
+    # Auth token forwarded from the HTTP request — used to call the backend API
+    auth_token: Optional[str]

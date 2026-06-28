@@ -52,7 +52,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label className="text-sm font-medium">Maintenance Mode</Label>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-muted-foreground">
                 Blocks all non-admin traffic
               </p>
             </div>
@@ -67,7 +67,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label className="text-sm font-medium">User Registration</Label>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-muted-foreground">
                 Allow new users to sign up
               </p>
             </div>
@@ -122,7 +122,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
               }
               className="w-80"
             />
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-muted-foreground">
               Used as Stripe webhook endpoint. Check ngrok dashboard at
               localhost:4040.
             </p>

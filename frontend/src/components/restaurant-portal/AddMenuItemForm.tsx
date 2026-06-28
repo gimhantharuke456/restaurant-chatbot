@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ImageUploader } from "./ImageUploader";
 
 export function AddMenuItemForm() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -26,6 +28,7 @@ export function AddMenuItemForm() {
         .map((s) => s.trim())
         .filter(Boolean),
       isAvailable: true,
+      imageUrl: imageUrl ?? null,
     };
 
     setLoading(true);
@@ -41,18 +44,17 @@ export function AddMenuItemForm() {
       return;
     }
     setOpen(false);
+    setImageUrl(null);
     router.refresh();
   };
 
   if (!open) {
-    return (
-      <Button onClick={() => setOpen(true)}>+ Add Menu Item</Button>
-    );
+    return <Button onClick={() => setOpen(true)}>+ Add Menu Item</Button>;
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-lg border bg-white p-6 space-y-4 max-w-lg">
-      <h3 className="font-semibold text-slate-800">New Menu Item</h3>
+    <form onSubmit={handleSubmit} className="rounded-lg border bg-card p-6 space-y-4 max-w-lg">
+      <h3 className="font-semibold text-foreground">New Menu Item</h3>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1 col-span-2">
@@ -75,13 +77,22 @@ export function AddMenuItemForm() {
           <Label htmlFor="dietaryInfo">Dietary Info (comma-separated)</Label>
           <Input id="dietaryInfo" name="dietaryInfo" placeholder="Vegetarian, Halal" />
         </div>
+        <div className="space-y-1 col-span-2">
+          <Label>Item Photo</Label>
+          <ImageUploader
+            endpoint="menuItemImage"
+            value={imageUrl}
+            onChange={setImageUrl}
+            label="Upload item photo"
+          />
+        </div>
       </div>
 
       {error && <p className="text-sm text-destructive">{error}</p>}
 
       <div className="flex gap-2">
         <Button type="submit" disabled={loading}>{loading ? "Adding…" : "Add Item"}</Button>
-        <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+        <Button type="button" variant="outline" onClick={() => { setOpen(false); setImageUrl(null); }}>Cancel</Button>
       </div>
     </form>
   );

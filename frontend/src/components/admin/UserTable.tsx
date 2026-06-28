@@ -30,17 +30,17 @@ const ROLE_BADGE: Record<
 export function UserTable({ users }: UserTableProps) {
   if (users.length === 0) {
     return (
-      <div className="rounded-lg border bg-white py-16 text-center text-slate-400">
+      <div className="rounded-lg border bg-card py-16 text-center text-muted-foreground">
         No users found
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border bg-white">
+    <div className="overflow-hidden rounded-lg border bg-card">
       <Table>
         <TableHeader>
-          <TableRow className="bg-slate-50">
+          <TableRow className="bg-muted/50">
             <TableHead>User</TableHead>
             <TableHead>Current Role</TableHead>
             <TableHead>Reservations</TableHead>
@@ -65,7 +65,7 @@ export function UserTable({ users }: UserTableProps) {
                     <div className="text-sm font-medium">
                       {user.name ?? "(no name)"}
                     </div>
-                    <div className="text-xs text-slate-400">{user.email}</div>
+                    <div className="text-xs text-muted-foreground">{user.email}</div>
                   </div>
                 </div>
               </TableCell>
@@ -78,7 +78,7 @@ export function UserTable({ users }: UserTableProps) {
                 {user._count.reservations}
               </TableCell>
               <TableCell className="text-sm">{user._count.reviews}</TableCell>
-              <TableCell className="text-sm text-slate-400">
+              <TableCell className="text-sm text-muted-foreground">
                 {new Date(user.createdAt).toLocaleDateString("en-LK")}
               </TableCell>
               <TableCell>

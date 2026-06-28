@@ -29,15 +29,15 @@ export function UserReservationHistory({
 }: UserReservationHistoryProps) {
   if (reservations.length === 0) {
     return (
-      <p className="py-8 text-center text-slate-400">No reservations yet</p>
+      <p className="py-8 text-center text-muted-foreground">No reservations yet</p>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border bg-white">
+    <div className="overflow-hidden rounded-lg border bg-card">
       <Table>
         <TableHeader>
-          <TableRow className="bg-slate-50">
+          <TableRow className="bg-muted/50">
             <TableHead>Restaurant</TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Time</TableHead>

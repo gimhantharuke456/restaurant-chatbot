@@ -33,12 +33,13 @@ interface RecentReservation {
 }
 
 export default async function AdminDashboardPage() {
-  const [stats, recentRes] = await Promise.all([
+  const [stats, recentResPage] = await Promise.all([
     serverFetch<AdminStats>("admin/stats"),
-    serverFetch<RecentReservation[]>("admin/reservations?limit=5&sort=recent").catch(
-      () => []
+    serverFetch<{ data: RecentReservation[] }>("admin/reservations?limit=5&sort=recent").catch(
+      () => ({ data: [] })
     ),
   ]);
+  const recentRes: RecentReservation[] = recentResPage.data ?? [];
 
   return (
     <div>

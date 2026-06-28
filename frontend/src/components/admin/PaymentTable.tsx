@@ -29,17 +29,17 @@ const STATUS_VARIANT: Record<
 export function PaymentTable({ payments }: PaymentTableProps) {
   if (payments.length === 0) {
     return (
-      <div className="rounded-lg border bg-white py-16 text-center text-slate-400">
+      <div className="rounded-lg border bg-card py-16 text-center text-muted-foreground">
         No payments found
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border bg-white">
+    <div className="overflow-hidden rounded-lg border bg-card">
       <Table>
         <TableHeader>
-          <TableRow className="bg-slate-50">
+          <TableRow className="bg-muted/50">
             <TableHead>User</TableHead>
             <TableHead>Restaurant</TableHead>
             <TableHead>Reservation</TableHead>
@@ -57,12 +57,12 @@ export function PaymentTable({ payments }: PaymentTableProps) {
                 <div className="text-sm font-medium">
                   {p.user.name ?? p.user.email}
                 </div>
-                <div className="text-xs text-slate-400">{p.user.email}</div>
+                <div className="text-xs text-muted-foreground">{p.user.email}</div>
               </TableCell>
               <TableCell className="text-sm">
                 {p.reservation.restaurant.name}
               </TableCell>
-              <TableCell className="text-sm text-slate-500">
+              <TableCell className="text-sm text-muted-foreground">
                 {new Date(p.reservation.date).toLocaleDateString("en-LK")}{" "}
                 {p.reservation.time}
               </TableCell>
@@ -76,14 +76,14 @@ export function PaymentTable({ payments }: PaymentTableProps) {
               </TableCell>
               <TableCell>
                 {p.stripePaymentId ? (
-                  <code className="rounded bg-slate-100 px-1 text-xs">
+                  <code className="rounded bg-muted px-1 text-xs">
                     {p.stripePaymentId.slice(0, 14)}…
                   </code>
                 ) : (
-                  <span className="text-slate-400">—</span>
+                  <span className="text-muted-foreground">—</span>
                 )}
               </TableCell>
-              <TableCell className="text-sm text-slate-400">
+              <TableCell className="text-sm text-muted-foreground">
                 {new Date(p.createdAt).toLocaleDateString("en-LK")}
               </TableCell>
               <TableCell className="text-right">

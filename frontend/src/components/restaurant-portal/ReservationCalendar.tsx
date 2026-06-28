@@ -6,6 +6,12 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
+interface OrderItem {
+  name: string;
+  price: number;
+  quantity: number;
+}
+
 interface Reservation {
   id: string;
   date: string;
@@ -14,12 +20,13 @@ interface Reservation {
   specialRequests: string | null;
   status: string;
   user: { name: string | null; email: string; phone: string | null };
+  payment: { orderItems: OrderItem[] | null; amount: number; status: string } | null;
 }
 
 const STATUS_COLORS: Record<string, string> = {
   PENDING: "bg-yellow-400",
   CONFIRMED: "bg-green-500",
-  COMPLETED: "bg-slate-400",
+  COMPLETED: "bg-muted-foreground",
   CANCELLED: "bg-red-400",
   NO_SHOW: "bg-red-600",
 };
@@ -108,24 +115,24 @@ export function ReservationCalendar() {
   return (
     <div className="flex gap-6">
       {/* Calendar */}
-      <div className="flex-1 rounded-xl border bg-white shadow-sm overflow-hidden">
+      <div className="flex-1 rounded-xl border bg-card shadow-sm overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b">
-          <button onClick={prevMonth} className="p-1 rounded hover:bg-slate-100">
-            <ChevronLeft className="h-5 w-5 text-slate-600" />
+          <button onClick={prevMonth} className="p-1 rounded hover:bg-muted">
+            <ChevronLeft className="h-5 w-5 text-muted-foreground" />
           </button>
-          <h2 className="text-lg font-semibold text-slate-800">
+          <h2 className="text-lg font-semibold text-foreground">
             {MONTHS[month]} {year}
           </h2>
-          <button onClick={nextMonth} className="p-1 rounded hover:bg-slate-100">
-            <ChevronRight className="h-5 w-5 text-slate-600" />
+          <button onClick={nextMonth} className="p-1 rounded hover:bg-muted">
+            <ChevronRight className="h-5 w-5 text-muted-foreground" />
           </button>
         </div>
 
         {/* Day labels */}
         <div className="grid grid-cols-7 border-b">
           {DAYS.map((d) => (
-            <div key={d} className="py-2 text-center text-xs font-medium text-slate-500">
+            <div key={d} className="py-2 text-center text-xs font-medium text-muted-foreground">
               {d}
             </div>
           ))}
@@ -133,13 +140,13 @@ export function ReservationCalendar() {
 
         {/* Grid */}
         {loading ? (
-          <div className="flex items-center justify-center h-64 text-slate-400 text-sm">
+          <div className="flex items-center justify-center h-64 text-muted-foreground text-sm">
             Loading…
           </div>
         ) : (
           <div className="grid grid-cols-7">
             {cells.map((day, i) => {
-              if (!day) return <div key={i} className="border-b border-r min-h-[90px] bg-slate-50/50" />;
+              if (!day) return <div key={i} className="border-b border-r min-h-[90px] bg-muted/30" />;
 
               const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
               const dayRes = byDate[dateStr] ?? [];
@@ -153,11 +160,11 @@ export function ReservationCalendar() {
                   className={`border-b border-r min-h-[90px] p-2 cursor-pointer transition-colors ${
                     isSelected
                       ? "bg-blue-50 ring-2 ring-inset ring-blue-400"
-                      : "hover:bg-slate-50"
+                      : "hover:bg-muted/50"
                   }`}
                 >
                   <div className={`text-sm font-medium mb-1 w-7 h-7 flex items-center justify-center rounded-full ${
-                    isToday ? "bg-blue-600 text-white" : "text-slate-700"
+                    isToday ? "bg-blue-600 text-white" : "text-foreground"
                   }`}>
                     {day}
                   </div>
@@ -167,13 +174,13 @@ export function ReservationCalendar() {
                       {dayRes.slice(0, 3).map((r) => (
                         <div
                           key={r.id}
-                          className={`text-xs text-white rounded px-1 py-0.5 truncate ${STATUS_COLORS[r.status] ?? "bg-slate-400"}`}
+                          className={`text-xs text-white rounded px-1 py-0.5 truncate ${STATUS_COLORS[r.status] ?? "bg-muted-foreground"}`}
                         >
                           {r.time} · {r.user.name ?? r.user.email.split("@")[0]}
                         </div>
                       ))}
                       {dayRes.length > 3 && (
-                        <div className="text-xs text-slate-500 pl-1">+{dayRes.length - 3} more</div>
+                        <div className="text-xs text-muted-foreground pl-1">+{dayRes.length - 3} more</div>
                       )}
                     </div>
                   )}
@@ -184,7 +191,7 @@ export function ReservationCalendar() {
         )}
 
         {/* Legend */}
-        <div className="flex flex-wrap gap-3 px-6 py-3 border-t bg-slate-50 text-xs text-slate-600">
+        <div className="flex flex-wrap gap-3 px-6 py-3 border-t bg-muted/50 text-xs text-muted-foreground">
           {Object.entries(STATUS_COLORS).map(([s, cls]) => (
             <div key={s} className="flex items-center gap-1.5">
               <span className={`inline-block w-2.5 h-2.5 rounded-sm ${cls}`} />
@@ -196,20 +203,20 @@ export function ReservationCalendar() {
 
       {/* Side panel */}
       {selectedDate && (
-        <div className="w-80 rounded-xl border bg-white shadow-sm flex flex-col overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b bg-slate-50">
-            <span className="font-semibold text-slate-800 text-sm">
+        <div className="w-80 rounded-xl border bg-card shadow-sm flex flex-col overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b bg-muted/50">
+            <span className="font-semibold text-foreground text-sm">
               {new Date(selectedDate + "T00:00:00").toLocaleDateString(undefined, {
                 weekday: "long", month: "long", day: "numeric",
               })}
             </span>
-            <button onClick={() => setSelectedDate(null)} className="p-1 rounded hover:bg-slate-200">
-              <X className="h-4 w-4 text-slate-500" />
+            <button onClick={() => setSelectedDate(null)} className="p-1 rounded hover:bg-muted">
+              <X className="h-4 w-4 text-muted-foreground" />
             </button>
           </div>
 
           {selectedReservations.length === 0 ? (
-            <div className="flex-1 flex items-center justify-center text-slate-400 text-sm">
+            <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
               No reservations
             </div>
           ) : (
@@ -220,30 +227,46 @@ export function ReservationCalendar() {
                   <div key={r.id} className="p-4 space-y-2">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <div className="font-medium text-sm text-slate-800">
+                        <div className="font-medium text-sm text-foreground">
                           {r.user.name ?? r.user.email}
                         </div>
-                        <div className="text-xs text-slate-400">{r.user.phone ?? r.user.email}</div>
+                        <div className="text-xs text-muted-foreground">{r.user.phone ?? r.user.email}</div>
                       </div>
                       <Badge variant={STATUS_VARIANT[r.status] ?? "secondary"} className="text-xs shrink-0">
                         {r.status}
                       </Badge>
                     </div>
 
-                    <div className="text-xs text-slate-600 flex gap-3">
+                    <div className="text-xs text-muted-foreground flex gap-3">
                       <span>🕐 {r.time}</span>
                       <span>👥 {r.partySize} guests</span>
                     </div>
 
                     {r.specialRequests && (
-                      <div className="text-xs text-slate-500 italic">"{r.specialRequests}"</div>
+                      <div className="text-xs text-muted-foreground italic">"{r.specialRequests}"</div>
+                    )}
+
+                    {r.payment?.orderItems && r.payment.orderItems.length > 0 && (
+                      <div className="rounded-md border border-border bg-muted/30 p-2 space-y-1">
+                        <div className="text-xs font-medium text-foreground">Pre-Order</div>
+                        {r.payment.orderItems.map((item, i) => (
+                          <div key={i} className="flex justify-between text-xs text-muted-foreground">
+                            <span><span className="text-foreground">{item.quantity}×</span> {item.name}</span>
+                            <span>LKR {(item.price * item.quantity).toLocaleString()}</span>
+                          </div>
+                        ))}
+                        <div className="flex justify-between text-xs font-medium text-foreground border-t border-border pt-1 mt-1">
+                          <span>Total</span>
+                          <span>LKR {r.payment.amount.toLocaleString()}</span>
+                        </div>
+                      </div>
                     )}
 
                     <select
                       defaultValue={r.status}
                       disabled={updatingId === r.id}
                       onChange={(e) => updateStatus(r.id, e.target.value)}
-                      className="w-full rounded-md border border-slate-200 bg-white px-2 py-1.5 text-xs font-medium disabled:opacity-50"
+                      className="w-full rounded-md border border-border bg-card px-2 py-1.5 text-xs font-medium disabled:opacity-50"
                     >
                       {["PENDING","CONFIRMED","COMPLETED","CANCELLED","NO_SHOW"].map((s) => (
                         <option key={s} value={s}>{s}</option>
@@ -254,7 +277,7 @@ export function ReservationCalendar() {
             </div>
           )}
 
-          <div className="px-4 py-3 border-t bg-slate-50 text-xs text-slate-500">
+          <div className="px-4 py-3 border-t bg-muted/50 text-xs text-muted-foreground">
             {selectedReservations.length} reservation{selectedReservations.length !== 1 ? "s" : ""}
             {" · "}
             {selectedReservations.reduce((n, r) => n + r.partySize, 0)} total guests

@@ -1,5 +1,7 @@
 import { serverFetch } from "@/lib/server/api";
 import { Badge } from "@/components/ui/badge";
+import { RestaurantImageManager } from "@/components/restaurant-portal/RestaurantImageManager";
+import { Building2 } from "lucide-react";
 
 interface MyRestaurant {
   id: string;
@@ -11,6 +13,7 @@ interface MyRestaurant {
   email: string | null;
   website: string | null;
   cuisineTypes: string[];
+  imageUrls: string[];   // backend already parses this to an array
   priceRange: string;
   isActive: boolean;
   isVerified: boolean;
@@ -21,22 +24,58 @@ interface MyRestaurant {
 function Field({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
-      <dt className="text-sm font-medium text-slate-500">{label}</dt>
-      <dd className="mt-1 text-sm text-slate-900 sm:col-span-2 sm:mt-0">{value}</dd>
+      <dt className="text-sm font-medium text-muted-foreground">{label}</dt>
+      <dd className="mt-1 text-sm text-foreground sm:col-span-2 sm:mt-0">{value}</dd>
     </div>
   );
 }
 
 export default async function PortalProfilePage() {
-  const r = await serverFetch<MyRestaurant>("restaurant-portal/restaurant");
+  let r: MyRestaurant | null = null;
+  try {
+    r = await serverFetch<MyRestaurant>("restaurant-portal/restaurant");
+  } catch {
+    // no restaurant associated yet
+  }
+
+  if (!r) {
+    return (
+      <div className="p-8">
+        <h1 className="text-2xl font-semibold text-foreground mb-8">My Restaurant</h1>
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-card/50 py-20 text-center gap-4">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+            <Building2 className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <div>
+            <p className="font-semibold text-foreground">No restaurant linked</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Your account hasn't been assigned to a restaurant yet.
+              <br />Contact the platform admin to get set up.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8 space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">My Restaurant</h1>
+        <h1 className="text-2xl font-semibold text-foreground">My Restaurant</h1>
+        <p className="text-sm text-muted-foreground mt-1">{r.name}</p>
       </div>
 
-      <div className="overflow-hidden rounded-lg border bg-white">
+      {/* Photos */}
+      <div className="rounded-lg border bg-card p-6 space-y-3">
+        <h2 className="text-sm font-semibold text-foreground">Restaurant Photos</h2>
+        <p className="text-xs text-muted-foreground">
+          These images are shown to customers browsing your restaurant.
+        </p>
+        <RestaurantImageManager initialImages={Array.isArray(r.imageUrls) ? r.imageUrls : []} />
+      </div>
+
+      {/* Details */}
+      <div className="overflow-hidden rounded-lg border bg-card">
         <dl className="divide-y px-6">
           <Field label="Name" value={r.name} />
           <Field label="Description" value={r.description ?? "—"} />

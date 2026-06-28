@@ -11,7 +11,7 @@ export default async function CustomerLayout({
   return (
     <div className="flex h-screen flex-col">
       <CustomerNav email={user.email} name={user.name} />
-      <main className="flex-1 overflow-hidden">{children}</main>
+      <main className="flex-1 overflow-y-auto">{children}</main>
     </div>
   );
 }

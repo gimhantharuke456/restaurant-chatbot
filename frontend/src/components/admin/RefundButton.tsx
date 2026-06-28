@@ -34,7 +34,7 @@ export function RefundButton({
 
   if (status !== "SUCCEEDED") {
     return (
-      <span className="text-xs text-slate-400">
+      <span className="text-xs text-muted-foreground">
         {status === "REFUNDED" ? "Refunded" : "—"}
       </span>
     );

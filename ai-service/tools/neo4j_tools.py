@@ -2,27 +2,30 @@ from config.neo4j import get_session
 
 
 def get_user_preferences(user_id: str) -> dict:
-    with get_session() as session:
-        pref_result = session.run(
-            """
-            MATCH (u:User {id: $user_id})-[r:PREFERS]->(c:Cuisine)
-            RETURN c.name AS cuisine, r.weight AS weight
-            ORDER BY r.weight DESC LIMIT 5
-            """,
-            user_id=user_id,
-        )
-        preferences = [{"cuisine": r["cuisine"], "weight": r["weight"]} for r in pref_result]
+    try:
+        with get_session() as session:
+            pref_result = session.run(
+                """
+                MATCH (u:User {id: $user_id})-[r:PREFERS]->(c:Cuisine)
+                RETURN c.name AS cuisine, r.weight AS weight
+                ORDER BY r.weight DESC LIMIT 5
+                """,
+                user_id=user_id,
+            )
+            preferences = [{"cuisine": r["cuisine"], "weight": r["weight"]} for r in pref_result]
 
-        visited_result = session.run(
-            """
-            MATCH (u:User {id: $user_id})-[:VISITED]->(res:Restaurant)
-            RETURN res.id AS id, res.name AS name LIMIT 10
-            """,
-            user_id=user_id,
-        )
-        visited = [{"id": r["id"], "name": r["name"]} for r in visited_result]
+            visited_result = session.run(
+                """
+                MATCH (u:User {id: $user_id})-[:VISITED]->(res:Restaurant)
+                RETURN res.id AS id, res.name AS name LIMIT 10
+                """,
+                user_id=user_id,
+            )
+            visited = [{"id": r["id"], "name": r["name"]} for r in visited_result]
 
-    return {"preferences": preferences, "visited": visited}
+        return {"preferences": preferences, "visited": visited}
+    except Exception:
+        return {"preferences": [], "visited": []}
 
 
 def update_user_preference(user_id: str, cuisine: str, weight_delta: float = 0.1) -> None:

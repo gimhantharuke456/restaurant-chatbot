@@ -27,7 +27,7 @@ export function ChatWindow() {
   }, [messages, loading]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       <div className="flex-1 overflow-y-auto px-4 py-6">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-6 text-center max-w-md mx-auto">

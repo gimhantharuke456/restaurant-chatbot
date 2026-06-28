@@ -6,9 +6,11 @@ export const sendMessage = async (
   req: AuthRequest,
   res: Response,
 ): Promise<void> => {
+  const authToken = req.headers.authorization?.split("Bearer ")[1];
   const result = await chatService.sendMessage(
     req.body as chatService.SendMessageInput,
     req.user!.dbId,
+    authToken,
   );
   res.json(result);
 };

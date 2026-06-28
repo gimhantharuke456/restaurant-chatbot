@@ -20,17 +20,17 @@ interface VerificationTableProps {
 export function VerificationTable({ restaurants }: VerificationTableProps) {
   if (restaurants.length === 0) {
     return (
-      <div className="rounded-lg border bg-white py-16 text-center text-slate-400">
+      <div className="rounded-lg border bg-card py-16 text-center text-muted-foreground">
         No restaurants pending verification
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border bg-white">
+    <div className="overflow-hidden rounded-lg border bg-card">
       <Table>
         <TableHeader>
-          <TableRow className="bg-slate-50">
+          <TableRow className="bg-muted/50">
             <TableHead>Name</TableHead>
             <TableHead>Area</TableHead>
             <TableHead>Admin</TableHead>
@@ -44,7 +44,7 @@ export function VerificationTable({ restaurants }: VerificationTableProps) {
             <TableRow key={r.id}>
               <TableCell>
                 <div className="font-medium">{r.name}</div>
-                <div className="text-xs text-slate-400">{r.createdAt.slice(0, 10)}</div>
+                <div className="text-xs text-muted-foreground">{r.createdAt.slice(0, 10)}</div>
               </TableCell>
               <TableCell className="text-sm">{r.area}</TableCell>
               <TableCell className="text-sm">{r.admin.email}</TableCell>

@@ -12,9 +12,9 @@ interface PortalStats {
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-xl border bg-white p-6 shadow-sm">
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className="mt-1 text-3xl font-semibold text-slate-900">{value}</p>
+    <div className="rounded-xl border bg-card p-6 shadow-sm">
+      <p className="text-sm text-muted-foreground">{label}</p>
+      <p className="mt-1 text-3xl font-semibold text-foreground">{value}</p>
     </div>
   );
 }
@@ -25,8 +25,8 @@ export default async function RestaurantDashboard() {
   return (
     <div className="p-8 space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">{stats.restaurantName}</h1>
-        <p className="text-sm text-slate-500 mt-1">Restaurant dashboard</p>
+        <h1 className="text-2xl font-semibold text-foreground">{stats.restaurantName}</h1>
+        <p className="text-sm text-muted-foreground mt-1">Restaurant dashboard</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

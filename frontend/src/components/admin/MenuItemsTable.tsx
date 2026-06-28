@@ -16,15 +16,15 @@ interface MenuItemsTableProps {
 export function MenuItemsTable({ items }: MenuItemsTableProps) {
   if (items.length === 0) {
     return (
-      <p className="py-8 text-center text-slate-400">No menu items</p>
+      <p className="py-8 text-center text-muted-foreground">No menu items</p>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border bg-white">
+    <div className="overflow-hidden rounded-lg border bg-card">
       <Table>
         <TableHeader>
-          <TableRow className="bg-slate-50">
+          <TableRow className="bg-muted/50">
             <TableHead>Item</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Price</TableHead>
@@ -36,9 +36,9 @@ export function MenuItemsTable({ items }: MenuItemsTableProps) {
           {items.map((item) => (
             <TableRow key={item.id}>
               <TableCell>
-                <div className="font-medium">{item.name}</div>
+                <div className="font-medium text-foreground">{item.name}</div>
                 {item.description && (
-                  <div className="max-w-xs truncate text-xs text-slate-400">
+                  <div className="max-w-xs truncate text-xs text-muted-foreground">
                     {item.description}
                   </div>
                 )}

@@ -8,5 +8,5 @@ export default async function RootPage() {
 
   if (user.role === "SYSTEM_ADMIN") redirect("/admin");
   if (user.role === "RESTAURANT_ADMIN") redirect("/restaurant");
-  redirect("/chat");
+  redirect("/home");
 }

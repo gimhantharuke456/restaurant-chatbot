@@ -9,12 +9,17 @@ _initialized = False
 def _ensure_init() -> None:
     global _initialized
     if not _initialized and not firebase_admin._apps:
-        try:
-            cred = credentials.Certificate(settings.google_application_credentials)
-            firebase_admin.initialize_app(cred)
-        except Exception:
-            # Fall back to application default credentials (e.g. inside GCP)
-            firebase_admin.initialize_app()
+        # Build Firebase credentials from env vars (spare-parts-6c6af project).
+        # Intentionally separate from the Vertex AI key used for Gemini.
+        cert = {
+            "type": "service_account",
+            "project_id": settings.firebase_project_id,
+            "private_key": settings.firebase_private_key.replace("\\n", "\n"),
+            "client_email": settings.firebase_client_email,
+            "token_uri": "https://oauth2.googleapis.com/token",
+        }
+        cred = credentials.Certificate(cert)
+        firebase_admin.initialize_app(cred)
         _initialized = True
 
 
@@ -35,17 +40,6 @@ def get_availability(restaurant_id: str, date: str) -> list[dict]:
     if doc.exists:
         return doc.to_dict().get("slots", [])
     return []
-
-
-def lookup_restaurant_by_name(name: str) -> dict | None:
-    """Return the first restaurant whose name contains `name` (case-insensitive scan)."""
-    name_lower = name.lower().strip()
-    docs = _db().collection("restaurants").limit(200).get()
-    for doc in docs:
-        data = doc.to_dict()
-        if name_lower in (data.get("name") or "").lower():
-            return {"restaurant_id": doc.id, **data}
-    return None
 
 
 def update_slot(restaurant_id: str, date: str, time: str, delta: int) -> None:

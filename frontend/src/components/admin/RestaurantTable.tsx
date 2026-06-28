@@ -27,17 +27,17 @@ const PRICE_LABELS: Record<string, string> = {
 export function RestaurantTable({ restaurants }: RestaurantTableProps) {
   if (restaurants.length === 0) {
     return (
-      <div className="rounded-lg border bg-white py-16 text-center text-slate-400">
+      <div className="rounded-lg border bg-card py-16 text-center text-muted-foreground">
         No restaurants found
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border bg-white">
+    <div className="overflow-hidden rounded-lg border bg-card">
       <Table>
         <TableHeader>
-          <TableRow className="bg-slate-50">
+          <TableRow className="bg-muted/50">
             <TableHead>Name</TableHead>
             <TableHead>Area</TableHead>
             <TableHead>Cuisines</TableHead>
@@ -53,7 +53,7 @@ export function RestaurantTable({ restaurants }: RestaurantTableProps) {
             <TableRow key={r.id}>
               <TableCell>
                 <div className="font-medium">{r.name}</div>
-                <div className="text-xs text-slate-400">{r.admin.email}</div>
+                <div className="text-xs text-muted-foreground">{r.admin.email}</div>
               </TableCell>
               <TableCell className="text-sm">{r.area}</TableCell>
               <TableCell>
@@ -79,14 +79,14 @@ export function RestaurantTable({ restaurants }: RestaurantTableProps) {
                     {r.avgRating.toFixed(1)} ⭐
                   </span>
                 ) : (
-                  <span className="text-slate-400">—</span>
+                  <span className="text-muted-foreground">—</span>
                 )}
               </TableCell>
               <TableCell>
                 {r.isVerified ? (
                   <CheckCircle2 className="h-5 w-5 text-green-600" />
                 ) : (
-                  <XCircle className="h-5 w-5 text-slate-300" />
+                  <XCircle className="h-5 w-5 text-muted-foreground" />
                 )}
               </TableCell>
               <TableCell>

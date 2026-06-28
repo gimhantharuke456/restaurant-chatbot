@@ -117,6 +117,19 @@ async def _fake_search(query: str, limit: int, filters: dict) -> list[dict]:
         await conn.close()
 
 
+async def lookup_restaurant_by_name(name: str) -> dict | None:
+    """Return the first restaurant whose name contains `name` (case-insensitive)."""
+    conn = await _get_conn()
+    try:
+        row = await conn.fetchrow(
+            'SELECT id, name FROM "Restaurant" WHERE LOWER(name) LIKE $1 AND "isActive" = true LIMIT 1',
+            f"%{name.lower().strip()}%",
+        )
+        return dict(row) if row else None
+    finally:
+        await conn.close()
+
+
 async def semantic_search(query: str, limit: int = 5, filters: dict | None = None) -> list[dict]:
     if filters is None:
         filters = {}

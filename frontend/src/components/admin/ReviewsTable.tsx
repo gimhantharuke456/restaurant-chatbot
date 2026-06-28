@@ -30,14 +30,14 @@ export function ReviewsTable({ reviews, restaurantId }: ReviewsTableProps) {
   };
 
   if (items.length === 0) {
-    return <p className="py-8 text-center text-slate-400">No reviews yet</p>;
+    return <p className="py-8 text-center text-muted-foreground">No reviews yet</p>;
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border bg-white">
+    <div className="overflow-hidden rounded-lg border bg-card">
       <Table>
         <TableHeader>
-          <TableRow className="bg-slate-50">
+          <TableRow className="bg-muted/50">
             <TableHead>User</TableHead>
             <TableHead>Rating</TableHead>
             <TableHead>Comment</TableHead>
@@ -49,17 +49,17 @@ export function ReviewsTable({ reviews, restaurantId }: ReviewsTableProps) {
           {items.map((review) => (
             <TableRow key={review.id}>
               <TableCell>
-                <div className="text-sm font-medium">
+                <div className="text-sm font-medium text-foreground">
                   {review.user.name ?? review.user.email}
                 </div>
               </TableCell>
               <TableCell>{"⭐".repeat(review.rating)}</TableCell>
               <TableCell className="max-w-xs">
-                <p className="truncate text-sm">
-                  {review.comment ?? <span className="text-slate-400">—</span>}
+                <p className="truncate text-sm text-foreground">
+                  {review.comment ?? <span className="text-muted-foreground">—</span>}
                 </p>
               </TableCell>
-              <TableCell className="text-sm text-slate-500">
+              <TableCell className="text-sm text-muted-foreground">
                 {new Date(review.createdAt).toLocaleDateString("en-LK")}
               </TableCell>
               <TableCell className="text-right">

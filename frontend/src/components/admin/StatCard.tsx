@@ -11,7 +11,7 @@ interface StatCardProps {
 }
 
 const ACCENT_CLASSES = {
-  default: "bg-slate-100 text-slate-600",
+  default: "bg-muted text-muted-foreground",
   green:   "bg-green-100 text-green-700",
   orange:  "bg-orange-100 text-orange-700",
   red:     "bg-red-100 text-red-700",
@@ -29,8 +29,8 @@ export function StatCard({
     <Card>
       <CardContent className="flex items-start justify-between p-6">
         <div className="space-y-1">
-          <p className="text-sm font-medium text-slate-500">{label}</p>
-          <p className="text-3xl font-bold tracking-tight text-slate-900">
+          <p className="text-sm font-medium text-muted-foreground">{label}</p>
+          <p className="text-3xl font-bold tracking-tight text-foreground">
             {value}
           </p>
           {trend && (

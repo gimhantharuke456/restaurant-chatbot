@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ReservationCard, type Reservation } from "./ReservationCard";
+import { ReservationCard, type Reservation, type ReviewData } from "./ReservationCard";
 import { CalendarX } from "lucide-react";
 
 export function ReservationList({ initial }: { initial: Reservation[] }) {
@@ -10,6 +10,12 @@ export function ReservationList({ initial }: { initial: Reservation[] }) {
   function handleCancel(id: string) {
     setReservations(prev =>
       prev.map(r => r.id === id ? { ...r, status: "CANCELLED" } : r)
+    );
+  }
+
+  function handleReviewSaved(id: string, review: ReviewData) {
+    setReservations(prev =>
+      prev.map(r => r.id === id ? { ...r, review } : r)
     );
   }
 
@@ -31,13 +37,17 @@ export function ReservationList({ initial }: { initial: Reservation[] }) {
       {upcoming.length > 0 && (
         <section className="space-y-3">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Upcoming</h2>
-          {upcoming.map(r => <ReservationCard key={r.id} reservation={r} onCancel={handleCancel} />)}
+          {upcoming.map(r => (
+            <ReservationCard key={r.id} reservation={r} onCancel={handleCancel} onReviewSaved={handleReviewSaved} />
+          ))}
         </section>
       )}
       {past.length > 0 && (
         <section className="space-y-3">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Past</h2>
-          {past.map(r => <ReservationCard key={r.id} reservation={r} />)}
+          {past.map(r => (
+            <ReservationCard key={r.id} reservation={r} onReviewSaved={handleReviewSaved} />
+          ))}
         </section>
       )}
     </div>

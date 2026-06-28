@@ -62,7 +62,7 @@ export function RecentReservations({ reservations }: RecentReservationsProps) {
           <TableBody>
             {reservations.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-slate-400">
+                <TableCell colSpan={5} className="text-center text-muted-foreground">
                   No reservations yet
                 </TableCell>
               </TableRow>
@@ -73,14 +73,14 @@ export function RecentReservations({ reservations }: RecentReservationsProps) {
                     <div className="text-sm font-medium">
                       {r.user.name ?? r.user.email}
                     </div>
-                    <div className="text-xs text-slate-400">{r.user.email}</div>
+                    <div className="text-xs text-muted-foreground">{r.user.email}</div>
                   </TableCell>
                   <TableCell className="text-sm">
                     {r.restaurant.name}
                   </TableCell>
                   <TableCell className="text-sm">
                     {new Date(r.date).toLocaleDateString("en-LK")}{" "}
-                    <span className="text-slate-400">{r.time}</span>
+                    <span className="text-muted-foreground">{r.time}</span>
                   </TableCell>
                   <TableCell className="text-sm">{r.partySize}</TableCell>
                   <TableCell>

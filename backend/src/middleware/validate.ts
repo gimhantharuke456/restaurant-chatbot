@@ -15,6 +15,11 @@ export const validate =
       return;
     }
     // Replace with coerced/stripped data from Zod
-    (req as unknown as Record<string, unknown>)[target] = result.data;
+    // Express 5 makes req.query a read-only getter, so use defineProperty
+    try {
+      Object.defineProperty(req, target, { value: result.data, writable: true, configurable: true });
+    } catch {
+      (req as unknown as Record<string, unknown>)[target] = result.data;
+    }
     next();
   };

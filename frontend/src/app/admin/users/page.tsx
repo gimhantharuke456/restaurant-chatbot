@@ -39,7 +39,7 @@ export default async function UsersPage({
 
       <div className="space-y-4 p-8">
         <div className="flex items-center gap-3">
-          <span className="text-sm text-slate-500">Filter by role:</span>
+          <span className="text-sm text-muted-foreground">Filter by role:</span>
           <Suspense>
             <UserRoleFilter currentRole={role} />
           </Suspense>

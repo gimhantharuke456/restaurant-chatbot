@@ -93,6 +93,7 @@ export interface AdminReservation {
   user: { id: string; name: string | null; email: string };
   restaurant: { id: string; name: string; area: string };
   payment: { status: string; amount: number } | null;
+  review: { id: string; rating: number; comment: string | null; imageUrls: string; createdAt: string } | null;
 }
 
 export interface TimeSeriesPoint {

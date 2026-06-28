@@ -17,28 +17,28 @@ export function RestaurantDetailCard({ restaurant }: RestaurantDetailCardProps) 
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           <div>
-            <span className="font-medium text-slate-500">Address:</span>{" "}
+            <span className="font-medium text-muted-foreground">Address:</span>{" "}
             {restaurant.address}
           </div>
           <div>
-            <span className="font-medium text-slate-500">Area:</span>{" "}
+            <span className="font-medium text-muted-foreground">Area:</span>{" "}
             {restaurant.area}
           </div>
           {restaurant.phone && (
             <div>
-              <span className="font-medium text-slate-500">Phone:</span>{" "}
+              <span className="font-medium text-muted-foreground">Phone:</span>{" "}
               {restaurant.phone}
             </div>
           )}
           {restaurant.email && (
             <div>
-              <span className="font-medium text-slate-500">Email:</span>{" "}
+              <span className="font-medium text-muted-foreground">Email:</span>{" "}
               {restaurant.email}
             </div>
           )}
           {restaurant.website && (
             <div>
-              <span className="font-medium text-slate-500">Website:</span>{" "}
+              <span className="font-medium text-muted-foreground">Website:</span>{" "}
               <a
                 href={restaurant.website}
                 className="text-blue-600 underline"
@@ -59,10 +59,10 @@ export function RestaurantDetailCard({ restaurant }: RestaurantDetailCardProps) 
         <CardContent className="space-y-2 text-sm">
           {DAYS.map((day) => (
             <div key={day} className="flex justify-between capitalize">
-              <span className="font-medium text-slate-500">{day}</span>
+              <span className="font-medium text-muted-foreground">{day}</span>
               <span>
                 {restaurant.openingHours[day] ?? (
-                  <span className="text-slate-400">Closed</span>
+                  <span className="text-muted-foreground">Closed</span>
                 )}
               </span>
             </div>
@@ -74,9 +74,9 @@ export function RestaurantDetailCard({ restaurant }: RestaurantDetailCardProps) 
         <CardHeader>
           <CardTitle className="text-base">Description</CardTitle>
         </CardHeader>
-        <CardContent className="text-sm text-slate-700">
+        <CardContent className="text-sm text-foreground">
           {restaurant.description ?? (
-            <span className="text-slate-400">No description</span>
+            <span className="text-muted-foreground">No description</span>
           )}
         </CardContent>
       </Card>

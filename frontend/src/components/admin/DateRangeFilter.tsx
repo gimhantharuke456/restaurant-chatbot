@@ -23,7 +23,7 @@ export function DateRangeFilter() {
   return (
     <div className="flex items-end gap-3">
       <div className="space-y-1">
-        <Label htmlFor="from" className="text-xs text-slate-500">
+        <Label htmlFor="from" className="text-xs text-muted-foreground">
           From
         </Label>
         <Input
@@ -35,7 +35,7 @@ export function DateRangeFilter() {
         />
       </div>
       <div className="space-y-1">
-        <Label htmlFor="to" className="text-xs text-slate-500">
+        <Label htmlFor="to" className="text-xs text-muted-foreground">
           To
         </Label>
         <Input

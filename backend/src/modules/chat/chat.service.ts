@@ -15,6 +15,7 @@ export interface AiServiceResponse {
 export const sendMessage = async (
   input: SendMessageInput,
   userId: string,
+  authToken?: string,
 ): Promise<AiServiceResponse> => {
   const aiServiceUrl = process.env.AI_SERVICE_URL ?? "http://localhost:8000";
 
@@ -28,6 +29,7 @@ export const sendMessage = async (
         message: input.message,
         history: input.history,
       },
+      authToken ? { headers: { Authorization: `Bearer ${authToken}` } } : undefined,
     );
     aiResponse = data;
   } catch (e: unknown) {
