@@ -35,12 +35,35 @@ export const createCheckoutSession = async (
   userEmail: string,
   orderItems: OrderItemInput[],
 ): Promise<{ paymentUrl: string; paymentId: string; amount: number }> => {
-  const subtotal = orderItems.reduce((s, i) => s + i.price * i.quantity, 0);
+  // Resolve authoritative prices from the DB for any item that references a menuItemId.
+  // Client-supplied prices are never trusted for identified menu items.
+  const menuItemIds = orderItems
+    .filter((i) => i.menuItemId)
+    .map((i) => i.menuItemId as string);
+
+  const dbItems = menuItemIds.length
+    ? await prisma.menuItem.findMany({ where: { id: { in: menuItemIds }, isAvailable: true } })
+    : [];
+  const dbPriceMap = new Map(dbItems.map((m) => [m.id, m.price]));
+
+  const verifiedItems = orderItems.map((item) => {
+    if (!item.menuItemId) return item;
+    const dbPrice = dbPriceMap.get(item.menuItemId);
+    if (dbPrice === undefined) {
+      throw Object.assign(
+        new Error(`Menu item ${item.menuItemId} not found or unavailable`),
+        { status: 400 },
+      );
+    }
+    return { ...item, price: dbPrice };
+  });
+
+  const subtotal = verifiedItems.reduce((s, i) => s + i.price * i.quantity, 0);
   const serviceCharge = Math.round(subtotal * SERVICE_CHARGE_RATE);
   const total = subtotal + serviceCharge;
 
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [
-    ...orderItems.map((item) => ({
+    ...verifiedItems.map((item) => ({
       price_data: {
         currency: "lkr" as const,
         product_data: { name: item.name, ...(item.category ? { description: item.category } : {}) },
@@ -78,7 +101,7 @@ export const createCheckoutSession = async (
       stripePaymentId: session.id,
       status: "PENDING",
       checkoutUrl: session.url,
-      orderItems: orderItems as object[],
+      orderItems: verifiedItems as object[],
     },
   });
 

@@ -277,27 +277,6 @@ export const getMyPayments = async (
   return { data, total, page, limit };
 };
 
-const ALLOWED_PAYMENT_TRANSITIONS: Record<string, string[]> = {
-  PENDING: ["SUCCEEDED"],
-};
-
-export const updatePaymentStatus = async (adminId: string, paymentId: string, status: string) => {
-  const restaurant = await prisma.restaurant.findFirst({ where: { adminId } });
-  if (!restaurant) throw Object.assign(new Error("Restaurant not found"), { status: 404 });
-  const payment = await prisma.payment.findFirst({
-    where: { id: paymentId, reservation: { restaurantId: restaurant.id } },
-  });
-  if (!payment) throw Object.assign(new Error("Payment not found"), { status: 404 });
-  const allowed = ALLOWED_PAYMENT_TRANSITIONS[payment.status] ?? [];
-  if (!allowed.includes(status)) {
-    throw Object.assign(
-      new Error(`Cannot change payment status from ${payment.status} to ${status}`),
-      { status: 400 },
-    );
-  }
-  return prisma.payment.update({ where: { id: paymentId }, data: { status: status as never } });
-};
-
 // ── availability ──────────────────────────────────────────────────────────────
 
 export interface AvailabilitySlot {

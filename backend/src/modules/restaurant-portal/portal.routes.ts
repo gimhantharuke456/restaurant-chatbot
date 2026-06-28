@@ -22,7 +22,6 @@ router.post("/reviews/:id/reply", portalController.replyToReview);
 router.put("/reviews/:id/reply", portalController.replyToReview);
 
 router.get("/payments", portalController.getMyPayments);
-router.patch("/payments/:id/status", portalController.updatePaymentStatus);
 
 router.get("/menu", portalController.getMyMenu);
 router.post("/menu", portalController.createMenuItem);

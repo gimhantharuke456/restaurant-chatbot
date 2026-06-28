@@ -68,16 +68,6 @@ export const getMyPayments = async (req: AuthRequest, res: Response): Promise<vo
   );
 };
 
-export const updatePaymentStatus = async (req: AuthRequest, res: Response): Promise<void> => {
-  const { status } = req.body as { status: string };
-  const result = await portalService.updatePaymentStatus(
-    req.user!.dbId,
-    req.params.id,
-    status,
-  );
-  res.json(result);
-};
-
 export const createMenuItem = async (req: AuthRequest, res: Response): Promise<void> => {
   const item = await portalService.createMenuItem(req.user!.dbId, req.body as Parameters<typeof portalService.createMenuItem>[1]);
   res.status(201).json(item);
