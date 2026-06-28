@@ -52,8 +52,10 @@ model Restaurant {
   cuisineTypes  String        @default("[]")
   priceRange    PriceRange
   openingHours  Json
-  imageUrls     String        @default("[]")
-  isActive      Boolean       @default(true)
+  imageUrls       String        @default("[]")
+  profileImageUrl String?
+  coverImageUrl   String?
+  isActive        Boolean       @default(true)
   isVerified    Boolean       @default(false)
   avgRating     Float?
   totalReviews  Int           @default(0)

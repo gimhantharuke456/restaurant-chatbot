@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   Star,
   Bell,
+  MessageSquareWarning,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +26,7 @@ const NAV = [
   { href: "/admin/reservations", label: "Reservations", icon: CalendarDays },
   { href: "/admin/payments", label: "Payments", icon: CreditCard },
   { href: "/admin/reviews", label: "Reviews", icon: Star },
+  { href: "/admin/complaints", label: "Complaints", icon: MessageSquareWarning },
   { href: "/admin/notifications", label: "Notifications", icon: Bell },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/settings", label: "Settings", icon: Settings },

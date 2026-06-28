@@ -1,0 +1,6 @@
+
+> backend@1.0.0 dev
+> tsx watch src/index.ts
+
+Backend running on port 3000
+Swagger UI: http://localhost:3000/api/docs

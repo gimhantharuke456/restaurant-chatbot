@@ -1,0 +1,110 @@
+
+> frontend@0.1.0 dev
+> next dev
+
+⚠ Port 3000 is in use by process 72344, using available port 3001 instead.
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.1.165:3001
+- Environments: .env
+✓ Ready in 439ms
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/gimhanrajapaksha/Desktop/projects/agent_project/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/frontend/package-lock.json
+
+- Experiments (use with caution):
+  · optimizePackageImports
+
+ GET / 200 in 5.6s (next.js: 489ms, application-code: 5.2s)
+ GET /restaurant/profile 200 in 823ms (next.js: 165ms, application-code: 658ms)
+ GET /api/uploadthing 200 in 1310ms (next.js: 1195ms, application-code: 115ms)
+ GET /api/uploadthing 200 in 18ms (next.js: 5ms, application-code: 13ms)
+ GET /api/uploadthing 200 in 16ms (next.js: 4ms, application-code: 12ms)
+ POST /api/uploadthing?actionType=upload&slug=restaurantImage 500 in 137ms (next.js: 65ms, application-code: 72ms)
+ GET /restaurants/6c955d0a-1062-4b25-878e-bf87f32a4c82 307 in 1941ms (next.js: 1365ms, application-code: 575ms)
+ GET / 200 in 394ms (next.js: 16ms, application-code: 378ms)
+ GET / 200 in 1649ms (next.js: 8ms, application-code: 1641ms)
+ GET /login 200 in 1362ms (next.js: 536ms, application-code: 826ms)
+ GET /login 200 in 282ms (next.js: 105ms, application-code: 177ms)
+ GET /api/proxy/auth/me 200 in 3.0s (next.js: 2.8s, application-code: 200ms)
+ GET /restaurant 200 in 327ms (next.js: 78ms, application-code: 249ms)
+ GET /restaurant/profile 200 in 92ms (next.js: 12ms, application-code: 80ms)
+ GET /api/uploadthing 200 in 8ms (next.js: 2ms, application-code: 5ms)
+ GET /api/uploadthing 200 in 4ms (next.js: 1466µs, application-code: 2ms)
+ GET /api/uploadthing 200 in 11ms (next.js: 5ms, application-code: 7ms)
+ GET /api/uploadthing 200 in 6ms (next.js: 1257µs, application-code: 5ms)
+ GET /api/uploadthing 200 in 5ms (next.js: 870µs, application-code: 4ms)
+ GET /api/uploadthing 200 in 6ms (next.js: 1860µs, application-code: 4ms)
+[21:40:41.925] INFO (#44) handleUploadAction=51ms: Sending presigned URLs to client
+  presignedUrls: [
+    {
+      url: 'https://sea1.ingest.uploadthing.com/cHjYGNQu3UdY0r0Ub0ZRmQ4khZVd5NjuwnM73XoHsrKT0DpC?expires=1782666641916&x-ut-identifier=3ua31hzm6t&x-ut-file-name=b91fa9534cbe559b0fc0548ca30d5da3-1729688418.jpg&x-ut-file-size=1671775&x-ut-file-type=image%252Fjpeg&x-ut-slug=restaurantImage&x-ut-content-disposition=inline&signature=hmac-sha256%3Dd57b0db88b821c30b56c3b6a4042829df2f98810f3524d32faf2df548fa29959',
+      key: 'cHjYGNQu3UdY0r0Ub0ZRmQ4khZVd5NjuwnM73XoHsrKT0DpC',
+      name: 'b91fa9534cbe559b0fc0548ca30d5da3-1729688418.jpg',
+      customId: null
+    }
+  ]
+ POST /api/uploadthing?actionType=upload&slug=restaurantImage 200 in 89ms (next.js: 7ms, application-code: 82ms)
+[21:40:46.597] INFO (#52) handleUploadAction=27ms: Sending presigned URLs to client
+  presignedUrls: [
+    {
+      url: 'https://sea1.ingest.uploadthing.com/cHjYGNQu3UdYXsLHRrvwUDFiva8m9s3n0CxljKpdy5huE4GV?expires=1782666646595&x-ut-identifier=3ua31hzm6t&x-ut-file-name=hotel.jpg&x-ut-file-size=275569&x-ut-file-type=image%252Fjpeg&x-ut-slug=restaurantImage&x-ut-content-disposition=inline&signature=hmac-sha256%3Dceaba30d07530a20804f5038482549073429ed43e1085a5a774c47c0fc24227c',
+      key: 'cHjYGNQu3UdYXsLHRrvwUDFiva8m9s3n0CxljKpdy5huE4GV',
+      name: 'hotel.jpg',
+      customId: null
+    }
+  ]
+ POST /api/uploadthing?actionType=upload&slug=restaurantImage 200 in 103ms (next.js: 31ms, application-code: 73ms)
+⚠️ [uploadthing][deprecated] `file.url` is deprecated and will be removed in uploadthing v9. Use `file.ufsUrl` instead.
+ POST /api/uploadthing?slug=restaurantImage 200 in 9ms (next.js: 3ms, application-code: 6ms)
+[21:40:47.441] INFO (#62) handleCallbackRequest=241ms: Sent callback result to UploadThing
+[browser] ⚠️ [uploadthing][deprecated] `file.url` is deprecated and will be removed in uploadthing v9. Use `file.ufsUrl` instead. (src/components/restaurant-portal/ImageUploader.tsx:23:19)
+[browser] ⚠️ [uploadthing][deprecated] `file.url` is deprecated and will be removed in uploadthing v9. Use `file.ufsUrl` instead. (src/components/restaurant-portal/ImageUploader.tsx:23:42)
+⚠️ [uploadthing][deprecated] `file.url` is deprecated and will be removed in uploadthing v9. Use `file.ufsUrl` instead.
+ POST /api/uploadthing?slug=restaurantImage 200 in 33ms (next.js: 10ms, application-code: 23ms)
+[21:40:48.975] INFO (#69) handleCallbackRequest=260ms: Sent callback result to UploadThing
+[browser] ⚠️ [uploadthing][deprecated] `file.url` is deprecated and will be removed in uploadthing v9. Use `file.ufsUrl` instead. (src/components/restaurant-portal/ImageUploader.tsx:23:19)
+[browser] ⚠️ [uploadthing][deprecated] `file.url` is deprecated and will be removed in uploadthing v9. Use `file.ufsUrl` instead. (src/components/restaurant-portal/ImageUploader.tsx:23:42)
+[21:40:49.967] INFO (#74) handleUploadAction=20ms: Sending presigned URLs to client
+  presignedUrls: [
+    {
+      url: 'https://sea1.ingest.uploadthing.com/cHjYGNQu3UdYKdva9n3CMNr8Vjy5Z9AJSWElDF3nauzp0soX?expires=1782666649965&x-ut-identifier=3ua31hzm6t&x-ut-file-name=wp3598835-3048394152.jpg&x-ut-file-size=567850&x-ut-file-type=image%252Fjpeg&x-ut-slug=restaurantImage&x-ut-content-disposition=inline&signature=hmac-sha256%3D7ede4e7f5617f498c438838705a79260671648118ea6c727858aa6721d5df4ab',
+      key: 'cHjYGNQu3UdYKdva9n3CMNr8Vjy5Z9AJSWElDF3nauzp0soX',
+      name: 'wp3598835-3048394152.jpg',
+      customId: null
+    }
+  ]
+ POST /api/uploadthing?actionType=upload&slug=restaurantImage 200 in 38ms (next.js: 7ms, application-code: 31ms)
+⚠️ [uploadthing][deprecated] `file.url` is deprecated and will be removed in uploadthing v9. Use `file.ufsUrl` instead.
+ POST /api/uploadthing?slug=restaurantImage 200 in 16ms (next.js: 7ms, application-code: 9ms)
+[21:40:52.585] INFO (#84) handleCallbackRequest=335ms: Sent callback result to UploadThing
+[browser] ⚠️ [uploadthing][deprecated] `file.url` is deprecated and will be removed in uploadthing v9. Use `file.ufsUrl` instead. (src/components/restaurant-portal/ImageUploader.tsx:97:64)
+ PATCH /api/proxy/restaurant-portal/restaurant 200 in 311ms (next.js: 7ms, application-code: 304ms)
+ GET /restaurant/profile 200 in 44ms (next.js: 5ms, application-code: 40ms)
+ GET / 200 in 234ms (next.js: 40ms, application-code: 194ms)
+ GET /login 200 in 88ms (next.js: 33ms, application-code: 54ms)
+ POST /api/proxy/auth/register 201 in 3.7s (next.js: 32ms, application-code: 3.6s)
+ GET /api/proxy/auth/me 200 in 22ms (next.js: 7ms, application-code: 16ms)
+ GET /chat 200 in 286ms (next.js: 213ms, application-code: 72ms)
+ GET /home 200 in 811ms (next.js: 165ms, application-code: 646ms)
+ GET /home 200 in 469ms (next.js: 9ms, application-code: 460ms)
+○ Compiling /waitlist ...
+ GET /waitlist 200 in 8.3s (next.js: 8.1s, application-code: 215ms)
+ GET /api/proxy/waitlist 200 in 1205ms (next.js: 23ms, application-code: 1182ms)
+ GET /api/proxy/waitlist 200 in 25ms (next.js: 13ms, application-code: 12ms)
+ GET /home 200 in 547ms (next.js: 19ms, application-code: 528ms)
+ GET /reservations 200 in 1373ms (next.js: 365ms, application-code: 1008ms)
+ GET /complaints 200 in 2.4s (next.js: 2.3s, application-code: 125ms)
+ GET /api/proxy/users/me/complaints 200 in 637ms (next.js: 13ms, application-code: 624ms)
+ GET /api/proxy/users/me/complaints 200 in 45ms (next.js: 10ms, application-code: 35ms)
+ POST /api/proxy/users/me/complaints 201 in 1462ms (next.js: 74ms, application-code: 1389ms)
+ GET /home 200 in 476ms (next.js: 37ms, application-code: 439ms)
+ GET /notifications 200 in 3.2s (next.js: 2.7s, application-code: 576ms)
+ GET /home 200 in 112ms (next.js: 11ms, application-code: 102ms)
+ POST /api/proxy/chat/message 200 in 5.3s (next.js: 21ms, application-code: 5.3s)
+ GET /restaurants/35c19a07-d7b1-451f-aae7-3111e3e83e70 200 in 795ms (next.js: 25ms, application-code: 770ms)
+ GET /api/proxy/users/me/favorites/35c19a07-d7b1-451f-aae7-3111e3e83e70/check 200 in 660ms (next.js: 112ms, application-code: 548ms)
+ GET /api/proxy/users/me/favorites/35c19a07-d7b1-451f-aae7-3111e3e83e70/check 200 in 55ms (next.js: 27ms, application-code: 28ms)

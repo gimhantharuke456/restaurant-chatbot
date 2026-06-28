@@ -1,7 +1,10 @@
 import { serverFetch } from "@/lib/server/api";
 import { ProfileForm } from "@/components/customer/ProfileForm";
+import { PreferencesForm } from "@/components/customer/PreferencesForm";
+import { InsightsCard } from "@/components/customer/InsightsCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface UserProfile {
   id: string;
@@ -11,7 +14,17 @@ interface UserProfile {
   avatarUrl: string | null;
   role: string;
   createdAt: string;
+  diningPreferences: Record<string, unknown> | null;
   _count?: { reservations: number; reviews: number };
+}
+
+interface Insights {
+  totalDiningExperiences: number;
+  totalSpent: number;
+  avgRatingGiven: number | null;
+  topCuisines: { cuisine: string; count: number }[];
+  topRestaurants: { id: string; name: string; count: number }[];
+  monthlyDining: { month: string; count: number }[];
 }
 
 export default async function ProfilePage() {
@@ -19,11 +32,17 @@ export default async function ProfilePage() {
     () => serverFetch<UserProfile>("users/me")
   );
 
+  const [preferences, insights] = await Promise.all([
+    serverFetch<Record<string, unknown>>("users/me/preferences").catch(() => null),
+    serverFetch<Insights>("users/me/insights").catch(() => null),
+  ]);
+
   return (
     <div className="h-full overflow-y-auto">
       <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
         <h1 className="text-xl font-semibold">My Profile</h1>
 
+        {/* Avatar card */}
         <Card>
           <CardContent className="flex items-center gap-4 p-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground font-semibold text-lg">
@@ -37,19 +56,36 @@ export default async function ProfilePage() {
           </CardContent>
         </Card>
 
-        <ProfileForm user={user} />
+        <Tabs defaultValue="account">
+          <TabsList className="w-full grid grid-cols-3">
+            <TabsTrigger value="account">Account</TabsTrigger>
+            <TabsTrigger value="preferences">Preferences</TabsTrigger>
+            <TabsTrigger value="insights">Insights</TabsTrigger>
+          </TabsList>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Account info</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-muted-foreground space-y-1">
-            <p>Member since {new Date(user.createdAt).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}</p>
-            {user._count && (
-              <p>{user._count.reservations} reservation{user._count.reservations !== 1 ? "s" : ""} made</p>
-            )}
-          </CardContent>
-        </Card>
+          <TabsContent value="account" className="space-y-4 mt-4">
+            <ProfileForm user={user} />
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Account info</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground space-y-1">
+                <p>Member since {new Date(user.createdAt).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}</p>
+                {user._count && (
+                  <p>{user._count.reservations} reservation{user._count.reservations !== 1 ? "s" : ""} made</p>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="preferences" className="mt-4">
+            <PreferencesForm initial={preferences} />
+          </TabsContent>
+
+          <TabsContent value="insights" className="mt-4">
+            <InsightsCard insights={insights} />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

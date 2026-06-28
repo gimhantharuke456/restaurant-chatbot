@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { Message, RestaurantResult } from "@/hooks/useChat";
-import { Star, MapPin, Utensils, CreditCard, ExternalLink } from "lucide-react";
+import { Star, MapPin, Utensils, CreditCard, ExternalLink, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ReactMarkdown from "react-markdown";
 
@@ -18,39 +19,44 @@ function RestaurantCard({ r }: { r: RestaurantResult }) {
   try { cuisines = JSON.parse(r.cuisineTypes); } catch { cuisines = [r.cuisineTypes]; }
 
   return (
-    <div className="rounded-xl border border-border bg-card/80 p-3 flex flex-col gap-1.5">
-      <div className="flex items-start justify-between gap-2">
-        <span className="font-semibold text-sm text-foreground leading-tight">{r.name}</span>
-        {r.avgRating != null && (
-          <span className="flex items-center gap-0.5 text-xs text-primary shrink-0">
-            <Star className="h-3 w-3 fill-primary" />
-            {r.avgRating.toFixed(1)}
-          </span>
+    <Link href={`/restaurants/${r.id}`} className="block group">
+      <div className="rounded-xl border border-border bg-card/80 p-3 flex flex-col gap-1.5 hover:border-primary/40 hover:bg-card transition-colors">
+        <div className="flex items-start justify-between gap-2">
+          <span className="font-semibold text-sm text-foreground leading-tight group-hover:text-primary transition-colors">{r.name}</span>
+          <div className="flex items-center gap-1.5 shrink-0">
+            {r.avgRating != null && (
+              <span className="flex items-center gap-0.5 text-xs text-primary">
+                <Star className="h-3 w-3 fill-primary" />
+                {r.avgRating.toFixed(1)}
+              </span>
+            )}
+            <ArrowRight className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors" />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+          <MapPin className="h-3 w-3 shrink-0" />
+          <span>{r.area}</span>
+          <span className="mx-1">·</span>
+          <span>{PRICE_LABEL[r.priceRange] ?? r.priceRange}</span>
+        </div>
+
+        {cuisines.length > 0 && (
+          <div className="flex items-center gap-1 flex-wrap">
+            <Utensils className="h-3 w-3 text-muted-foreground shrink-0" />
+            {cuisines.map(c => (
+              <span key={c} className="rounded-full bg-primary/10 text-primary text-[10px] px-2 py-0.5">
+                {c}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {r.description && (
+          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{r.description}</p>
         )}
       </div>
-
-      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-        <MapPin className="h-3 w-3 shrink-0" />
-        <span>{r.area}</span>
-        <span className="mx-1">·</span>
-        <span>{PRICE_LABEL[r.priceRange] ?? r.priceRange}</span>
-      </div>
-
-      {cuisines.length > 0 && (
-        <div className="flex items-center gap-1 flex-wrap">
-          <Utensils className="h-3 w-3 text-muted-foreground shrink-0" />
-          {cuisines.map(c => (
-            <span key={c} className="rounded-full bg-primary/10 text-primary text-[10px] px-2 py-0.5">
-              {c}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {r.description && (
-        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{r.description}</p>
-      )}
-    </div>
+    </Link>
   );
 }
 

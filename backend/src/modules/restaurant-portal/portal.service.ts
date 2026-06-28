@@ -101,6 +101,8 @@ export const updateMyRestaurant = async (
     priceRange?: "BUDGET" | "MODERATE" | "EXPENSIVE" | "FINE_DINING";
     openingHours?: object;
     imageUrls?: string[];
+    profileImageUrl?: string | null;
+    coverImageUrl?: string | null;
     isActive?: boolean;
     latitude?: number;
     longitude?: number;

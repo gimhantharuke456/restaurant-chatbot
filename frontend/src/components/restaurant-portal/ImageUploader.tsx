@@ -11,9 +11,10 @@ interface Props {
   value: string | null;
   onChange: (url: string | null) => void;
   label?: string;
+  aspectRatio?: string;
 }
 
-export function ImageUploader({ endpoint, value, onChange, label = "Upload Image" }: Props) {
+export function ImageUploader({ endpoint, value, onChange, label = "Upload Image", aspectRatio = "16/9" }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,7 +36,7 @@ export function ImageUploader({ endpoint, value, onChange, label = "Upload Image
   return (
     <div className="space-y-2">
       {value ? (
-        <div className="relative w-full rounded-lg overflow-hidden border border-border bg-muted/30" style={{ aspectRatio: "16/9" }}>
+        <div className="relative w-full rounded-lg overflow-hidden border border-border bg-muted/30" style={{ aspectRatio }}>
           <Image src={value} alt="Uploaded" fill className="object-cover" unoptimized />
           <button
             type="button"

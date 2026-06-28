@@ -9,7 +9,11 @@ export const getMyRestaurant = async (req: AuthRequest, res: Response): Promise<
 };
 
 export const updateMyRestaurant = async (req: AuthRequest, res: Response): Promise<void> => {
-  const result = await portalService.updateMyRestaurant(req.user!.dbId, req.body as { imageUrls?: string[] });
+  const result = await portalService.updateMyRestaurant(req.user!.dbId, req.body as {
+    imageUrls?: string[];
+    profileImageUrl?: string | null;
+    coverImageUrl?: string | null;
+  });
   res.json(result);
 };
 

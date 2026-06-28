@@ -13,7 +13,9 @@ interface MyRestaurant {
   email: string | null;
   website: string | null;
   cuisineTypes: string[];
-  imageUrls: string[];   // backend already parses this to an array
+  imageUrls: string[];
+  profileImageUrl: string | null;
+  coverImageUrl: string | null;
   priceRange: string;
   isActive: boolean;
   isVerified: boolean;
@@ -67,11 +69,15 @@ export default async function PortalProfilePage() {
 
       {/* Photos */}
       <div className="rounded-lg border bg-card p-6 space-y-3">
-        <h2 className="text-sm font-semibold text-foreground">Restaurant Photos</h2>
+        <h2 className="text-sm font-semibold text-foreground">Restaurant Images</h2>
         <p className="text-xs text-muted-foreground">
-          These images are shown to customers browsing your restaurant.
+          Upload a profile logo, a cover banner, and additional gallery photos for customers.
         </p>
-        <RestaurantImageManager initialImages={Array.isArray(r.imageUrls) ? r.imageUrls : []} />
+        <RestaurantImageManager
+          initialImages={Array.isArray(r.imageUrls) ? r.imageUrls : []}
+          initialProfileImageUrl={r.profileImageUrl ?? null}
+          initialCoverImageUrl={r.coverImageUrl ?? null}
+        />
       </div>
 
       {/* Details */}

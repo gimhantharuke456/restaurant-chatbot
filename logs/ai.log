@@ -1,0 +1,10 @@
+INFO:     Will watch for changes in these directories: ['/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/ai-service']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [72296] using StatReload
+/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/ai-service/agents/orchestrator.py:11: LangChainDeprecationWarning: The class `ChatVertexAI` was deprecated in LangChain 3.2.0 and will be removed in 4.0.0. An updated version of the class exists in the `langchain-google-genai package and should be used instead. To use it run `pip install -U `langchain-google-genai` and import as `from `langchain_google_genai import ChatGoogleGenerativeAI``.
+  llm = ChatVertexAI(
+INFO:     Started server process [72299]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:58449 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60131 - "POST /chat HTTP/1.1" 200 OK

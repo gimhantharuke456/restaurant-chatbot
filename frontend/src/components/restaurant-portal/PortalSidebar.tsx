@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Building2, CalendarDays, UtensilsCrossed, CreditCard, Star, BarChart3, Bot, Tag, Clock } from "lucide-react";
+import { LayoutDashboard, Building2, CalendarDays, UtensilsCrossed, CreditCard, Star, BarChart3, Bot, Tag, Clock, CalendarOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -13,6 +13,7 @@ const NAV = [
   { href: "/restaurant/menu", label: "Menu", icon: UtensilsCrossed },
   { href: "/restaurant/promotions", label: "Promotions", icon: Tag },
   { href: "/restaurant/availability", label: "Availability", icon: Clock },
+  { href: "/restaurant/holidays", label: "Holidays", icon: CalendarOff },
   { href: "/restaurant/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/restaurant/ai", label: "AI Assistant", icon: Bot },
   { href: "/restaurant/profile", label: "My Restaurant", icon: Building2 },

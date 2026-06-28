@@ -83,12 +83,13 @@ function Section({ children, className = "" }: { children: React.ReactNode; clas
 // ── restaurant card ───────────────────────────────────────────────────────────
 
 function RestaurantCard({ r, index }: { r: RestaurantItem; index: number }) {
-  const cuisines = r.cuisineTypes;
-  const images   = r.imageUrls;
-  const emoji    = getCuisineEmoji(cuisines);
-  const gradient = CARD_GRADIENTS[index % CARD_GRADIENTS.length];
+  const cuisines   = r.cuisineTypes;
+  const cardImage  = r.coverImageUrl ?? r.imageUrls[0] ?? null;
+  const emoji      = getCuisineEmoji(cuisines);
+  const gradient   = CARD_GRADIENTS[index % CARD_GRADIENTS.length];
 
   return (
+    <Link href={`/restaurants/${r.id}`} className="block">
     <motion.div
       variants={cardVariant}
       whileHover={{ y: -6, scale: 1.02 }}
@@ -97,8 +98,8 @@ function RestaurantCard({ r, index }: { r: RestaurantItem; index: number }) {
     >
       {/* Image / gradient header */}
       <div className="relative h-44 overflow-hidden">
-        {images[0] ? (
-          <Image src={images[0]} alt={r.name} fill className="object-cover transition-transform duration-700 group-hover:scale-110" unoptimized />
+        {cardImage ? (
+          <Image src={cardImage} alt={r.name} fill className="object-cover transition-transform duration-700 group-hover:scale-110" unoptimized />
         ) : (
           <div className={`absolute inset-0 bg-gradient-to-br ${gradient} bg-card`}>
             <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-30 select-none">
@@ -116,8 +117,16 @@ function RestaurantCard({ r, index }: { r: RestaurantItem; index: number }) {
           </Badge>
         </div>
 
-        {/* cuisine emoji */}
-        <div className="absolute top-3 left-3 text-2xl">{emoji}</div>
+        {/* profile image or cuisine emoji */}
+        {r.profileImageUrl ? (
+          <div className="absolute top-3 left-3">
+            <div className="relative h-9 w-9 rounded-full overflow-hidden border-2 border-white/60 bg-muted shadow">
+              <Image src={r.profileImageUrl} alt={r.name} fill className="object-cover" unoptimized />
+            </div>
+          </div>
+        ) : (
+          <div className="absolute top-3 left-3 text-2xl">{emoji}</div>
+        )}
       </div>
 
       {/* Content */}
@@ -156,6 +165,7 @@ function RestaurantCard({ r, index }: { r: RestaurantItem; index: number }) {
       {/* Glow on hover */}
       <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ring-1 ring-primary/40 shadow-[0_0_24px_rgba(255,107,53,0.15)]" />
     </motion.div>
+    </Link>
   );
 }
 
