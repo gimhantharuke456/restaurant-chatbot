@@ -10,6 +10,21 @@ export const getUserReservations = async (
   res.json(reservations);
 };
 
+export const getReservationById = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<void> => {
+  const reservation = await reservationService.getReservationById(
+    String(req.params.id),
+    req.user!.dbId,
+  );
+  if (!reservation) {
+    res.status(404).json({ error: "Reservation not found" });
+    return;
+  }
+  res.json(reservation);
+};
+
 export const createReservation = async (
   req: AuthRequest,
   res: Response,

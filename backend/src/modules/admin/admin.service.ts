@@ -1,11 +1,18 @@
 import { prisma } from "../../../lib/db.js";
+import { stripe } from "../../config/stripe.js";
 import type { z } from "zod";
 import type { UpdateRoleBodySchema } from "./admin.schema.js";
 
-const parseRestaurant = <T extends { cuisineTypes: string; imageUrls: string }>(r: T) => ({
+const parseMenuItems = <T extends { dietaryInfo: string }>(item: T) => ({
+  ...item,
+  dietaryInfo: JSON.parse(item.dietaryInfo) as string[],
+});
+
+const parseRestaurant = <T extends { cuisineTypes: string; imageUrls: string; menuItems?: Array<{ dietaryInfo: string }> }>(r: T) => ({
   ...r,
   cuisineTypes: JSON.parse(r.cuisineTypes) as string[],
   imageUrls: JSON.parse(r.imageUrls) as string[],
+  ...(r.menuItems ? { menuItems: r.menuItems.map(parseMenuItems) } : {}),
 });
 
 export type UpdateRoleInput = z.infer<typeof UpdateRoleBodySchema>;
@@ -188,6 +195,7 @@ export const getAllReservations = async (opts: ReservationListOptions = {}) => {
         user: { select: { id: true, name: true, email: true } },
         restaurant: { select: { id: true, name: true, area: true } },
         payment: { select: { status: true, amount: true } },
+        review: { select: { id: true, rating: true, comment: true, imageUrls: true, createdAt: true } },
       },
       orderBy: { createdAt: "desc" },
       skip,
@@ -405,4 +413,92 @@ export const logAdminAction = async (
   await prisma.adminLog.create({
     data: { adminId, adminEmail, action, targetType, targetId, details, ipAddress },
   });
+};
+
+export const suspendUser = async (id: string) => {
+  return prisma.user.update({ where: { id }, data: { isActive: false } });
+};
+
+export const activateUser = async (id: string) => {
+  return prisma.user.update({ where: { id }, data: { isActive: true } });
+};
+
+export interface ReviewListOptions {
+  page?: number;
+  limit?: number;
+  rating?: number;
+  isVisible?: boolean;
+}
+
+export const getAllReviews = async (opts: ReviewListOptions = {}) => {
+  const page = opts.page ?? 1;
+  const limit = opts.limit ?? 25;
+  const skip = (page - 1) * limit;
+  const where: Record<string, unknown> = {};
+  if (opts.rating !== undefined) where.rating = opts.rating;
+  if (opts.isVisible !== undefined) where.isVisible = opts.isVisible;
+  const [data, total] = await Promise.all([
+    prisma.review.findMany({
+      where,
+      include: {
+        user: { select: { name: true, email: true } },
+        restaurant: { select: { name: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.review.count({ where }),
+  ]);
+  return { data, total, page, limit };
+};
+
+export const hideReview = async (id: string) => {
+  return prisma.review.update({ where: { id }, data: { isVisible: false } });
+};
+
+export const deleteReview = async (id: string) => {
+  const review = await prisma.review.findUniqueOrThrow({ where: { id } });
+  await prisma.review.delete({ where: { id } });
+  const agg = await prisma.review.aggregate({
+    where: { restaurantId: review.restaurantId, isVisible: true },
+    _avg: { rating: true },
+    _count: { id: true },
+  });
+  await prisma.restaurant.update({
+    where: { id: review.restaurantId },
+    data: { avgRating: agg._avg.rating, totalReviews: agg._count.id },
+  });
+};
+
+export const refundPayment = async (paymentId: string) => {
+  const payment = await prisma.payment.findUniqueOrThrow({ where: { id: paymentId } });
+  if (payment.status !== "SUCCEEDED") {
+    throw Object.assign(new Error("Only succeeded payments can be refunded"), { status: 400 });
+  }
+  if (!payment.stripePaymentId) {
+    throw Object.assign(new Error("No Stripe payment ID"), { status: 400 });
+  }
+  const session = await stripe.checkout.sessions.retrieve(payment.stripePaymentId);
+  const refund = await stripe.refunds.create({ payment_intent: session.payment_intent as string });
+  return prisma.payment.update({
+    where: { id: paymentId },
+    data: { status: "REFUNDED", refundId: refund.id, refundedAt: new Date() },
+  });
+};
+
+export const broadcastAnnouncement = async (title: string, message: string, role?: string) => {
+  const where = role
+    ? { role: role as "CUSTOMER" | "RESTAURANT_ADMIN" | "SYSTEM_ADMIN" }
+    : {};
+  const users = await prisma.user.findMany({ where, select: { id: true } });
+  await prisma.notification.createMany({
+    data: users.map((u) => ({
+      userId: u.id,
+      type: "SYSTEM_ANNOUNCEMENT" as const,
+      title,
+      message,
+    })),
+  });
+  return { sent: users.length };
 };

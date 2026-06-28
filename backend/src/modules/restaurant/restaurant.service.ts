@@ -6,24 +6,43 @@ import type {
   RestaurantQuerySchema,
   CreateRestaurantBodySchema,
   UpdateRestaurantBodySchema,
+  ReviewQuerySchema,
 } from "./restaurant.schema.js";
 
-export type RestaurantFilters = z.infer<typeof RestaurantQuerySchema>;
+export type RestaurantFilters = Partial<z.infer<typeof RestaurantQuerySchema>>;
 export type CreateRestaurantInput = z.infer<typeof CreateRestaurantBodySchema>;
 export type UpdateRestaurantInput = z.infer<typeof UpdateRestaurantBodySchema>;
+export type ReviewQueryInput = z.infer<typeof ReviewQuerySchema>;
 
 export const listRestaurants = async (filters: RestaurantFilters = {}) => {
+  const page = filters.page ?? 1;
+  const limit = filters.limit ?? 20;
+  const skip = (page - 1) * limit;
+
   const where: Record<string, unknown> = { isActive: true };
-  if (filters.area)
-    where["area"] = { contains: filters.area, mode: "insensitive" };
+  if (filters.area) where["area"] = { contains: filters.area, mode: "insensitive" };
   if (filters.priceRange) where["priceRange"] = filters.priceRange as PriceRange;
+  if (filters.cuisine) where["cuisineTypes"] = { contains: filters.cuisine, mode: "insensitive" };
+  if (filters.minRating) where["avgRating"] = { gte: filters.minRating };
+  if (filters.search) {
+    where["OR"] = [
+      { name: { contains: filters.search, mode: "insensitive" } },
+      { description: { contains: filters.search, mode: "insensitive" } },
+      { area: { contains: filters.search, mode: "insensitive" } },
+    ];
+  }
 
-  const restaurants = await prisma.restaurant.findMany({
-    where,
-    orderBy: { avgRating: "desc" },
-  });
+  const [restaurants, total] = await Promise.all([
+    prisma.restaurant.findMany({
+      where,
+      orderBy: { avgRating: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.restaurant.count({ where }),
+  ]);
 
-  return restaurants.map(parseRestaurant);
+  return { data: restaurants.map(parseRestaurant), total, page, limit };
 };
 
 export const getRestaurantById = async (id: string) => {
@@ -31,10 +50,7 @@ export const getRestaurantById = async (id: string) => {
   return r ? parseRestaurant(r) : null;
 };
 
-export const createRestaurant = async (
-  input: CreateRestaurantInput,
-  adminId: string,
-) => {
+export const createRestaurant = async (input: CreateRestaurantInput, adminId: string) => {
   const r = await prisma.restaurant.create({
     data: {
       ...input,
@@ -48,22 +64,15 @@ export const createRestaurant = async (
   return parseRestaurant(r);
 };
 
-export const updateRestaurant = async (
-  id: string,
-  input: UpdateRestaurantInput,
-) => {
+export const updateRestaurant = async (id: string, input: UpdateRestaurantInput) => {
   const data: Record<string, unknown> = { ...input };
   if (input.cuisineTypes) data["cuisineTypes"] = JSON.stringify(input.cuisineTypes);
   if (input.imageUrls) data["imageUrls"] = JSON.stringify(input.imageUrls);
-
   const r = await prisma.restaurant.update({ where: { id }, data });
   return parseRestaurant(r);
 };
 
-export const getAvailability = async (
-  restaurantId: string,
-  date: string,
-): Promise<unknown[]> => {
+export const getAvailability = async (restaurantId: string, date: string): Promise<unknown[]> => {
   const doc = await adminFirestore
     .collection("restaurants")
     .doc(restaurantId)
@@ -77,6 +86,40 @@ export const getMenu = async (restaurantId: string) => {
   return prisma.menuItem.findMany({
     where: { restaurantId, isAvailable: true },
     orderBy: [{ category: "asc" }, { name: "asc" }],
+  });
+};
+
+export const getRestaurantReviews = async (restaurantId: string, opts: ReviewQueryInput) => {
+  const page = opts.page ?? 1;
+  const limit = opts.limit ?? 10;
+  const skip = (page - 1) * limit;
+  const where = {
+    restaurantId,
+    isVisible: true,
+    ...(opts.rating ? { rating: opts.rating } : {}),
+  };
+  const [data, total, avgAgg] = await Promise.all([
+    prisma.review.findMany({
+      where,
+      include: {
+        user: { select: { name: true, avatarUrl: true } },
+        reply: true,
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.review.count({ where }),
+    prisma.review.aggregate({ where: { restaurantId, isVisible: true }, _avg: { rating: true } }),
+  ]);
+  return { data, total, page, limit, avgRating: avgAgg._avg.rating };
+};
+
+export const getActivePromotions = async (restaurantId: string) => {
+  const now = new Date();
+  return prisma.promotion.findMany({
+    where: { restaurantId, isActive: true, startDate: { lte: now }, endDate: { gte: now } },
+    orderBy: { createdAt: "desc" },
   });
 };
 

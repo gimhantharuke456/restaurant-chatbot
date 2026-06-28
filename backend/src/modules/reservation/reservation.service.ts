@@ -1,6 +1,7 @@
 import { prisma } from "../../../lib/db.js";
 import { adminFirestore } from "../../config/firebase.js";
 import { sendEmail } from "../../config/nodemailer.js";
+import { createNotification } from "../../../lib/notifications.js";
 import type { z } from "zod";
 import type {
   CreateReservationBodySchema,
@@ -13,8 +14,29 @@ export type UpdateReservationInput = z.infer<typeof UpdateReservationBodySchema>
 export const getUserReservations = async (userId: string) => {
   return prisma.reservation.findMany({
     where: { userId },
-    include: { restaurant: true },
+    include: {
+      restaurant: true,
+      payment: {
+        select: {
+          id: true,
+          amount: true,
+          currency: true,
+          status: true,
+          receiptUrl: true,
+          orderItems: true,
+          createdAt: true,
+        },
+      },
+      review: { select: { id: true, rating: true, comment: true, imageUrls: true, createdAt: true } },
+    },
     orderBy: { date: "desc" },
+  });
+};
+
+export const getReservationById = async (id: string, userId: string) => {
+  return prisma.reservation.findUnique({
+    where: { id, userId },
+    include: { restaurant: true, payment: true },
   });
 };
 
@@ -36,6 +58,15 @@ export const createReservation = async (
     include: { restaurant: true },
   });
 
+  // Notification (best-effort)
+  createNotification(
+    userId,
+    "RESERVATION_CONFIRMED",
+    "Reservation Confirmed",
+    `Your reservation at ${reservation.restaurant.name} on ${input.date} at ${input.time} is confirmed.`,
+    { reservationId: reservation.id, restaurantId: input.restaurantId },
+  ).catch(() => {});
+
   // Firestore sync (best-effort)
   adminFirestore
     .collection("reservations")
@@ -56,12 +87,15 @@ export const createReservation = async (
   sendEmail(
     userEmail,
     "Reservation Confirmed!",
-    `<h2>Your reservation is confirmed!</h2>
+    `<h2>Your reservation is confirmed! 🎉</h2>
      <p><strong>Restaurant:</strong> ${reservation.restaurant.name}</p>
      <p><strong>Date:</strong> ${input.date}</p>
      <p><strong>Time:</strong> ${input.time}</p>
      <p><strong>Party size:</strong> ${input.partySize}</p>
-     ${input.specialRequests ? `<p><strong>Special requests:</strong> ${input.specialRequests}</p>` : ""}`,
+     ${input.specialRequests ? `<p><strong>Special requests:</strong> ${input.specialRequests}</p>` : ""}
+     <hr/>
+     <p style="color:#555">👆 <strong>Next step:</strong> Return to the chat to pre-order food and beverages from the menu.
+     Once you confirm your order, a secure payment link will be sent to this email.</p>`,
   ).catch((err) => console.error("Confirmation email failed (non-fatal):", err));
 
   return reservation;
@@ -73,6 +107,14 @@ export const cancelReservation = async (id: string, userId: string) => {
     data: { status: "CANCELLED" },
     include: { restaurant: true },
   });
+
+  createNotification(
+    reservation.userId,
+    "RESERVATION_CANCELLED",
+    "Reservation Cancelled",
+    `Your reservation at ${reservation.restaurant.name} has been cancelled.`,
+    { reservationId: id },
+  ).catch(() => {});
 
   adminFirestore
     .collection("reservations")
@@ -86,6 +128,15 @@ export const cancelReservation = async (id: string, userId: string) => {
         -1,
       ),
     )
+    .then(() => {
+      // Notify waitlist that a slot has opened
+      import("../waitlist/waitlist.service.js")
+        .then(({ notifyWaitlistForSlot }) => {
+          const dateStr = reservation.date.toISOString().split("T")[0];
+          notifyWaitlistForSlot(reservation.restaurantId, dateStr, reservation.time).catch(() => {});
+        })
+        .catch(() => {});
+    })
     .catch((err) => console.error("Firestore cancel sync failed (non-fatal):", err));
 
   return reservation;

@@ -124,3 +124,64 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
 export const updateUserRole = async (req: Request, res: Response): Promise<void> => {
   res.json(await adminService.updateUserRole(req.params.id, req.body as adminService.UpdateRoleInput));
 };
+
+export const suspendUser = async (req: Request, res: Response): Promise<void> => {
+  const user = await adminService.suspendUser(req.params.id);
+  await adminService.logAdminAction(
+    (req as any).user.id, (req as any).user.email, "SUSPEND_USER", "User", req.params.id, undefined, req.ip,
+  );
+  res.json(user);
+};
+
+export const activateUser = async (req: Request, res: Response): Promise<void> => {
+  const user = await adminService.activateUser(req.params.id);
+  await adminService.logAdminAction(
+    (req as any).user.id, (req as any).user.email, "ACTIVATE_USER", "User", req.params.id, undefined, req.ip,
+  );
+  res.json(user);
+};
+
+export const getAllReviews = async (req: Request, res: Response): Promise<void> => {
+  const { page, limit, rating, isVisible } = req.query;
+  res.json(await adminService.getAllReviews({
+    page: page ? Number(page) : undefined,
+    limit: limit ? Number(limit) : undefined,
+    rating: rating ? Number(rating) : undefined,
+    isVisible: isVisible !== undefined ? isVisible === "true" : undefined,
+  }));
+};
+
+export const hideReview = async (req: Request, res: Response): Promise<void> => {
+  const review = await adminService.hideReview(req.params.id);
+  await adminService.logAdminAction(
+    (req as any).user.id, (req as any).user.email, "HIDE_REVIEW", "Review", req.params.id, undefined, req.ip,
+  );
+  res.json(review);
+};
+
+export const deleteReview = async (req: Request, res: Response): Promise<void> => {
+  await adminService.deleteReview(req.params.id);
+  await adminService.logAdminAction(
+    (req as any).user.id, (req as any).user.email, "DELETE_REVIEW", "Review", req.params.id, undefined, req.ip,
+  );
+  res.status(204).send();
+};
+
+export const refundPayment = async (req: Request, res: Response): Promise<void> => {
+  const payment = await adminService.refundPayment(req.params.id);
+  await adminService.logAdminAction(
+    (req as any).user.id, (req as any).user.email, "REFUND_PAYMENT", "Payment", req.params.id, undefined, req.ip,
+  );
+  res.json(payment);
+};
+
+export const broadcastAnnouncement = async (req: Request, res: Response): Promise<void> => {
+  const { title, message, role } = req.body as { title: string; message: string; role?: string };
+  if (!title || !message) { res.status(400).json({ error: "title and message required" }); return; }
+  const result = await adminService.broadcastAnnouncement(title, message, role);
+  await adminService.logAdminAction(
+    (req as any).user.id, (req as any).user.email, "BROADCAST_ANNOUNCEMENT", "System",
+    undefined, `${result.sent} recipients`, req.ip,
+  );
+  res.json(result);
+};

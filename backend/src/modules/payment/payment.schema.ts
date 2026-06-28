@@ -10,6 +10,21 @@ export const CreatePaymentIntentBodySchema = z
   })
   .openapi("CreatePaymentIntentBody");
 
+export const OrderItemSchema = z.object({
+  menuItemId: z.string().uuid().nullable().optional(),
+  name: z.string().min(1),
+  price: z.number().positive(),
+  quantity: z.number().int().min(1).max(50),
+  category: z.string().optional(),
+});
+
+export const CreateCheckoutSessionBodySchema = z
+  .object({
+    reservationId: z.string().uuid(),
+    orderItems: z.array(OrderItemSchema).min(1),
+  })
+  .openapi("CreateCheckoutSessionBody");
+
 // ── Response schemas ──────────────────────────────────────────────────────────
 
 const PaymentIntentResponseSchema = z

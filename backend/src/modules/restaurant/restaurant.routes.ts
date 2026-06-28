@@ -42,5 +42,7 @@ router.get(
 );
 
 router.get("/:id/menu", restaurantController.getMenu);
+router.get("/:id/reviews", restaurantController.getRestaurantReviews);
+router.get("/:id/promotions", restaurantController.getRestaurantPromotions);
 
 export default router;

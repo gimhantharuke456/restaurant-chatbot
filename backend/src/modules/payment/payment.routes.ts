@@ -2,7 +2,10 @@ import { Router } from "express";
 import express from "express";
 import { authenticate } from "../../middleware/auth.js";
 import { validate } from "../../middleware/validate.js";
-import { CreatePaymentIntentBodySchema } from "./payment.schema.js";
+import {
+  CreatePaymentIntentBodySchema,
+  CreateCheckoutSessionBodySchema,
+} from "./payment.schema.js";
 import * as paymentController from "./payment.controller.js";
 
 const router = Router();
@@ -12,6 +15,13 @@ router.post(
   authenticate,
   validate(CreatePaymentIntentBodySchema),
   paymentController.createPaymentIntent,
+);
+
+router.post(
+  "/checkout-session",
+  authenticate,
+  validate(CreateCheckoutSessionBodySchema),
+  paymentController.createCheckoutSession,
 );
 
 // express.raw() replaces express.json() for this route only

@@ -1,33 +1,22 @@
 import type { Request, Response } from "express";
 import type { AuthRequest } from "../../types/index.js";
 import * as restaurantService from "./restaurant.service.js";
+import { ReviewQuerySchema } from "./restaurant.schema.js";
 
-export const getRestaurants = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  const restaurants = await restaurantService.listRestaurants(
-    req.query as restaurantService.RestaurantFilters,
+export const getRestaurants = async (req: Request, res: Response): Promise<void> => {
+  const result = await restaurantService.listRestaurants(
+    req.query as unknown as restaurantService.RestaurantFilters,
   );
-  res.json(restaurants);
+  res.json(result);
 };
 
-export const getRestaurantById = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
+export const getRestaurantById = async (req: Request, res: Response): Promise<void> => {
   const r = await restaurantService.getRestaurantById(String(req.params.id));
-  if (!r) {
-    res.status(404).json({ error: "Restaurant not found" });
-    return;
-  }
+  if (!r) { res.status(404).json({ error: "Restaurant not found" }); return; }
   res.json(r);
 };
 
-export const createRestaurant = async (
-  req: AuthRequest,
-  res: Response,
-): Promise<void> => {
+export const createRestaurant = async (req: AuthRequest, res: Response): Promise<void> => {
   const r = await restaurantService.createRestaurant(
     req.body as restaurantService.CreateRestaurantInput,
     req.user!.dbId,
@@ -35,10 +24,7 @@ export const createRestaurant = async (
   res.status(201).json(r);
 };
 
-export const updateRestaurant = async (
-  req: AuthRequest,
-  res: Response,
-): Promise<void> => {
+export const updateRestaurant = async (req: AuthRequest, res: Response): Promise<void> => {
   const r = await restaurantService.updateRestaurant(
     String(req.params.id),
     req.body as restaurantService.UpdateRestaurantInput,
@@ -46,10 +32,7 @@ export const updateRestaurant = async (
   res.json(r);
 };
 
-export const getAvailability = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
+export const getAvailability = async (req: Request, res: Response): Promise<void> => {
   const { date } = req.query as { date: string };
   const slots = await restaurantService.getAvailability(String(req.params.id), date);
   res.json(slots);
@@ -58,4 +41,15 @@ export const getAvailability = async (
 export const getMenu = async (req: Request, res: Response): Promise<void> => {
   const items = await restaurantService.getMenu(String(req.params.id));
   res.json(items);
+};
+
+export const getRestaurantReviews = async (req: Request, res: Response): Promise<void> => {
+  const opts = ReviewQuerySchema.parse(req.query);
+  const result = await restaurantService.getRestaurantReviews(String(req.params.id), opts);
+  res.json(result);
+};
+
+export const getRestaurantPromotions = async (req: Request, res: Response): Promise<void> => {
+  const promotions = await restaurantService.getActivePromotions(String(req.params.id));
+  res.json(promotions);
 };

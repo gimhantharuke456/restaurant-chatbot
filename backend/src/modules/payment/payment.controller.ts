@@ -18,6 +18,23 @@ export const createPaymentIntent = async (
   res.json(result);
 };
 
+export const createCheckoutSession = async (
+  req: AuthRequest,
+  res: Response,
+): Promise<void> => {
+  const { reservationId, orderItems } = req.body as {
+    reservationId: string;
+    orderItems: paymentService.OrderItemInput[];
+  };
+  const result = await paymentService.createCheckoutSession(
+    reservationId,
+    req.user!.dbId,
+    req.user!.email,
+    orderItems,
+  );
+  res.status(201).json(result);
+};
+
 export const handleWebhook = async (
   req: Request,
   res: Response,
