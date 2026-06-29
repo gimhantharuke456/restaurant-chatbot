@@ -31,6 +31,21 @@ export function ChatWidget() {
     }
   }, [messages, loading, open, minimised]);
 
+  // Listen for programmatic open requests (e.g. from "Book via AI" buttons)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const msg = (e as CustomEvent<{ message: string }>).detail?.message;
+      setMinimised(false);
+      setOpen(true);
+      if (msg) {
+        // Small delay so the panel has time to render before sending
+        setTimeout(() => sendMessage(msg), 150);
+      }
+    };
+    window.addEventListener("open-chat-widget", handler);
+    return () => window.removeEventListener("open-chat-widget", handler);
+  }, [sendMessage]);
+
   useEffect(() => {
     if (open && !minimised) {
       setTimeout(() => inputRef.current?.focus(), 150);

@@ -108,3 +108,117 @@
  GET /restaurants/35c19a07-d7b1-451f-aae7-3111e3e83e70 200 in 795ms (next.js: 25ms, application-code: 770ms)
  GET /api/proxy/users/me/favorites/35c19a07-d7b1-451f-aae7-3111e3e83e70/check 200 in 660ms (next.js: 112ms, application-code: 548ms)
  GET /api/proxy/users/me/favorites/35c19a07-d7b1-451f-aae7-3111e3e83e70/check 200 in 55ms (next.js: 27ms, application-code: 28ms)
+✓ Compiled in 5.2s
+ GET /restaurant/profile 200 in 668ms (next.js: 130ms, application-code: 538ms)
+ GET /restaurant/profile 200 in 508ms (next.js: 15ms, application-code: 493ms)
+ GET /restaurant/profile 200 in 6.7s (next.js: 322ms, application-code: 6.4s)
+ GET /restaurants/35c19a07-d7b1-451f-aae7-3111e3e83e70 200 in 2.0s (next.js: 16ms, application-code: 1996ms)
+ GET /restaurants/35c19a07-d7b1-451f-aae7-3111e3e83e70 200 in 2.3s (next.js: 187ms, application-code: 2.1s)
+ GET /restaurants/35c19a07-d7b1-451f-aae7-3111e3e83e70 200 in 6.6s (next.js: 2.4s, application-code: 4.2s)
+ GET /api/proxy/users/me/favorites/35c19a07-d7b1-451f-aae7-3111e3e83e70/check 200 in 727ms (next.js: 389ms, application-code: 339ms)
+ GET /api/proxy/users/me/favorites/35c19a07-d7b1-451f-aae7-3111e3e83e70/check 200 in 509ms (next.js: 85ms, application-code: 424ms)
+ GET /restaurant/menu 200 in 830ms (next.js: 205ms, application-code: 624ms)
+ GET /api/uploadthing 200 in 1006ms (next.js: 915ms, application-code: 91ms)
+ GET /api/uploadthing 200 in 120ms (next.js: 64ms, application-code: 55ms)
+[21:47:52.328] INFO (#106) handleUploadAction=116ms: Sending presigned URLs to client
+  presignedUrls: [
+    {
+      url: 'https://sea1.ingest.uploadthing.com/cHjYGNQu3UdYuiDAcQ6qLI0FzwhWMTcolBdDsXfY86kbArmZ?expires=1782667072315&x-ut-identifier=3ua31hzm6t&x-ut-file-name=WhatsApp%2520Image%25202026-06-24%2520at%252012.10.19.jpeg&x-ut-file-size=109176&x-ut-file-type=image%252Fjpeg&x-ut-slug=menuItemImage&x-ut-content-disposition=inline&signature=hmac-sha256%3D5a59f7c59e963f1051643d3e1d4e7541da0a47d9645b2a20c87ec8bb577420ab',
+      key: 'cHjYGNQu3UdYuiDAcQ6qLI0FzwhWMTcolBdDsXfY86kbArmZ',
+      name: 'WhatsApp Image 2026-06-24 at 12.10.19.jpeg',
+      customId: null
+    }
+  ]
+ POST /api/uploadthing?actionType=upload&slug=menuItemImage 200 in 190ms (next.js: 13ms, application-code: 178ms)
+⚠️ [uploadthing][deprecated] `file.url` is deprecated and will be removed in uploadthing v9. Use `file.ufsUrl` instead.
+ POST /api/uploadthing?slug=menuItemImage 200 in 79ms (next.js: 30ms, application-code: 48ms)
+[21:47:55.269] INFO (#116) handleCallbackRequest=287ms: Sent callback result to UploadThing
+[browser] ⚠️ [uploadthing][deprecated] `file.url` is deprecated and will be removed in uploadthing v9. Use `file.ufsUrl` instead. (src/components/restaurant-portal/ImageUploader.tsx:23:19)
+[browser] ⚠️ [uploadthing][deprecated] `file.url` is deprecated and will be removed in uploadthing v9. Use `file.ufsUrl` instead. (src/components/restaurant-portal/ImageUploader.tsx:23:42)
+[21:48:06.913] INFO (#121) handleUploadAction=109ms: Sending presigned URLs to client
+  presignedUrls: [
+    {
+      url: 'https://sea1.ingest.uploadthing.com/cHjYGNQu3UdY4vD4qwHC8SIWMV4pa60jmD3rLZBYbkgUKvid?expires=1782667086908&x-ut-identifier=3ua31hzm6t&x-ut-file-name=image1.jpg&x-ut-file-size=350040&x-ut-file-type=image%252Fjpeg&x-ut-slug=menuItemImage&x-ut-content-disposition=inline&signature=hmac-sha256%3D06acca483fda362e74896db998576d6e82f22b1910b9f770039aa29c5f60478a',
+      key: 'cHjYGNQu3UdY4vD4qwHC8SIWMV4pa60jmD3rLZBYbkgUKvid',
+      name: 'image1.jpg',
+      customId: null
+    }
+  ]
+ POST /api/uploadthing?actionType=upload&slug=menuItemImage 200 in 196ms (next.js: 34ms, application-code: 162ms)
+⚠️ [uploadthing][deprecated] `file.url` is deprecated and will be removed in uploadthing v9. Use `file.ufsUrl` instead.
+ POST /api/uploadthing?slug=menuItemImage 200 in 21ms (next.js: 11ms, application-code: 10ms)
+[21:48:08.747] INFO (#131) handleCallbackRequest=248ms: Sent callback result to UploadThing
+[browser] ⚠️ [uploadthing][deprecated] `file.url` is deprecated and will be removed in uploadthing v9. Use `file.ufsUrl` instead. (src/components/restaurant-portal/ImageUploader.tsx:23:19)
+[browser] ⚠️ [uploadthing][deprecated] `file.url` is deprecated and will be removed in uploadthing v9. Use `file.ufsUrl` instead. (src/components/restaurant-portal/ImageUploader.tsx:23:42)
+ PATCH /api/proxy/restaurant-portal/menu/cb05fec7-b3a8-4afd-bbb8-3049af20e13b 200 in 364ms (next.js: 17ms, application-code: 347ms)
+ GET /restaurant/menu 200 in 412ms (next.js: 16ms, application-code: 396ms)
+ GET /restaurants/35c19a07-d7b1-451f-aae7-3111e3e83e70 200 in 1152ms (next.js: 30ms, application-code: 1122ms)
+ GET /api/proxy/users/me/favorites/35c19a07-d7b1-451f-aae7-3111e3e83e70/check 200 in 669ms (next.js: 102ms, application-code: 567ms)
+[browser] Image with src "https://utfs.io/f/cHjYGNQu3UdYXsLHRrvwUDFiva8m9s3n0CxljKpdy5huE4GV" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /chat?restaurant=Nuga+Gama 200 in 158ms (next.js: 88ms, application-code: 70ms)
+ GET /home 200 in 405ms (next.js: 57ms, application-code: 348ms)
+ GET /home 200 in 276ms (next.js: 2ms, application-code: 274ms)
+ GET /reservations 200 in 159ms (next.js: 61ms, application-code: 98ms)
+ GET /home 200 in 98ms (next.js: 16ms, application-code: 82ms)
+ GET /restaurants/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de 200 in 592ms (next.js: 41ms, application-code: 551ms)
+ GET /api/proxy/users/me/favorites/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de/check 200 in 55ms (next.js: 18ms, application-code: 38ms)
+ GET /api/proxy/users/me/favorites/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de/check 200 in 9ms (next.js: 1807µs, application-code: 7ms)
+✓ Compiled in 1793ms
+✓ Compiled in 251ms
+ GET /restaurants/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de 200 in 270ms (next.js: 91ms, application-code: 179ms)
+ GET /restaurant/menu 200 in 419ms (next.js: 18ms, application-code: 402ms)
+✓ Compiled in 3.6s
+✓ Compiled in 89ms
+⨯ ReferenceError: CalendarDays is not defined
+    at RestaurantDetailPage (src/app/(customer)/restaurants/[id]/page.tsx:372:20)
+  370 |               >
+  371 |                 <Button className="w-full gap-2" disabled={!restaurant.isActive}>
+> 372 |                   <CalendarDays className="h-4 w-4" />
+      |                    ^
+  373 |                   Reserve a Table
+  374 |                 </Button>
+  375 |               </BookTableDialog> {
+  digest: '1715780182'
+}
+✓ Compiled in 1307ms
+ GET /restaurants/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de 200 in 5.2s (next.js: 1977ms, application-code: 3.2s)
+ GET /restaurants/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de 200 in 1627ms (next.js: 106ms, application-code: 1521ms)
+ GET /restaurants/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de 200 in 1380ms (next.js: 73ms, application-code: 1306ms)
+ GET /restaurants/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de 200 in 991ms (next.js: 99ms, application-code: 892ms)
+ GET /restaurants/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de 200 in 1029ms (next.js: 15ms, application-code: 1013ms)
+ GET /restaurants/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de 200 in 947ms (next.js: 5ms, application-code: 943ms)
+ GET /restaurants/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de 200 in 744ms (next.js: 5ms, application-code: 739ms)
+ GET /restaurant/menu 200 in 7.6s (next.js: 33ms, application-code: 7.6s)
+ GET /restaurant/menu 200 in 7.1s (next.js: 3.2s, application-code: 3.9s)
+ GET /restaurants/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de 200 in 749ms (next.js: 64ms, application-code: 685ms)
+ GET /restaurant/menu 200 in 3.2s (next.js: 323ms, application-code: 2.9s)
+ GET /restaurant/menu 200 in 2.5s (next.js: 26ms, application-code: 2.5s)
+ GET /restaurants/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de 200 in 879ms (next.js: 10ms, application-code: 869ms)
+ GET /restaurant/menu 200 in 2.5s (next.js: 17ms, application-code: 2.5s)
+ GET /restaurant/menu 200 in 2.1s (next.js: 20ms, application-code: 2.1s)
+ GET /restaurant/menu 200 in 740ms (next.js: 8ms, application-code: 731ms)
+ GET /restaurant/menu 200 in 500ms (next.js: 18ms, application-code: 482ms)
+ GET /restaurant/menu 200 in 279ms (next.js: 19ms, application-code: 260ms)
+✓ Finished filesystem cache database compaction in 10.4s
+[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+ GET /api/proxy/restaurants/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de/availability?date=2026-06-28 200 in 4.8s (next.js: 617ms, application-code: 4.2s)
+ POST /api/proxy/reservations 201 in 414ms (next.js: 32ms, application-code: 382ms)
+ GET /restaurants/09af96f6-b544-4bf5-9bd7-1dddf3c4a2de 200 in 209ms (next.js: 12ms, application-code: 197ms)
+ GET /reservations 200 in 222ms (next.js: 70ms, application-code: 152ms)
+ GET /home 200 in 449ms (next.js: 152ms, application-code: 297ms)
+ GET /restaurants/f56c4aac-b5fb-4322-a3d7-c7b80d30ad11 200 in 244ms (next.js: 20ms, application-code: 224ms)
+ GET /api/proxy/users/me/favorites/f56c4aac-b5fb-4322-a3d7-c7b80d30ad11/check 200 in 19ms (next.js: 4ms, application-code: 15ms)
+ GET /api/proxy/users/me/favorites/f56c4aac-b5fb-4322-a3d7-c7b80d30ad11/check 200 in 13ms (next.js: 4ms, application-code: 9ms)
+[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+ GET /api/proxy/restaurants/f56c4aac-b5fb-4322-a3d7-c7b80d30ad11/availability?date=2026-06-28 200 in 524ms (next.js: 18ms, application-code: 506ms)
+ GET /chat?restaurant=Upali%27s+by+Nawaloka 200 in 98ms (next.js: 57ms, application-code: 41ms)
+ GET /home 200 in 127ms (next.js: 5ms, application-code: 121ms)
+ GET /home 200 in 94ms (next.js: 3ms, application-code: 91ms)
+✓ Compiled in 9.6s
+✓ Compiled in 1272ms
+✓ Compiled in 2.1s
+ GET /home 200 in 3.4s (next.js: 1552ms, application-code: 1892ms)
+[?25h
