@@ -1,5 +1,8 @@
 import '../../../core/network/api_client.dart';
+import '../models/menu_item_model.dart';
+import '../models/promotion_model.dart';
 import '../models/restaurant_model.dart';
+import '../models/review_model.dart';
 
 class RestaurantFilters {
   final String? search;
@@ -32,6 +35,9 @@ class RestaurantFilters {
 abstract class RestaurantRepository {
   Future<RestaurantPage> listRestaurants(RestaurantFilters filters);
   Future<RestaurantModel> getRestaurantById(String id);
+  Future<List<MenuItemModel>> getMenu(String restaurantId);
+  Future<ReviewPage> getReviews(String restaurantId);
+  Future<List<PromotionModel>> getPromotions(String restaurantId);
 }
 
 class ApiRestaurantRepository implements RestaurantRepository {
@@ -49,5 +55,23 @@ class ApiRestaurantRepository implements RestaurantRepository {
   Future<RestaurantModel> getRestaurantById(String id) async {
     final json = await _apiClient.get('/restaurants/$id');
     return RestaurantModel.fromJson(json as Map<String, dynamic>);
+  }
+
+  @override
+  Future<List<MenuItemModel>> getMenu(String restaurantId) async {
+    final json = await _apiClient.get('/restaurants/$restaurantId/menu');
+    return (json as List).map((e) => MenuItemModel.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  @override
+  Future<ReviewPage> getReviews(String restaurantId) async {
+    final json = await _apiClient.get('/restaurants/$restaurantId/reviews');
+    return ReviewPage.fromJson(json as Map<String, dynamic>);
+  }
+
+  @override
+  Future<List<PromotionModel>> getPromotions(String restaurantId) async {
+    final json = await _apiClient.get('/restaurants/$restaurantId/promotions');
+    return (json as List).map((e) => PromotionModel.fromJson(e as Map<String, dynamic>)).toList();
   }
 }
