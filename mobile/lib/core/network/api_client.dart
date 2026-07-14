@@ -1,0 +1,64 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'api_exception.dart';
+
+const String kApiBaseUrl = String.fromEnvironment(
+  'API_BASE_URL',
+  defaultValue: 'http://10.0.2.2:3000/api',
+);
+
+class ApiClient {
+  final http.Client _client;
+  final String baseUrl;
+  final String? Function()? tokenProvider;
+
+  ApiClient({
+    http.Client? client,
+    this.baseUrl = kApiBaseUrl,
+    this.tokenProvider,
+  }) : _client = client ?? http.Client();
+
+  Map<String, String> _headers() {
+    final headers = {'Content-Type': 'application/json'};
+    final token = tokenProvider?.call();
+    if (token != null && token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+    return headers;
+  }
+
+  Future<dynamic> get(String path, {Map<String, String>? query}) {
+    final uri = Uri.parse('$baseUrl$path').replace(queryParameters: query);
+    return _send(() => _client.get(uri, headers: _headers()));
+  }
+
+  Future<dynamic> post(String path, {Object? body}) {
+    final uri = Uri.parse('$baseUrl$path');
+    return _send(() => _client.post(uri, headers: _headers(), body: jsonEncode(body)));
+  }
+
+  Future<dynamic> _send(Future<http.Response> Function() request) async {
+    late http.Response response;
+    try {
+      response = await request();
+    } catch (e) {
+      throw ApiException('Network error: $e');
+    }
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      String message = 'Request failed with status ${response.statusCode}';
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map && decoded['error'] is String) {
+          message = decoded['error'] as String;
+        }
+      } catch (_) {
+        // Response body wasn't JSON — keep the default message.
+      }
+      throw ApiException(message, statusCode: response.statusCode);
+    }
+
+    if (response.body.isEmpty) return null;
+    return jsonDecode(response.body);
+  }
+}
