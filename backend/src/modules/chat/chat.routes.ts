@@ -6,7 +6,7 @@ import * as chatController from "./chat.controller.js";
 
 const router = Router();
 
-// Guest endpoint — no auth required; Python AI service enforces 3-message limit
+// Guest endpoint — no auth required; backend enforces the 3-message limit server-side per sessionId
 router.post("/guest", validate(SendMessageBodySchema), chatController.sendGuestMessage);
 
 router.use(authenticate);

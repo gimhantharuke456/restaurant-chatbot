@@ -26,6 +26,7 @@ const ChatResponseSchema = z
     message: z.string(),
     intent: z.string().optional(),
     data: z.unknown().optional(),
+    guest_limit_reached: z.boolean().optional(),
   })
   .openapi("ChatResponse");
 

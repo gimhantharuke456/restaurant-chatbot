@@ -10,7 +10,10 @@ export interface AiServiceResponse {
   message: string;
   intent?: string;
   data?: unknown;
+  guest_limit_reached?: boolean;
 }
+
+const GUEST_MESSAGE_LIMIT = 3;
 
 export const sendMessage = async (
   input: SendMessageInput,
@@ -83,6 +86,21 @@ export const clearSession = async (
 };
 
 export const sendGuestMessage = async (input: SendMessageInput): Promise<AiServiceResponse> => {
+  const guestSession = await prisma.guestSession.upsert({
+    where: { sessionId: input.sessionId },
+    create: { sessionId: input.sessionId, messageCount: 1 },
+    update: { messageCount: { increment: 1 } },
+  });
+
+  if (guestSession.messageCount > GUEST_MESSAGE_LIMIT) {
+    return {
+      session_id: input.sessionId,
+      message: "You've reached the free message limit. Please sign in or create an account to continue chatting.",
+      intent: "AUTH_REQUIRED",
+      guest_limit_reached: true,
+    };
+  }
+
   const aiServiceUrl = process.env.AI_SERVICE_URL ?? "http://localhost:8000";
   try {
     const { data } = await axios.post<AiServiceResponse>(`${aiServiceUrl}/chat`, {
