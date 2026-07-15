@@ -32,6 +32,7 @@ class RestaurantChatbotApp extends StatelessWidget {
       tokenStorage: tokenStorage,
       tokenHolder: tokenHolder,
     )..restoreSession();
+    apiClient.onUnauthorized = authProvider.signOut;
     final router = buildAppRouter(authProvider);
 
     return MultiProvider(

@@ -11,11 +11,13 @@ class ApiClient {
   final http.Client _client;
   final String baseUrl;
   final String? Function()? tokenProvider;
+  void Function()? onUnauthorized;
 
   ApiClient({
     http.Client? client,
     this.baseUrl = kApiBaseUrl,
     this.tokenProvider,
+    this.onUnauthorized,
   }) : _client = client ?? http.Client();
 
   Map<String, String> _headers() {
@@ -54,6 +56,9 @@ class ApiClient {
         }
       } catch (_) {
         // Response body wasn't JSON — keep the default message.
+      }
+      if (response.statusCode == 401) {
+        onUnauthorized?.call();
       }
       throw ApiException(message, statusCode: response.statusCode);
     }
