@@ -27,32 +27,28 @@ class RestaurantChatbotApp extends StatelessWidget {
     final tokenStorage = SecureTokenStorage();
     final apiClient = ApiClient(tokenProvider: () => tokenHolder.token);
     final restaurantRepository = ApiRestaurantRepository(apiClient);
+    final authProvider = AuthProvider(
+      repository: FirebaseAuthRepository(apiClient: apiClient),
+      tokenStorage: tokenStorage,
+      tokenHolder: tokenHolder,
+    )..restoreSession();
+    final router = buildAppRouter(authProvider);
 
     return MultiProvider(
       providers: [
         Provider<TokenStorage>.value(value: tokenStorage),
         Provider<ApiClient>.value(value: apiClient),
         Provider<RestaurantRepository>.value(value: restaurantRepository),
-        ChangeNotifierProvider<AuthProvider>(
-          create: (_) => AuthProvider(
-            repository: FirebaseAuthRepository(apiClient: apiClient),
-            tokenStorage: tokenStorage,
-            tokenHolder: tokenHolder,
-          )..restoreSession(),
-        ),
+        ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
         ChangeNotifierProvider<RestaurantProvider>(
           create: (context) => RestaurantProvider(context.read<RestaurantRepository>()),
         ),
       ],
-      child: Consumer<AuthProvider>(
-        builder: (context, authProvider, _) {
-          return MaterialApp.router(
-            title: 'Restaurant Chatbot',
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.dark,
-            routerConfig: buildAppRouter(authProvider),
-          );
-        },
+      child: MaterialApp.router(
+        title: 'Restaurant Chatbot',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.dark,
+        routerConfig: router,
       ),
     );
   }
