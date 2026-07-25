@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/empty_state_view.dart';
 import '../../restaurants/models/menu_item_model.dart';
 import '../models/cart_item_model.dart';
 
@@ -27,7 +28,11 @@ class BookingMenuCartStep extends StatelessWidget {
       return const Center(child: CircularProgressIndicator());
     }
     if (menuItems.isEmpty) {
-      return const Center(child: Text('No menu items available'));
+      return const EmptyStateView(
+        icon: Icons.restaurant_menu,
+        title: 'No menu items available',
+        subtitle: "This restaurant hasn't added a menu yet.",
+      );
     }
 
     final categories = menuItems.map((i) => i.category).toSet().toList();

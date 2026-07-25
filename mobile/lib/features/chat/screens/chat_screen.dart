@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/empty_state_view.dart';
 import '../providers/chat_provider.dart';
 import '../widgets/chat_input.dart';
 import '../widgets/chat_message_bubble.dart';
@@ -103,31 +103,14 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(color: AppColors.muted, borderRadius: BorderRadius.circular(16)),
-              child: const Icon(Icons.restaurant_menu, color: AppColors.mutedForeground, size: 28),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'What can I help you with?',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              'Discover restaurants, get personalised recommendations, or book a table.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.mutedForeground, fontSize: 13),
-            ),
-            const SizedBox(height: 20),
-            ..._suggestedPrompts.map((prompt) => Padding(
+    return EmptyStateView(
+      icon: Icons.restaurant_menu,
+      title: 'What can I help you with?',
+      subtitle: 'Discover restaurants, get personalised recommendations, or book a table.',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: _suggestedPrompts
+            .map((prompt) => Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: SizedBox(
                     width: double.infinity,
@@ -137,9 +120,8 @@ class _EmptyState extends StatelessWidget {
                       child: Text(prompt, textAlign: TextAlign.left),
                     ),
                   ),
-                )),
-          ],
-        ),
+                ))
+            .toList(),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../shared/widgets/empty_state_view.dart';
 import '../../../shared/widgets/error_retry_view.dart';
 import '../../../shared/widgets/loading_view.dart';
 import '../data/restaurant_repository.dart';
@@ -94,7 +95,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 return ErrorRetryView(message: restaurantProvider.error!, onRetry: _applyFilters);
               }
               if (restaurantProvider.restaurants.isEmpty) {
-                return const Center(child: Text('No restaurants found'));
+                return const EmptyStateView(
+                  icon: Icons.search_off,
+                  title: 'No restaurants found',
+                  subtitle: 'Try adjusting your search or filters.',
+                );
               }
               return ListView.builder(
                 itemCount: restaurantProvider.restaurants.length,
