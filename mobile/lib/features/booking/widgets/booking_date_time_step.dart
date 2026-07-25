@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/motion/skeleton_loader.dart';
 import '../../../core/theme/app_colors.dart';
 import '../models/slot_model.dart';
 
@@ -63,9 +64,17 @@ class BookingDateTimeStep extends StatelessWidget {
         const Text('Time', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
         const SizedBox(height: 6),
         if (loadingSlots)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: LinearProgressIndicator(),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: List.generate(
+              6,
+              (_) => const SkeletonLoader(
+                width: 64,
+                height: 32,
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
+            ),
           )
         else
           Wrap(

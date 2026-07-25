@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import '../../core/motion/app_motion.dart';
 
 class ErrorRetryView extends StatelessWidget {
   final String message;
@@ -20,6 +22,6 @@ class ErrorRetryView extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ).animate().fadeIn(duration: AppMotion.standard, curve: AppMotion.standardCurve);
   }
 }

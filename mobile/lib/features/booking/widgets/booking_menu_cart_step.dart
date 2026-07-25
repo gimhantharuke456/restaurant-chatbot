@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/empty_state_view.dart';
+import '../../../shared/widgets/loading_view.dart';
 import '../../restaurants/models/menu_item_model.dart';
 import '../models/cart_item_model.dart';
 
@@ -25,7 +26,7 @@ class BookingMenuCartStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (loadingMenu) {
-      return const Center(child: CircularProgressIndicator());
+      return const LoadingView();
     }
     if (menuItems.isEmpty) {
       return const EmptyStateView(
