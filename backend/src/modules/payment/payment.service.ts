@@ -16,36 +16,17 @@ export interface OrderItemInput {
   category?: string;
 }
 
-export const createPaymentIntent = async (
-  reservationId: string,
-  amount: number,
-  userId: string,
-): Promise<{ clientSecret: string }> => {
-  const intent = await stripe.paymentIntents.create({
-    amount: Math.round(amount * 100),
-    currency: "lkr",
-    metadata: { reservationId, userId },
-  });
-  return { clientSecret: intent.client_secret! };
-};
+interface VerifiedOrder {
+  verifiedItems: OrderItemInput[];
+  subtotal: number;
+  serviceCharge: number;
+  total: number;
+}
 
-export const createCheckoutSession = async (
-  reservationId: string,
-  userId: string,
-  userEmail: string,
+const computeVerifiedTotal = (
   orderItems: OrderItemInput[],
-): Promise<{ paymentUrl: string; paymentId: string; amount: number }> => {
-  // Resolve authoritative prices from the DB for any item that references a menuItemId.
-  // Client-supplied prices are never trusted for identified menu items.
-  const menuItemIds = orderItems
-    .filter((i) => i.menuItemId)
-    .map((i) => i.menuItemId as string);
-
-  const dbItems = menuItemIds.length
-    ? await prisma.menuItem.findMany({ where: { id: { in: menuItemIds }, isAvailable: true } })
-    : [];
-  const dbPriceMap = new Map(dbItems.map((m) => [m.id, m.price]));
-
+  dbPriceMap: Map<string, number>,
+): VerifiedOrder => {
   const verifiedItems = orderItems.map((item) => {
     if (!item.menuItemId) return item;
     const dbPrice = dbPriceMap.get(item.menuItemId);
@@ -60,7 +41,70 @@ export const createCheckoutSession = async (
 
   const subtotal = verifiedItems.reduce((s, i) => s + i.price * i.quantity, 0);
   const serviceCharge = Math.round(subtotal * SERVICE_CHARGE_RATE);
-  const total = subtotal + serviceCharge;
+  return { verifiedItems, subtotal, serviceCharge, total: subtotal + serviceCharge };
+};
+
+// Resolves authoritative prices from the DB for any item that references a
+// menuItemId. Client-supplied prices are never trusted for identified menu items.
+const verifyOrderAndComputeTotal = async (
+  orderItems: OrderItemInput[],
+): Promise<VerifiedOrder> => {
+  const menuItemIds = orderItems
+    .filter((i) => i.menuItemId)
+    .map((i) => i.menuItemId as string);
+
+  const dbItems = menuItemIds.length
+    ? await prisma.menuItem.findMany({ where: { id: { in: menuItemIds }, isAvailable: true } })
+    : [];
+  const dbPriceMap = new Map(dbItems.map((m) => [m.id, m.price]));
+
+  return computeVerifiedTotal(orderItems, dbPriceMap);
+};
+
+export const createPaymentIntent = async (
+  reservationId: string,
+  userId: string,
+  userEmail: string,
+  orderItems: OrderItemInput[],
+): Promise<{ clientSecret: string; paymentId: string; amount: number }> => {
+  const { verifiedItems, total } = await verifyOrderAndComputeTotal(orderItems);
+
+  const intent = await stripe.paymentIntents.create({
+    amount: Math.round(total * 100),
+    currency: "lkr",
+    metadata: { reservationId, userId },
+    receipt_email: userEmail,
+  });
+
+  const payment = await prisma.payment.upsert({
+    where: { reservationId },
+    create: {
+      reservationId,
+      userId,
+      amount: total,
+      currency: "LKR",
+      stripePaymentId: intent.id,
+      status: "PENDING",
+      orderItems: verifiedItems as object[],
+    },
+    update: {
+      amount: total,
+      stripePaymentId: intent.id,
+      status: "PENDING",
+      orderItems: verifiedItems as object[],
+    },
+  });
+
+  return { clientSecret: intent.client_secret!, paymentId: payment.id, amount: total };
+};
+
+export const createCheckoutSession = async (
+  reservationId: string,
+  userId: string,
+  userEmail: string,
+  orderItems: OrderItemInput[],
+): Promise<{ paymentUrl: string; paymentId: string; amount: number }> => {
+  const { verifiedItems, serviceCharge, total } = await verifyOrderAndComputeTotal(orderItems);
 
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [
     ...verifiedItems.map((item) => ({

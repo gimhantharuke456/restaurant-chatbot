@@ -6,14 +6,15 @@ export const createPaymentIntent = async (
   req: AuthRequest,
   res: Response,
 ): Promise<void> => {
-  const { reservationId, amount } = req.body as {
+  const { reservationId, orderItems } = req.body as {
     reservationId: string;
-    amount: number;
+    orderItems: paymentService.OrderItemInput[];
   };
   const result = await paymentService.createPaymentIntent(
     reservationId,
-    amount,
     req.user!.dbId,
+    req.user!.email,
+    orderItems,
   );
   res.json(result);
 };

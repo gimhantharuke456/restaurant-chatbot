@@ -3,13 +3,6 @@ import { registry } from "../../docs/registry.js";
 
 // ── Zod schemas ───────────────────────────────────────────────────────────────
 
-export const CreatePaymentIntentBodySchema = z
-  .object({
-    reservationId: z.string().uuid(),
-    amount: z.number().positive(),
-  })
-  .openapi("CreatePaymentIntentBody");
-
 export const OrderItemSchema = z.object({
   menuItemId: z.string().uuid().nullable().optional(),
   name: z.string().min(1),
@@ -17,6 +10,13 @@ export const OrderItemSchema = z.object({
   quantity: z.number().int().min(1).max(50),
   category: z.string().optional(),
 });
+
+export const CreatePaymentIntentBodySchema = z
+  .object({
+    reservationId: z.string().uuid(),
+    orderItems: z.array(OrderItemSchema).min(1),
+  })
+  .openapi("CreatePaymentIntentBody");
 
 export const CreateCheckoutSessionBodySchema = z
   .object({
@@ -30,6 +30,8 @@ export const CreateCheckoutSessionBodySchema = z
 const PaymentIntentResponseSchema = z
   .object({
     clientSecret: z.string(),
+    paymentId: z.string().uuid(),
+    amount: z.number(),
   })
   .openapi("PaymentIntentResponse");
 
