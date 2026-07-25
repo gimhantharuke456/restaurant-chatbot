@@ -108,6 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return RestaurantCard(
                     restaurant: restaurant,
                     onTap: () => context.push('/restaurants/${restaurant.id}'),
+                    index: index,
                   );
                 },
               );

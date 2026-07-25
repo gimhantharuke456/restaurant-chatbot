@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import '../../../core/motion/entrance.dart';
 import '../../../core/theme/app_colors.dart';
 import '../models/restaurant_model.dart';
 
 class RestaurantCard extends StatelessWidget {
   final RestaurantModel restaurant;
   final VoidCallback onTap;
+  final int index;
 
-  const RestaurantCard({super.key, required this.restaurant, required this.onTap});
+  const RestaurantCard({
+    super.key,
+    required this.restaurant,
+    required this.onTap,
+    this.index = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
+    return staggeredEntrance(
+      _buildCard(context),
+      index: index,
+    );
+  }
+
+  Widget _buildCard(BuildContext context) {
     return Card(
       color: AppColors.card,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -70,6 +83,6 @@ class RestaurantCard extends StatelessWidget {
           ),
         ),
       ),
-    ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.06, end: 0);
+    );
   }
 }
