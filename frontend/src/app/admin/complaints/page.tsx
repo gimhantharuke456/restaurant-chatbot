@@ -127,9 +127,9 @@ export default function AdminComplaintsPage() {
     if (statusFilter !== "all") params.set("status", statusFilter);
     const res = await fetch(`/api/proxy/admin/complaints?${params}`);
     if (res.ok) {
-      const data = await res.json() as { complaints: Complaint[]; total: number };
-      setComplaints(data.complaints);
-      setTotal(data.total);
+      const result = await res.json() as { data: Complaint[]; total: number };
+      setComplaints(result.data);
+      setTotal(result.total);
     }
     setLoading(false);
   }, [page, statusFilter]);

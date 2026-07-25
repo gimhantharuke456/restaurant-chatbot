@@ -128,7 +128,7 @@ export const updateUserRole = async (req: Request, res: Response): Promise<void>
 export const suspendUser = async (req: Request, res: Response): Promise<void> => {
   const user = await adminService.suspendUser(req.params.id);
   await adminService.logAdminAction(
-    (req as any).user.id, (req as any).user.email, "SUSPEND_USER", "User", req.params.id, undefined, req.ip,
+    (req as any).user.dbId, (req as any).user.email, "SUSPEND_USER", "User", req.params.id, undefined, req.ip,
   );
   res.json(user);
 };
@@ -136,7 +136,7 @@ export const suspendUser = async (req: Request, res: Response): Promise<void> =>
 export const activateUser = async (req: Request, res: Response): Promise<void> => {
   const user = await adminService.activateUser(req.params.id);
   await adminService.logAdminAction(
-    (req as any).user.id, (req as any).user.email, "ACTIVATE_USER", "User", req.params.id, undefined, req.ip,
+    (req as any).user.dbId, (req as any).user.email, "ACTIVATE_USER", "User", req.params.id, undefined, req.ip,
   );
   res.json(user);
 };
@@ -154,7 +154,7 @@ export const getAllReviews = async (req: Request, res: Response): Promise<void> 
 export const hideReview = async (req: Request, res: Response): Promise<void> => {
   const review = await adminService.hideReview(req.params.id);
   await adminService.logAdminAction(
-    (req as any).user.id, (req as any).user.email, "HIDE_REVIEW", "Review", req.params.id, undefined, req.ip,
+    (req as any).user.dbId, (req as any).user.email, "HIDE_REVIEW", "Review", req.params.id, undefined, req.ip,
   );
   res.json(review);
 };
@@ -162,7 +162,7 @@ export const hideReview = async (req: Request, res: Response): Promise<void> => 
 export const deleteReview = async (req: Request, res: Response): Promise<void> => {
   await adminService.deleteReview(req.params.id);
   await adminService.logAdminAction(
-    (req as any).user.id, (req as any).user.email, "DELETE_REVIEW", "Review", req.params.id, undefined, req.ip,
+    (req as any).user.dbId, (req as any).user.email, "DELETE_REVIEW", "Review", req.params.id, undefined, req.ip,
   );
   res.status(204).send();
 };
@@ -170,7 +170,7 @@ export const deleteReview = async (req: Request, res: Response): Promise<void> =
 export const refundPayment = async (req: Request, res: Response): Promise<void> => {
   const payment = await adminService.refundPayment(req.params.id);
   await adminService.logAdminAction(
-    (req as any).user.id, (req as any).user.email, "REFUND_PAYMENT", "Payment", req.params.id, undefined, req.ip,
+    (req as any).user.dbId, (req as any).user.email, "REFUND_PAYMENT", "Payment", req.params.id, undefined, req.ip,
   );
   res.json(payment);
 };
@@ -180,7 +180,7 @@ export const broadcastAnnouncement = async (req: Request, res: Response): Promis
   if (!title || !message) { res.status(400).json({ error: "title and message required" }); return; }
   const result = await adminService.broadcastAnnouncement(title, message, role);
   await adminService.logAdminAction(
-    (req as any).user.id, (req as any).user.email, "BROADCAST_ANNOUNCEMENT", "System",
+    (req as any).user.dbId, (req as any).user.email, "BROADCAST_ANNOUNCEMENT", "System",
     undefined, `${result.sent} recipients`, req.ip,
   );
   res.json(result);
@@ -199,7 +199,7 @@ export const updateComplaint = async (req: Request, res: Response): Promise<void
   const { status, adminNote } = req.body as { status?: string; adminNote?: string };
   const complaint = await adminService.updateComplaint(req.params.id, { status, adminNote });
   await adminService.logAdminAction(
-    (req as any).user.id, (req as any).user.email, "UPDATE_COMPLAINT", "Complaint", req.params.id, status, req.ip,
+    (req as any).user.dbId, (req as any).user.email, "UPDATE_COMPLAINT", "Complaint", req.params.id, status, req.ip,
   );
   res.json(complaint);
 };
