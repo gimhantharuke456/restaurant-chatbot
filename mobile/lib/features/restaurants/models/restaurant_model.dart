@@ -16,6 +16,7 @@ class RestaurantModel {
   final int totalReviews;
   final double? latitude;
   final double? longitude;
+  final int? totalSeats;
 
   const RestaurantModel({
     required this.id,
@@ -35,6 +36,7 @@ class RestaurantModel {
     this.avgRating,
     this.latitude,
     this.longitude,
+    this.totalSeats,
   });
 
   factory RestaurantModel.fromJson(Map<String, dynamic> json) {
@@ -56,6 +58,7 @@ class RestaurantModel {
       totalReviews: json['totalReviews'] as int? ?? 0,
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
+      totalSeats: json['totalSeats'] as int?,
     );
   }
 }
