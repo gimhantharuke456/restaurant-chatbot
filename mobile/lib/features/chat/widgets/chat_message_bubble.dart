@@ -20,12 +20,30 @@ class ChatMessageBubble extends StatelessWidget {
         message.data!.isNotEmpty;
 
     if (isRestaurantList) {
-      return Align(
-        alignment: Alignment.centerLeft,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.86),
-          child: ChatRestaurantList(items: message.data!),
-        ),
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const CircleAvatar(
+            radius: 14,
+            backgroundColor: AppColors.muted,
+            child: Text(
+              'AI',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.mutedForeground),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Container(
+              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppColors.muted,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: ChatRestaurantList(items: message.data!),
+            ),
+          ),
+        ],
       );
     }
 
