@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
+import '../../../core/motion/app_motion.dart';
 import '../providers/auth_provider.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -91,7 +93,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         : const Text('Create account'),
                   ),
                 ],
-              ),
+              ).animate().fadeIn(duration: AppMotion.emphasized, curve: AppMotion.emphasizedCurve)
+                  .slideY(begin: 0.08, end: 0, duration: AppMotion.emphasized, curve: AppMotion.emphasizedCurve),
             ),
           ),
         ),

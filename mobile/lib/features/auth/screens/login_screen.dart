@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../core/motion/app_motion.dart';
 import '../providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -112,7 +113,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-            ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.08, end: 0),
+            ).animate().fadeIn(duration: AppMotion.emphasized, curve: AppMotion.emphasizedCurve)
+                .slideY(begin: 0.08, end: 0, duration: AppMotion.emphasized, curve: AppMotion.emphasizedCurve),
           ),
         ),
       ),
