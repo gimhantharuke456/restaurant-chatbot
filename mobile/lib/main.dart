@@ -1,20 +1,27 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'core/firebase/firebase_options_dummy.dart';
+import 'core/firebase/google_signin_config.dart';
 import 'core/network/api_client.dart';
+import 'firebase_options.dart';
 import 'core/network/auth_token_holder.dart';
 import 'core/router/app_router.dart';
 import 'core/storage/token_storage.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/data/auth_repository.dart';
 import 'features/auth/providers/auth_provider.dart';
+import 'features/chat/data/chat_repository.dart';
+import 'features/chat/providers/chat_provider.dart';
 import 'features/restaurants/data/restaurant_repository.dart';
 import 'features/restaurants/providers/restaurant_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DummyFirebaseOptions.android);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await GoogleSignIn.instance.initialize(
+    serverClientId: GoogleSignInConfig.serverClientId,
+  );
   runApp(const RestaurantChatbotApp());
 }
 
@@ -27,6 +34,7 @@ class RestaurantChatbotApp extends StatelessWidget {
     final tokenStorage = SecureTokenStorage();
     final apiClient = ApiClient(tokenProvider: () => tokenHolder.token);
     final restaurantRepository = ApiRestaurantRepository(apiClient);
+    final chatRepository = ApiChatRepository(apiClient);
     final authProvider = AuthProvider(
       repository: FirebaseAuthRepository(apiClient: apiClient),
       tokenStorage: tokenStorage,
@@ -43,6 +51,9 @@ class RestaurantChatbotApp extends StatelessWidget {
         ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
         ChangeNotifierProvider<RestaurantProvider>(
           create: (context) => RestaurantProvider(context.read<RestaurantRepository>()),
+        ),
+        ChangeNotifierProvider<ChatProvider>(
+          create: (_) => ChatProvider(chatRepository),
         ),
       ],
       child: MaterialApp.router(

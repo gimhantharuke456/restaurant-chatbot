@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../features/auth/providers/auth_provider.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
+import '../../features/chat/screens/chat_screen.dart';
 import '../../features/restaurants/data/restaurant_repository.dart';
 import '../../features/restaurants/providers/restaurant_detail_provider.dart';
 import '../../features/restaurants/screens/home_screen.dart';
@@ -38,7 +39,7 @@ GoRouter buildAppRouter(AuthProvider authProvider) {
           ),
           GoRoute(
             path: '/chat',
-            builder: (context, state) => const ComingSoonScreen(title: 'Chat'),
+            builder: (context, state) => const ChatScreen(),
           ),
           GoRoute(
             path: '/more',
