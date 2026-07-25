@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../features/auth/providers/auth_provider.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
+import '../../features/booking/screens/booking_flow_screen.dart';
 import '../../features/chat/screens/chat_screen.dart';
 import '../../features/restaurants/data/restaurant_repository.dart';
 import '../../features/restaurants/providers/restaurant_detail_provider.dart';
@@ -53,6 +54,10 @@ GoRouter buildAppRouter(AuthProvider authProvider) {
           create: (_) => RestaurantDetailProvider(context.read<RestaurantRepository>()),
           child: RestaurantDetailScreen(restaurantId: state.pathParameters['id']!),
         ),
+      ),
+      GoRoute(
+        path: '/restaurants/:id/book',
+        builder: (context, state) => BookingFlowScreen(restaurantId: state.pathParameters['id']!),
       ),
     ],
   );

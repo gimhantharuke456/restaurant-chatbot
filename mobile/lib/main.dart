@@ -13,6 +13,7 @@ import 'core/storage/token_storage.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/data/auth_repository.dart';
 import 'features/auth/providers/auth_provider.dart';
+import 'features/booking/data/booking_repository.dart';
 import 'features/chat/data/chat_repository.dart';
 import 'features/chat/providers/chat_provider.dart';
 import 'features/restaurants/data/restaurant_repository.dart';
@@ -39,6 +40,7 @@ class RestaurantChatbotApp extends StatelessWidget {
     final apiClient = ApiClient(tokenProvider: () => tokenHolder.token);
     final restaurantRepository = ApiRestaurantRepository(apiClient);
     final chatRepository = ApiChatRepository(apiClient);
+    final bookingRepository = ApiBookingRepository(apiClient);
     final authProvider = AuthProvider(
       repository: FirebaseAuthRepository(apiClient: apiClient),
       tokenStorage: tokenStorage,
@@ -59,6 +61,7 @@ class RestaurantChatbotApp extends StatelessWidget {
         ChangeNotifierProvider<ChatProvider>(
           create: (_) => ChatProvider(chatRepository),
         ),
+        Provider<BookingRepository>.value(value: bookingRepository),
       ],
       child: MaterialApp.router(
         title: 'Restaurant Chatbot',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/error_retry_view.dart';
@@ -120,11 +121,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
             const SizedBox(height: 24),
             ElevatedButton(
               key: const Key('book_table_button'),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Booking will be available in the next update')),
-                );
-              },
+              onPressed: () => context.push('/restaurants/${widget.restaurantId}/book'),
               child: const Text('Book a table'),
             ),
           ],
