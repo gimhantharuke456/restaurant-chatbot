@@ -28,6 +28,10 @@ class _LoginScreenState extends State<LoginScreen> {
     await auth.signIn(_emailController.text.trim(), _passwordController.text);
   }
 
+  Future<void> _submitGoogle(AuthProvider auth) async {
+    await auth.signInWithGoogle();
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
@@ -87,6 +91,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextButton(
                     onPressed: () => context.go('/register'),
                     child: const Text("Don't have an account? Register"),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      const Expanded(child: Divider()),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text('or', style: Theme.of(context).textTheme.bodySmall),
+                      ),
+                      const Expanded(child: Divider()),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    key: const Key('login_google_button'),
+                    onPressed: auth.isLoading ? null : () => _submitGoogle(auth),
+                    icon: const Icon(Icons.g_mobiledata, size: 28),
+                    label: const Text('Continue with Google'),
                   ),
                 ],
               ),

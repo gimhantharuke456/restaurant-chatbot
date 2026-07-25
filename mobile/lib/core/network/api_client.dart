@@ -4,7 +4,7 @@ import 'api_exception.dart';
 
 const String kApiBaseUrl = String.fromEnvironment(
   'API_BASE_URL',
-  defaultValue: 'http://10.0.2.2:3000/api',
+  defaultValue: 'http://192.168.1.165:3000/api',
 );
 
 class ApiClient {
