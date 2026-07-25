@@ -574,6 +574,72 @@ git commit -m "feat(mobile): stagger restaurant card entrance instead of animati
 
 ---
 
+### Task 5: Restaurant detail content fade-in
+
+**Files:**
+- Modify: `mobile/lib/features/restaurants/screens/restaurant_detail_screen.dart`
+
+**Interfaces:**
+- Consumes: `AppMotion` (Task 1).
+- Produces: no public API change.
+
+- [ ] **Step 1: Add imports**
+
+```dart
+import 'package:flutter_animate/flutter_animate.dart';
+import '../../../core/motion/app_motion.dart';
+```
+
+- [ ] **Step 2: Fade in the loaded content**
+
+Replace the end of the `build` method — currently:
+```dart
+            ElevatedButton(
+              key: const Key('book_table_button'),
+              onPressed: () => context.push('/restaurants/${widget.restaurantId}/book'),
+              child: const Text('Book a table'),
+            ),
+          ],
+        );
+      }),
+    );
+  }
+}
+```
+with:
+```dart
+            ElevatedButton(
+              key: const Key('book_table_button'),
+              onPressed: () => context.push('/restaurants/${widget.restaurantId}/book'),
+              child: const Text('Book a table'),
+            ),
+          ],
+        ).animate().fadeIn(duration: AppMotion.standard, curve: AppMotion.standardCurve);
+      }),
+    );
+  }
+}
+```
+
+(The `LoadingView`/`ErrorRetryView` states returned earlier in this same
+`Builder` are untouched by this task — they already got their own treatment
+in Task 3. This only affects the fully-loaded content `ListView`.)
+
+- [ ] **Step 3: Verify**
+
+Run: `cd mobile && flutter analyze`
+Expected: no new issues.
+
+- [ ] **Step 4: Commit**
+
+```bash
+cd mobile
+git add lib/features/restaurants/screens/restaurant_detail_screen.dart
+git commit -m "feat(mobile): fade in restaurant detail content once loaded"
+```
+
+---
+
 ### Task 6: Chat message entrance animation
 
 **Files:**
