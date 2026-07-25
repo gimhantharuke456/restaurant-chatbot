@@ -6,6 +6,7 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/booking/screens/booking_flow_screen.dart';
 import '../../features/chat/screens/chat_screen.dart';
+import '../../features/reservations/screens/reservations_screen.dart';
 import '../../features/restaurants/data/restaurant_repository.dart';
 import '../../features/restaurants/providers/restaurant_detail_provider.dart';
 import '../../features/restaurants/screens/home_screen.dart';
@@ -47,7 +48,7 @@ GoRouter buildAppRouter(AuthProvider authProvider) {
           GoRoute(
             path: '/reservations',
             pageBuilder: (context, state) =>
-                buildPageTransition(state: state, child: const ComingSoonScreen(title: 'Reservations')),
+                buildPageTransition(state: state, child: const ReservationsScreen()),
           ),
           GoRoute(
             path: '/chat',
