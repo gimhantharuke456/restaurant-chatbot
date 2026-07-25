@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../core/motion/app_motion.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/error_retry_view.dart';
 import '../../../shared/widgets/loading_view.dart';
@@ -125,7 +127,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
               child: const Text('Book a table'),
             ),
           ],
-        );
+        ).animate().fadeIn(duration: AppMotion.standard, curve: AppMotion.standardCurve);
       }),
     );
   }
