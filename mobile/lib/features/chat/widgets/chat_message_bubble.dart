@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../core/motion/entrance.dart';
 import '../../../core/theme/app_colors.dart';
 import '../models/chat_message_model.dart';
 import 'chat_payment_button.dart';
@@ -15,6 +16,10 @@ class ChatMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return staggeredEntrance(_buildContent(context));
+  }
+
+  Widget _buildContent(BuildContext context) {
     final isRestaurantList = message.content == _restaurantListSentinel &&
         message.data != null &&
         message.data!.isNotEmpty;

@@ -74,6 +74,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         );
                       }
                       return Padding(
+                        key: ValueKey(chat.messages[index].id),
                         padding: const EdgeInsets.only(bottom: 12),
                         child: ChatMessageBubble(message: chat.messages[index]),
                       );
