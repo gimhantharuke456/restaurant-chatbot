@@ -19,6 +19,12 @@ class MoreMenuScreen extends StatelessWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push('/favorites'),
           ),
+          ListTile(
+            leading: const Icon(Icons.emoji_events_outlined),
+            title: const Text('Loyalty Rewards'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/loyalty'),
+          ),
         ],
       ),
     );
