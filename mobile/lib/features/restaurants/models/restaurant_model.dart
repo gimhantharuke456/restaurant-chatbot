@@ -5,6 +5,7 @@ class RestaurantModel {
   final String address;
   final String area;
   final String? phone;
+  final String? website;
   final List<String> cuisineTypes;
   final String priceRange;
   final Map<String, dynamic>? openingHours;
@@ -30,6 +31,7 @@ class RestaurantModel {
     required this.totalReviews,
     this.description,
     this.phone,
+    this.website,
     this.openingHours,
     this.profileImageUrl,
     this.coverImageUrl,
@@ -47,6 +49,7 @@ class RestaurantModel {
       address: json['address'] as String,
       area: json['area'] as String,
       phone: json['phone'] as String?,
+      website: json['website'] as String?,
       cuisineTypes: List<String>.from(json['cuisineTypes'] as List? ?? const []),
       priceRange: json['priceRange'] as String,
       openingHours: json['openingHours'] as Map<String, dynamic>?,

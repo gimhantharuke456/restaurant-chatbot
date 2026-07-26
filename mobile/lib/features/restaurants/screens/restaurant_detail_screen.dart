@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/motion/app_motion.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../features/favorites/widgets/favorite_button.dart';
@@ -78,6 +79,14 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                 ),
               ],
             ),
+            if (restaurant.website != null && restaurant.website!.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: () => _openWebsite(restaurant.website!),
+                icon: const Icon(Icons.language, size: 18),
+                label: const Text('Visit Website'),
+              ),
+            ],
             if (detail.promotions.isNotEmpty) ...[
               const SizedBox(height: 16),
               ...detail.promotions.map((promo) => Container(
@@ -148,5 +157,13 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
         ).animate().fadeIn(duration: AppMotion.standard, curve: AppMotion.standardCurve);
       }),
     );
+  }
+
+  Future<void> _openWebsite(String url) async {
+    final uri = Uri.tryParse(url.startsWith('http') ? url : 'https://$url');
+    if (uri == null) return;
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   }
 }
