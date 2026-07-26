@@ -5,8 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx prisma/seed/dedupe-restaurants.ts && tsx watch src/index.ts",
+    "dev": "tsx prisma/seed/dedupe-restaurants.ts && tsx prisma/seed/backfill-coordinates.ts && tsx watch src/index.ts",
     "dedupe:restaurants": "tsx prisma/seed/dedupe-restaurants.ts",
+    "backfill:coordinates": "tsx prisma/seed/backfill-coordinates.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "postinstall": "prisma generate",

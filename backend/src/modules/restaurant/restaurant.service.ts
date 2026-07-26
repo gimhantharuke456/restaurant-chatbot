@@ -14,6 +14,17 @@ export type CreateRestaurantInput = z.infer<typeof CreateRestaurantBodySchema>;
 export type UpdateRestaurantInput = z.infer<typeof UpdateRestaurantBodySchema>;
 export type ReviewQueryInput = z.infer<typeof ReviewQuerySchema>;
 
+// Haversine distance in km between two lat/lng points.
+const distanceKm = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+};
+
 export const listRestaurants = async (filters: RestaurantFilters = {}) => {
   const page = filters.page ?? 1;
   const limit = filters.limit ?? 20;
@@ -30,6 +41,29 @@ export const listRestaurants = async (filters: RestaurantFilters = {}) => {
       { description: { contains: filters.search, mode: "insensitive" } },
       { area: { contains: filters.search, mode: "insensitive" } },
     ];
+  }
+
+  // "Near me" mode: distance can't be computed in SQL without a spatial
+  // extension, and the dataset is small (city-scale, single-digit
+  // thousands at most), so sort by computed distance in JS instead.
+  if (filters.lat != null && filters.lng != null) {
+    const { lat, lng, radiusKm } = filters;
+    const all = await prisma.restaurant.findMany({
+      where: { ...where, latitude: { not: null }, longitude: { not: null } },
+    });
+    const withDistance = all
+      .map((r) => ({ ...r, distanceKm: distanceKm(lat, lng, r.latitude!, r.longitude!) }))
+      .filter((r) => radiusKm == null || r.distanceKm <= radiusKm)
+      .sort((a, b) => a.distanceKm - b.distanceKm);
+
+    const total = withDistance.length;
+    const page_ = withDistance.slice(skip, skip + limit);
+    return {
+      data: page_.map((r) => ({ ...parseRestaurant(r), distanceKm: Math.round(r.distanceKm * 10) / 10 })),
+      total,
+      page,
+      limit,
+    };
   }
 
   const [restaurants, total] = await Promise.all([
