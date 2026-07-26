@@ -113,6 +113,7 @@ model Reservation {
   partySize       Int
   specialRequests String?
   status          ReservationStatus @default(PENDING)
+  reminderSent    Boolean           @default(false)
   firestoreId     String?           @unique
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
