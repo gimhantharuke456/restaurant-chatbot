@@ -18,6 +18,7 @@ class RestaurantModel {
   final double? latitude;
   final double? longitude;
   final int? totalSeats;
+  final double? distanceKm;
 
   const RestaurantModel({
     required this.id,
@@ -39,6 +40,7 @@ class RestaurantModel {
     this.latitude,
     this.longitude,
     this.totalSeats,
+    this.distanceKm,
   });
 
   factory RestaurantModel.fromJson(Map<String, dynamic> json) {
@@ -62,6 +64,7 @@ class RestaurantModel {
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
       totalSeats: json['totalSeats'] as int?,
+      distanceKm: (json['distanceKm'] as num?)?.toDouble(),
     );
   }
 }

@@ -53,7 +53,9 @@ class RestaurantCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${restaurant.area} · ${restaurant.priceRange}',
+                      restaurant.distanceKm != null
+                          ? '${restaurant.area} · ${restaurant.priceRange} · ${restaurant.distanceKm} km away'
+                          : '${restaurant.area} · ${restaurant.priceRange}',
                       style: const TextStyle(color: AppColors.mutedForeground, fontSize: 13),
                     ),
                     const SizedBox(height: 4),

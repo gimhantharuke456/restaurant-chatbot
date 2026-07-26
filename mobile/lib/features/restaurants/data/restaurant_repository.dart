@@ -10,6 +10,9 @@ class RestaurantFilters {
   final String? cuisine;
   final String? priceRange;
   final double? minRating;
+  final double? lat;
+  final double? lng;
+  final double? radiusKm;
   final int page;
 
   const RestaurantFilters({
@@ -18,6 +21,9 @@ class RestaurantFilters {
     this.cuisine,
     this.priceRange,
     this.minRating,
+    this.lat,
+    this.lng,
+    this.radiusKm,
     this.page = 1,
   });
 
@@ -28,6 +34,9 @@ class RestaurantFilters {
     if (cuisine != null && cuisine!.isNotEmpty) query['cuisine'] = cuisine!;
     if (priceRange != null) query['priceRange'] = priceRange!;
     if (minRating != null) query['minRating'] = minRating.toString();
+    if (lat != null) query['lat'] = lat.toString();
+    if (lng != null) query['lng'] = lng.toString();
+    if (radiusKm != null) query['radiusKm'] = radiusKm.toString();
     return query;
   }
 }

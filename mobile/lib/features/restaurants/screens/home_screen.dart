@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/empty_state_view.dart';
 import '../../../shared/widgets/error_retry_view.dart';
 import '../../../shared/widgets/loading_view.dart';
@@ -20,6 +22,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _searchController = TextEditingController();
   String? _selectedPriceRange;
+  bool _nearMeActive = false;
+  bool _locating = false;
 
   @override
   void initState() {
@@ -36,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _applyFilters() {
+    setState(() => _nearMeActive = false);
     context.read<RestaurantProvider>().fetchRestaurants(
           filters: RestaurantFilters(
             search: _searchController.text.trim(),
@@ -44,12 +49,70 @@ class _HomeScreenState extends State<HomeScreen> {
         );
   }
 
+  Future<void> _findNearMe() async {
+    setState(() => _locating = true);
+    try {
+      if (!await Geolocator.isLocationServiceEnabled()) {
+        _showError('Location services are disabled. Enable them to see restaurants near you.');
+        return;
+      }
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+        _showError('Location permission denied — enable it to see restaurants near you.');
+        return;
+      }
+
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.medium),
+      );
+      if (!mounted) return;
+      setState(() => _nearMeActive = true);
+      await context.read<RestaurantProvider>().fetchRestaurants(
+            filters: RestaurantFilters(lat: position.latitude, lng: position.longitude),
+          );
+    } catch (_) {
+      _showError("Couldn't get your location. Please try again.");
+    } finally {
+      if (mounted) setState(() => _locating = false);
+    }
+  }
+
+  void _showError(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context) {
     final restaurantProvider = context.watch<RestaurantProvider>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Discover restaurants')),
+      appBar: AppBar(
+        title: const Text('Discover restaurants'),
+        actions: [
+          if (_nearMeActive)
+            IconButton(
+              icon: const Icon(Icons.close),
+              tooltip: 'Clear near me',
+              onPressed: _applyFilters,
+            )
+          else
+            IconButton(
+              icon: _locating
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.my_location),
+              tooltip: 'Near me',
+              onPressed: _locating ? null : _findNearMe,
+            ),
+        ],
+      ),
       body: Column(
         children: [
           Padding(
@@ -64,6 +127,14 @@ class _HomeScreenState extends State<HomeScreen> {
               onSubmitted: (_) => _applyFilters(),
             ),
           ),
+          if (_nearMeActive)
+            const Padding(
+              padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text('Sorted by distance from you', style: TextStyle(color: AppColors.mutedForeground, fontSize: 12)),
+              ),
+            ),
           SizedBox(
             height: 48,
             child: ListView(
