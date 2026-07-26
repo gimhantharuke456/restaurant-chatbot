@@ -13,11 +13,25 @@ export const findOrCreateUser = async (input: RegisterInput): Promise<User> => {
   });
   if (existing) return existing;
 
+  const hasDiningPrefs = input.cuisines || input.dietaryRestrictions || input.budgetPreference;
+
   const user = await prisma.user.create({
     data: {
       firebaseUid: input.firebaseUid,
       email: input.email,
       name: input.name,
+      phone: input.phone,
+      dateOfBirth: input.dateOfBirth ? new Date(input.dateOfBirth) : undefined,
+      preferredLanguage: input.preferredLanguage,
+      diningPreferences: hasDiningPrefs
+        ? {
+            cuisines: input.cuisines ?? [],
+            dietaryRestrictions: input.dietaryRestrictions ?? [],
+            budgetPreference: input.budgetPreference,
+            preferredDiningTimes: [],
+            seatingPreferences: [],
+          }
+        : undefined,
     },
   });
 

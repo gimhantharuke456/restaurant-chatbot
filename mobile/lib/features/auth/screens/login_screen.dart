@@ -33,6 +33,23 @@ class _LoginScreenState extends State<LoginScreen> {
     await auth.signInWithGoogle();
   }
 
+  Future<void> _forgotPassword(AuthProvider auth) async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Enter your email above first, then tap "Forgot password?"')),
+      );
+      return;
+    }
+    final ok = await auth.sendPasswordResetEmail(email);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(ok ? 'Password reset email sent — check your inbox.' : (auth.error ?? 'Failed to send reset email')),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
@@ -72,6 +89,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: true,
                     validator: (value) =>
                         (value == null || value.isEmpty) ? 'Password is required' : null,
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () => _forgotPassword(auth),
+                      child: const Text('Forgot password?'),
+                    ),
                   ),
                   if (auth.error != null) ...[
                     const SizedBox(height: 12),

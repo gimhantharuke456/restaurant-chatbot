@@ -67,8 +67,29 @@ class AuthProvider extends ChangeNotifier {
     return _runAuthAction(() => _repository.signInWithEmail(email, password));
   }
 
-  Future<bool> register(String email, String password, String name) {
-    return _runAuthAction(() => _repository.registerWithEmail(email, password, name));
+  Future<bool> register(
+    String email,
+    String password,
+    String name, {
+    Map<String, dynamic>? extras,
+  }) {
+    return _runAuthAction(() => _repository.registerWithEmail(email, password, name, extras: extras));
+  }
+
+  Future<bool> sendPasswordResetEmail(String email) async {
+    isLoading = true;
+    error = null;
+    notifyListeners();
+    try {
+      await _repository.sendPasswordResetEmail(email);
+      return true;
+    } catch (e) {
+      error = e.toString();
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<bool> signInWithGoogle() async {

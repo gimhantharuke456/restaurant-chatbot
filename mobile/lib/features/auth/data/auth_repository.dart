@@ -5,9 +5,15 @@ import '../models/user_model.dart';
 
 abstract class AuthRepository {
   Future<String> signInWithEmail(String email, String password);
-  Future<String> registerWithEmail(String email, String password, String name);
+  Future<String> registerWithEmail(
+    String email,
+    String password,
+    String name, {
+    Map<String, dynamic>? extras,
+  });
   Future<String> signInWithGoogle();
   Future<void> signOut();
+  Future<void> sendPasswordResetEmail(String email);
   Future<UserModel> fetchCurrentUser();
 
   /// Returns a fresh ID token from Firebase's own natively-persisted sign-in
@@ -45,7 +51,12 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<String> registerWithEmail(String email, String password, String name) async {
+  Future<String> registerWithEmail(
+    String email,
+    String password,
+    String name, {
+    Map<String, dynamic>? extras,
+  }) async {
     final credential = await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
@@ -55,8 +66,14 @@ class FirebaseAuthRepository implements AuthRepository {
       'firebaseUid': credential.user!.uid,
       'email': email,
       'name': name,
+      ...?extras,
     });
     return token!;
+  }
+
+  @override
+  Future<void> sendPasswordResetEmail(String email) {
+    return _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
   @override

@@ -6,6 +6,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
+  sendPasswordResetEmail,
   GoogleAuthProvider,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
@@ -16,14 +17,50 @@ import { Label } from "@/components/ui/label";
 
 type Tab = "login" | "register";
 
+const CUISINE_OPTIONS = [
+  "Sri Lankan", "Japanese", "Italian", "Indian", "Chinese", "Thai", "Seafood", "BBQ",
+  "Burger", "Pizza", "Sushi", "Vegetarian", "Mediterranean", "French", "Mexican",
+];
+const LANGUAGE_OPTIONS = ["English", "Sinhala", "Tamil"];
+const BUDGET_OPTIONS = [
+  { value: "BUDGET", label: "Budget" },
+  { value: "MODERATE", label: "Moderate" },
+  { value: "EXPENSIVE", label: "Expensive" },
+  { value: "FINE_DINING", label: "Fine Dining" },
+];
+
 export default function LoginPage() {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [preferredLanguage, setPreferredLanguage] = useState("");
+  const [cuisines, setCuisines] = useState<string[]>([]);
+  const [budgetPreference, setBudgetPreference] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
+
+  const toggleCuisine = (c: string) => {
+    setCuisines((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
+  };
+
+  async function handleForgotPassword() {
+    if (!email) { setError("Enter your email above first, then click 'Forgot password?'"); return; }
+    setError(null);
+    setLoading(true);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setResetSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not send reset email");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function setTokenAndRedirect(token: string) {
     document.cookie = `${AUTH_COOKIE}=${token}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`;
@@ -68,7 +105,16 @@ export default function LoginPage() {
       await fetch("/api/proxy/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ firebaseUid: cred.user.uid, email, name }),
+        body: JSON.stringify({
+          firebaseUid: cred.user.uid,
+          email,
+          name,
+          phone: phone || undefined,
+          dateOfBirth: dateOfBirth ? new Date(dateOfBirth).toISOString() : undefined,
+          preferredLanguage: preferredLanguage || undefined,
+          cuisines: cuisines.length ? cuisines : undefined,
+          budgetPreference: budgetPreference || undefined,
+        }),
       });
       router.push("/chat");
     } catch (err) {
@@ -132,16 +178,26 @@ export default function LoginPage() {
               <Input id="email" type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="password">Password</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Password</Label>
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="text-xs text-primary hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
               <Input id="password" type="password" autoComplete="current-password" required value={password} onChange={e => setPassword(e.target.value)} />
             </div>
+            {resetSent && <p className="rounded-md bg-green-500/10 px-3 py-2 text-sm text-green-600">Password reset email sent — check your inbox.</p>}
             {error && <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full" size="lg" disabled={loading}>
               {loading ? "Signing in…" : "Sign in"}
             </Button>
           </form>
         ) : (
-          <form onSubmit={handleRegister} className="space-y-4">
+          <form onSubmit={handleRegister} className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
             <div className="space-y-1.5">
               <Label htmlFor="name">Full name</Label>
               <Input id="name" type="text" autoComplete="name" required value={name} onChange={e => setName(e.target.value)} placeholder="Your name" />
@@ -153,6 +209,59 @@ export default function LoginPage() {
             <div className="space-y-1.5">
               <Label htmlFor="reg-password">Password</Label>
               <Input id="reg-password" type="password" autoComplete="new-password" required minLength={6} value={password} onChange={e => setPassword(e.target.value)} placeholder="Min 6 characters" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="reg-phone">Phone number</Label>
+              <Input id="reg-phone" type="tel" autoComplete="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+94 77 000 0000" />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="reg-dob">Date of birth</Label>
+                <Input id="reg-dob" type="date" value={dateOfBirth} onChange={e => setDateOfBirth(e.target.value)} />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="reg-lang">Preferred language</Label>
+                <select
+                  id="reg-lang"
+                  value={preferredLanguage}
+                  onChange={e => setPreferredLanguage(e.target.value)}
+                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                >
+                  <option value="">Select</option>
+                  {LANGUAGE_OPTIONS.map(l => <option key={l} value={l}>{l}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Preferred cuisines</Label>
+              <div className="flex flex-wrap gap-1.5">
+                {CUISINE_OPTIONS.map(c => (
+                  <button
+                    type="button"
+                    key={c}
+                    onClick={() => toggleCuisine(c)}
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium border transition-colors ${
+                      cuisines.includes(c)
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "border-border text-muted-foreground hover:border-primary/50"
+                    }`}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="reg-budget">Budget preference</Label>
+              <select
+                id="reg-budget"
+                value={budgetPreference}
+                onChange={e => setBudgetPreference(e.target.value)}
+                className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+              >
+                <option value="">No preference</option>
+                {BUDGET_OPTIONS.map(b => <option key={b.value} value={b.value}>{b.label}</option>)}
+              </select>
             </div>
             {error && <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full" size="lg" disabled={loading}>

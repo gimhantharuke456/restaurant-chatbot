@@ -8,6 +8,12 @@ export const RegisterBodySchema = z
     firebaseUid: z.string().min(1),
     email: z.string().email(),
     name: z.string().min(1).optional(),
+    phone: z.string().optional(),
+    dateOfBirth: z.string().datetime().optional(),
+    preferredLanguage: z.string().optional(),
+    cuisines: z.array(z.string()).optional(),
+    dietaryRestrictions: z.array(z.string()).optional(),
+    budgetPreference: z.enum(["BUDGET", "MODERATE", "EXPENSIVE", "FINE_DINING"]).optional(),
   })
   .openapi("RegisterBody");
 
