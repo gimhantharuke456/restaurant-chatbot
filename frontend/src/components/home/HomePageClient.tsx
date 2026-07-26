@@ -1,12 +1,12 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useInView, type Variants } from "framer-motion";
 import {
   MessageSquare, CalendarDays, CreditCard, Star, MapPin,
-  ArrowRight, Sparkles, ChefHat, Utensils,
+  ArrowRight, Sparkles, ChefHat, Utensils, LocateFixed, Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -138,6 +138,12 @@ function RestaurantCard({ r, index }: { r: RestaurantItem; index: number }) {
         <div className="flex items-center gap-1 text-xs text-muted-foreground">
           <MapPin className="h-3 w-3 shrink-0" />
           <span className="truncate">{r.area}</span>
+          {r.distanceKm != null && (
+            <>
+              <span className="mx-1">·</span>
+              <span className="text-primary font-medium">{r.distanceKm} km away</span>
+            </>
+          )}
           {r.avgRating != null && (
             <>
               <span className="mx-1">·</span>
@@ -239,7 +245,49 @@ function DishCard({ dish }: { dish: MenuItem }) {
   );
 }
 
-export function HomePageClient({ restaurants, featuredDishes = [] }: { restaurants: RestaurantItem[]; featuredDishes?: MenuItem[] }) {
+export function HomePageClient({ restaurants: initialRestaurants, featuredDishes = [] }: { restaurants: RestaurantItem[]; featuredDishes?: MenuItem[] }) {
+  const [restaurants, setRestaurants] = useState(initialRestaurants);
+  const [locating, setLocating] = useState(false);
+  const [nearMeActive, setNearMeActive] = useState(false);
+  const [locationError, setLocationError] = useState("");
+
+  const findNearMe = () => {
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation isn't supported by this browser.");
+      return;
+    }
+    setLocating(true);
+    setLocationError("");
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          const res = await fetch(
+            `/api/proxy/restaurants?lat=${latitude}&lng=${longitude}&limit=50`
+          );
+          if (!res.ok) throw new Error();
+          const data = (await res.json()) as { data: RestaurantItem[] };
+          setRestaurants(data.data);
+          setNearMeActive(true);
+        } catch {
+          setLocationError("Couldn't load nearby restaurants. Please try again.");
+        } finally {
+          setLocating(false);
+        }
+      },
+      () => {
+        setLocationError("Location permission denied — enable it to see restaurants near you.");
+        setLocating(false);
+      }
+    );
+  };
+
+  const resetNearMe = () => {
+    setRestaurants(initialRestaurants);
+    setNearMeActive(false);
+    setLocationError("");
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
 
@@ -362,15 +410,39 @@ export function HomePageClient({ restaurants, featuredDishes = [] }: { restauran
       {restaurants.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 pb-20">
           <Section className="mb-8">
-            <motion.div variants={fadeUp} className="flex items-end justify-between">
+            <motion.div variants={fadeUp} className="flex items-end justify-between flex-wrap gap-3">
               <div>
                 <h2 className="text-2xl sm:text-3xl font-bold">Our Restaurants</h2>
-                <p className="text-muted-foreground mt-1">Handpicked dining experiences for every occasion</p>
+                <p className="text-muted-foreground mt-1">
+                  {nearMeActive ? "Sorted by distance from you" : "Handpicked dining experiences for every occasion"}
+                </p>
               </div>
-              <Link href="/chat" className="hidden sm:flex items-center gap-1 text-sm text-primary hover:underline font-medium">
-                Find via AI <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
+              <div className="flex items-center gap-3">
+                {nearMeActive ? (
+                  <button
+                    onClick={resetNearMe}
+                    className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground font-medium"
+                  >
+                    Clear
+                  </button>
+                ) : (
+                  <button
+                    onClick={findNearMe}
+                    disabled={locating}
+                    className="flex items-center gap-1.5 text-sm text-primary hover:underline font-medium disabled:opacity-50"
+                  >
+                    {locating ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <LocateFixed className="h-3.5 w-3.5" />}
+                    Near me
+                  </button>
+                )}
+                <Link href="/chat" className="hidden sm:flex items-center gap-1 text-sm text-primary hover:underline font-medium">
+                  Find via AI <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
             </motion.div>
+            {locationError && (
+              <p className="mt-2 text-sm text-destructive">{locationError}</p>
+            )}
           </Section>
 
           <Section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

@@ -13,6 +13,7 @@ export interface RestaurantItem {
   priceRange: string;
   avgRating: number | null;
   totalReviews: number;
+  distanceKm?: number;
 }
 
 export interface MenuItem {
