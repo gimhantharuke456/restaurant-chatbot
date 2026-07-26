@@ -9,6 +9,8 @@ class MyReservationModel {
   final String status;
   final int? preOrderItemCount;
   final double? preOrderAmount;
+  final int? reviewRating;
+  final String? reviewComment;
 
   const MyReservationModel({
     required this.id,
@@ -21,14 +23,40 @@ class MyReservationModel {
     required this.status,
     this.preOrderItemCount,
     this.preOrderAmount,
+    this.reviewRating,
+    this.reviewComment,
   });
 
   bool get canCancel => status == 'PENDING' || status == 'CONFIRMED';
+  bool get canReview => status == 'COMPLETED';
+  bool get hasReview => reviewRating != null;
+
+  MyReservationModel copyWith({
+    String? status,
+    int? reviewRating,
+    String? reviewComment,
+  }) {
+    return MyReservationModel(
+      id: id,
+      restaurantId: restaurantId,
+      restaurantName: restaurantName,
+      restaurantArea: restaurantArea,
+      date: date,
+      time: time,
+      partySize: partySize,
+      status: status ?? this.status,
+      preOrderItemCount: preOrderItemCount,
+      preOrderAmount: preOrderAmount,
+      reviewRating: reviewRating ?? this.reviewRating,
+      reviewComment: reviewComment ?? this.reviewComment,
+    );
+  }
 
   factory MyReservationModel.fromJson(Map<String, dynamic> json) {
     final restaurant = json['restaurant'] as Map<String, dynamic>?;
     final payment = json['payment'] as Map<String, dynamic>?;
     final orderItems = payment?['orderItems'] as List?;
+    final review = json['review'] as Map<String, dynamic>?;
 
     return MyReservationModel(
       id: json['id'] as String,
@@ -41,6 +69,8 @@ class MyReservationModel {
       status: json['status'] as String,
       preOrderItemCount: orderItems?.length,
       preOrderAmount: (payment?['amount'] as num?)?.toDouble(),
+      reviewRating: review?['rating'] as int?,
+      reviewComment: review?['comment'] as String?,
     );
   }
 }

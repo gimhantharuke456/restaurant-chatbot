@@ -13,8 +13,9 @@ const _statusColors = {
 class ReservationCard extends StatelessWidget {
   final MyReservationModel reservation;
   final Future<void> Function()? onCancel;
+  final Future<void> Function()? onReview;
 
-  const ReservationCard({super.key, required this.reservation, this.onCancel});
+  const ReservationCard({super.key, required this.reservation, this.onCancel, this.onReview});
 
   @override
   Widget build(BuildContext context) {
@@ -87,16 +88,59 @@ class ReservationCard extends StatelessWidget {
                 ],
               ),
             ],
-            if (reservation.canCancel && onCancel != null) ...[
-              const SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: OutlinedButton.icon(
-                  onPressed: onCancel,
-                  style: OutlinedButton.styleFrom(foregroundColor: AppColors.destructive),
-                  icon: const Icon(Icons.close, size: 16),
-                  label: const Text('Cancel reservation'),
+            if (reservation.hasReview) ...[
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.muted,
+                  borderRadius: BorderRadius.circular(8),
                 ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: List.generate(
+                        5,
+                        (i) => Icon(
+                          i < reservation.reviewRating! ? Icons.star : Icons.star_border,
+                          color: AppColors.primary,
+                          size: 14,
+                        ),
+                      ),
+                    ),
+                    if (reservation.reviewComment != null && reservation.reviewComment!.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        reservation.reviewComment!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+            if ((reservation.canCancel && onCancel != null) || (reservation.canReview && onReview != null)) ...[
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 8,
+                children: [
+                  if (reservation.canCancel && onCancel != null)
+                    OutlinedButton.icon(
+                      onPressed: onCancel,
+                      style: OutlinedButton.styleFrom(foregroundColor: AppColors.destructive),
+                      icon: const Icon(Icons.close, size: 16),
+                      label: const Text('Cancel reservation'),
+                    ),
+                  if (reservation.canReview && onReview != null)
+                    OutlinedButton.icon(
+                      onPressed: onReview,
+                      icon: Icon(reservation.hasReview ? Icons.edit : Icons.star_border, size: 16),
+                      label: Text(reservation.hasReview ? 'Edit review' : 'Write review'),
+                    ),
+                ],
               ),
             ],
           ],

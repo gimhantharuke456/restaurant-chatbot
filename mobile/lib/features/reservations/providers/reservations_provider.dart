@@ -28,19 +28,22 @@ class ReservationsProvider extends ChangeNotifier {
   Future<void> cancel(String id) async {
     await _repository.cancelReservation(id);
     reservations = reservations
-        .map((r) => r.id == id
-            ? MyReservationModel(
-                id: r.id,
-                restaurantId: r.restaurantId,
-                restaurantName: r.restaurantName,
-                restaurantArea: r.restaurantArea,
-                date: r.date,
-                time: r.time,
-                partySize: r.partySize,
-                status: 'CANCELLED',
-                preOrderItemCount: r.preOrderItemCount,
-                preOrderAmount: r.preOrderAmount,
-              )
+        .map((r) => r.id == id ? r.copyWith(status: 'CANCELLED') : r)
+        .toList();
+    notifyListeners();
+  }
+
+  Future<void> submitReview(String reservationId, {required int rating, String? comment}) async {
+    final existing = reservations.firstWhere((r) => r.id == reservationId);
+    await _repository.submitReview(
+      reservationId: reservationId,
+      rating: rating,
+      comment: comment,
+      isUpdate: existing.hasReview,
+    );
+    reservations = reservations
+        .map((r) => r.id == reservationId
+            ? r.copyWith(reviewRating: rating, reviewComment: comment)
             : r)
         .toList();
     notifyListeners();
