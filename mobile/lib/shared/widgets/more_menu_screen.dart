@@ -71,6 +71,12 @@ class _MoreMenuScreenState extends State<MoreMenuScreen> {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push('/waitlist'),
           ),
+          ListTile(
+            leading: const Icon(Icons.person_outline),
+            title: const Text('Profile & Preferences'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/profile'),
+          ),
         ],
       ),
     );

@@ -122,6 +122,11 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  void updateLocalUser(UserModel user) {
+    currentUser = user;
+    notifyListeners();
+  }
+
   Future<void> signOut() async {
     await _tokenSubscription?.cancel();
     _tokenSubscription = null;

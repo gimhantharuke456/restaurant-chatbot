@@ -10,6 +10,7 @@ import '../../features/complaints/screens/complaints_screen.dart';
 import '../../features/favorites/screens/favorites_screen.dart';
 import '../../features/loyalty/screens/loyalty_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
+import '../../features/profile/screens/profile_screen.dart';
 import '../../features/reservations/screens/reservations_screen.dart';
 import '../../features/waitlist/screens/waitlist_screen.dart';
 import '../../features/restaurants/data/restaurant_repository.dart';
@@ -103,6 +104,10 @@ GoRouter buildAppRouter(AuthProvider authProvider) {
         path: '/notifications',
         pageBuilder: (context, state) =>
             buildPageTransition(state: state, child: const NotificationsScreen()),
+      ),
+      GoRoute(
+        path: '/profile',
+        pageBuilder: (context, state) => buildPageTransition(state: state, child: const ProfileScreen()),
       ),
     ],
   );
