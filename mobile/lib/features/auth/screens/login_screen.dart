@@ -111,6 +111,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     icon: const Icon(Icons.g_mobiledata, size: 28),
                     label: const Text('Continue with Google'),
                   ),
+                  const SizedBox(height: 12),
+                  TextButton.icon(
+                    onPressed: () => context.push('/guest-chat'),
+                    icon: const Icon(Icons.chat_bubble_outline, size: 18),
+                    label: const Text('Try the AI assistant as a guest'),
+                  ),
                 ],
               ),
             ).animate().fadeIn(duration: AppMotion.emphasized, curve: AppMotion.emphasizedCurve)

@@ -8,6 +8,7 @@ import '../../features/booking/screens/booking_flow_screen.dart';
 import '../../features/chat/screens/chat_screen.dart';
 import '../../features/complaints/screens/complaints_screen.dart';
 import '../../features/favorites/screens/favorites_screen.dart';
+import '../../features/guest_chat/screens/guest_chat_screen.dart';
 import '../../features/loyalty/screens/loyalty_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
@@ -31,7 +32,9 @@ GoRouter buildAppRouter(AuthProvider authProvider) {
       if (authProvider.status == AuthStatus.unknown) return null;
 
       final loggedIn = authProvider.status == AuthStatus.authenticated;
-      final loggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/register';
+      final loggingIn = state.matchedLocation == '/login' ||
+          state.matchedLocation == '/register' ||
+          state.matchedLocation == '/guest-chat';
 
       if (!loggedIn && !loggingIn) return '/login';
       if (loggedIn && loggingIn) return '/home';
@@ -45,6 +48,10 @@ GoRouter buildAppRouter(AuthProvider authProvider) {
       GoRoute(
         path: '/register',
         pageBuilder: (context, state) => buildPageTransition(state: state, child: const RegisterScreen()),
+      ),
+      GoRoute(
+        path: '/guest-chat',
+        pageBuilder: (context, state) => buildPageTransition(state: state, child: const GuestChatScreen()),
       ),
       ShellRoute(
         builder: (context, state, child) => AppShell(location: state.matchedLocation, child: child),
