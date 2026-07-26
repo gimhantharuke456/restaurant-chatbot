@@ -46,18 +46,21 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
   }
 
   Future<void> _writeReview(MyReservationModel reservation) async {
+    final provider = context.read<ReservationsProvider>();
     final result = await showReviewDialog(
       context,
       restaurantName: reservation.restaurantName,
+      onUploadImage: provider.uploadReviewImage,
       initialRating: reservation.reviewRating,
       initialComment: reservation.reviewComment,
     );
     if (result != null && mounted) {
-      await context.read<ReservationsProvider>().submitReview(
-            reservation.id,
-            rating: result.rating,
-            comment: result.comment,
-          );
+      await provider.submitReview(
+        reservation.id,
+        rating: result.rating,
+        comment: result.comment,
+        imageUrls: result.imageUrls,
+      );
     }
   }
 

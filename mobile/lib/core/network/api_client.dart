@@ -54,6 +54,26 @@ class ApiClient {
     return _send(() => _client.delete(uri, headers: _headers()));
   }
 
+  Future<dynamic> uploadFile(
+    String path, {
+    required List<int> bytes,
+    required String filename,
+    String? folder,
+  }) {
+    final uri = Uri.parse('$baseUrl$path');
+    return _send(() async {
+      final request = http.MultipartRequest('POST', uri);
+      final token = tokenProvider?.call();
+      if (token != null && token.isNotEmpty) {
+        request.headers['Authorization'] = 'Bearer $token';
+      }
+      if (folder != null) request.fields['folder'] = folder;
+      request.files.add(http.MultipartFile.fromBytes('file', bytes, filename: filename));
+      final streamed = await _client.send(request);
+      return http.Response.fromStream(streamed);
+    });
+  }
+
   Future<dynamic> _send(Future<http.Response> Function() request) async {
     late http.Response response;
     try {

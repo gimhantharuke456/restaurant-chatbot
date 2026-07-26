@@ -33,12 +33,18 @@ class ReservationsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> submitReview(String reservationId, {required int rating, String? comment}) async {
+  Future<void> submitReview(
+    String reservationId, {
+    required int rating,
+    String? comment,
+    List<String> imageUrls = const [],
+  }) async {
     final existing = reservations.firstWhere((r) => r.id == reservationId);
     await _repository.submitReview(
       reservationId: reservationId,
       rating: rating,
       comment: comment,
+      imageUrls: imageUrls,
       isUpdate: existing.hasReview,
     );
     reservations = reservations
@@ -47,5 +53,9 @@ class ReservationsProvider extends ChangeNotifier {
             : r)
         .toList();
     notifyListeners();
+  }
+
+  Future<String?> uploadReviewImage(List<int> bytes, String filename) {
+    return _repository.uploadReviewImage(bytes, filename);
   }
 }
