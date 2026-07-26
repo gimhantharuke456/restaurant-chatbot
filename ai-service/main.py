@@ -1,6 +1,15 @@
 import os
+import warnings
 import traceback
 import logging
+from contextlib import asynccontextmanager
+
+# Suppress LangChain deprecation warnings for ChatVertexAI — the package still
+# works correctly; migration to langchain-google-genai is tracked separately.
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="langchain")
+warnings.filterwarnings("ignore", message=".*ChatVertexAI.*", category=Warning)
+warnings.filterwarnings("ignore", message=".*on_event.*", category=DeprecationWarning)
+
 from config.settings import settings
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = settings.google_application_credentials
 
@@ -23,7 +32,14 @@ from schemas.models import (
 from chain.pipeline import run_pipeline
 from config.neo4j import close_driver
 
-app = FastAPI(title="Restaurant Chatbot AI Service", version="1.0.0")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    close_driver()
+
+
+app = FastAPI(title="Restaurant Chatbot AI Service", version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,11 +48,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.on_event("shutdown")
-def shutdown():
-    close_driver()
 
 
 @app.get("/health")

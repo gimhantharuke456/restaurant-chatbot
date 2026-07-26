@@ -6,11 +6,111 @@ import Image from "next/image";
 import { motion, useInView, type Variants } from "framer-motion";
 import {
   MessageSquare, CalendarDays, CreditCard, Star, MapPin,
-  ArrowRight, Sparkles, ChefHat, Utensils, LocateFixed, Loader2,
+  ArrowRight, Sparkles, ChefHat, Utensils, LocateFixed, Loader2, ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { RestaurantItem, MenuItem } from "@/app/(customer)/home/page";
+
+// ── FAQ data ──────────────────────────────────────────────────────────────────
+
+const FAQ_ITEMS = [
+  {
+    q: "What can the AI dining assistant do?",
+    a: "It can discover restaurants based on your mood, cuisine preference, or budget; show you live menus; check availability; make reservations; take pre-orders; and handle Stripe payments — all through a natural conversation.",
+  },
+  {
+    q: "How do I book a table through the chatbot?",
+    a: "Just tell the assistant what you're looking for — e.g. "Book a table for 2 at a Japanese restaurant tonight". It will confirm your date, time, and party size, then create the reservation in seconds. You can also use the direct "Book Table" button on any restaurant page.",
+  },
+  {
+    q: "Can I pre-order food before I arrive?",
+    a: "Yes. After choosing a date and time, the assistant walks you through the menu so you can select items and quantities. It generates an itemised bill (including a 10% service charge) and lets you pay securely via Stripe before you even leave home.",
+  },
+  {
+    q: "Do I need an account to use the chatbot?",
+    a: "Guests can try the assistant right from the homepage to explore restaurants. To make reservations, pre-order, or save favourites you'll need a free account — sign up takes under a minute.",
+  },
+  {
+    q: "Which restaurants are listed?",
+    a: "We currently feature verified restaurants across Colombo, covering cuisines from Sri Lankan and Seafood to Japanese, Italian, and more. New venues are added regularly as restaurant admins join the platform.",
+  },
+  {
+    q: "Is my payment information secure?",
+    a: "All payments are processed by Stripe — we never store your card details. Stripe is PCI-DSS Level 1 certified, the highest level of payment security available.",
+  },
+];
+
+// ── FAQ accordion component ───────────────────────────────────────────────────
+
+function ChatbotFAQ() {
+  const [open, setOpen] = useState<number | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+
+  return (
+    <section ref={ref} className="py-20 px-4 bg-muted/30">
+      <div className="max-w-3xl mx-auto">
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate={inView ? "show" : "hidden"}
+          className="space-y-10"
+        >
+          {/* Heading */}
+          <motion.div variants={fadeUp} className="text-center space-y-2">
+            <span className="inline-flex items-center gap-2 text-primary text-sm font-medium">
+              <MessageSquare className="h-4 w-4" /> Chatbot FAQ
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold">Everything you need to know</h2>
+            <p className="text-muted-foreground text-sm max-w-lg mx-auto">
+              Common questions about our AI dining assistant and how it works.
+            </p>
+          </motion.div>
+
+          {/* Accordion */}
+          <motion.div variants={fadeUp} className="space-y-3">
+            {FAQ_ITEMS.map((item, i) => {
+              const isOpen = open === i;
+              return (
+                <div
+                  key={i}
+                  className={`rounded-xl border transition-colors duration-200 overflow-hidden ${
+                    isOpen ? "border-primary/40 bg-card" : "border-border bg-card/60 hover:border-border/80"
+                  }`}
+                >
+                  <button
+                    onClick={() => setOpen(isOpen ? null : i)}
+                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                    aria-expanded={isOpen}
+                  >
+                    <span className="font-medium text-foreground text-sm sm:text-base leading-snug">
+                      {item.q}
+                    </span>
+                    <ChevronDown
+                      className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 ${
+                        isOpen ? "rotate-180 text-primary" : ""
+                      }`}
+                    />
+                  </button>
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                      isOpen ? "max-h-40" : "max-h-0"
+                    }`}
+                  >
+                    <p className="px-5 pb-5 text-sm text-muted-foreground leading-relaxed">
+                      {item.a}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -510,6 +610,9 @@ export function HomePageClient({ restaurants: initialRestaurants, featuredDishes
           </Section>
         </div>
       </section>
+
+      {/* ── Chatbot FAQ ───────────────────────────────────────────────────── */}
+      <ChatbotFAQ />
 
       {/* ── Bottom CTA ────────────────────────────────────────────────────── */}
       <section className="py-20 px-4">

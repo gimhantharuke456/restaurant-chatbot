@@ -47,7 +47,7 @@ const RESTAURANT_LIST_SENTINEL = "__RESTAURANT_LIST__";
 const MENU_LIST_SENTINEL = "__MENU_LIST__";
 
 function uid() {
-  return Math.random().toString(36).slice(2);
+  return crypto.randomUUID();
 }
 
 // Persisted history only ever stores {role, content} — a resumed card-list

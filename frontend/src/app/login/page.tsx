@@ -70,7 +70,7 @@ export default function LoginPage() {
     const me = meRes.ok ? (await meRes.json()) as { role: string } : null;
     if (me?.role === "SYSTEM_ADMIN") router.push("/admin");
     else if (me?.role === "RESTAURANT_ADMIN") router.push("/restaurant");
-    else router.push("/chat");
+    else router.push("/home");
   }
 
   async function handleLogin(e: React.FormEvent) {
@@ -116,7 +116,7 @@ export default function LoginPage() {
           budgetPreference: budgetPreference || undefined,
         }),
       });
-      router.push("/chat");
+      router.push("/home");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
     } finally {
