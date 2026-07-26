@@ -1,19 +1,22 @@
 /**
- * Idempotent cleanup for duplicate Restaurant rows.
+ * Idempotent cleanup for duplicate Restaurant and MenuItem rows.
  *
- * seedRestaurants() (seeders/02-restaurants.ts) uses createMany with a
- * freshly-generated id on every run, so running the seed more than once
- * without a full db reset leaves N copies of every restaurant, all pointing
- * at the same adminId. Since the portal looks up "my restaurant" via
- * `restaurant.findFirst({ where: { adminId } })` with no orderBy, it can
- * land on whichever duplicate happens to come back first — one that may
- * have none of the admin's actual reservations, making them "disappear".
+ * seedRestaurants() / seedMenuItems() (seeders/02-restaurants.ts,
+ * 03-menu-items.ts) use createMany with a freshly-generated id on every
+ * run, so running the seed more than once without a full db reset leaves N
+ * copies of every restaurant (all pointing at the same adminId) and N
+ * copies of every menu item per restaurant. Two user-facing consequences:
+ * the portal's `restaurant.findFirst({ where: { adminId } })` (no orderBy)
+ * can land on whichever duplicate restaurant happens to come back first —
+ * one that may have none of the admin's actual reservations — and the AI
+ * chat's menu agent would show the same dish repeated N times.
  *
  * This script finds every adminId with more than one restaurant, keeps the
  * duplicate with the most reservations as canonical (ties broken by the
  * oldest), re-points every restaurant-scoped row from the others onto it,
- * and deletes the now-empty duplicates. Safe to run on every `npm run dev`
- * start: a no-op once there are no duplicates left.
+ * and deletes the now-empty duplicates. It then collapses duplicate menu
+ * items (same restaurant + name) down to one each. Safe to run on every
+ * `npm run dev` start: a no-op once there's nothing left to merge.
  */
 import { prisma } from "../../lib/db";
 
@@ -93,7 +96,39 @@ async function dedupeRestaurants(): Promise<void> {
   }
 }
 
+async function dedupeMenuItems(): Promise<void> {
+  const items = await prisma.menuItem.findMany({ orderBy: { createdAt: "asc" } });
+
+  const byRestaurantAndName = new Map<string, typeof items>();
+  for (const item of items) {
+    const key = `${item.restaurantId}::${item.name}`;
+    const list = byRestaurantAndName.get(key) ?? [];
+    list.push(item);
+    byRestaurantAndName.set(key, list);
+  }
+
+  let removed = 0;
+  for (const group of byRestaurantAndName.values()) {
+    if (group.length <= 1) continue;
+
+    // Prefer a duplicate that already has an image over the (arbitrary)
+    // oldest one, so a future image backfill isn't undone by this script.
+    const canonical = group.find((i) => i.imageUrl) ?? group[0];
+    const losers = group.filter((i) => i.id !== canonical.id);
+
+    await prisma.menuItem.deleteMany({ where: { id: { in: losers.map((i) => i.id) } } });
+    removed += losers.length;
+  }
+
+  console.log(
+    removed > 0
+      ? `[dedupe-restaurants] removed ${removed} duplicate menu item(s)`
+      : "[dedupe-restaurants] no duplicate menu items found",
+  );
+}
+
 dedupeRestaurants()
+  .then(() => dedupeMenuItems())
   .then(() => prisma.$disconnect())
   .catch(async (err) => {
     console.error("[dedupe-restaurants] failed:", err);

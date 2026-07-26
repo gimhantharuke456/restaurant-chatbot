@@ -122,7 +122,12 @@ async def lookup_restaurant_by_name(name: str) -> dict | None:
     conn = await _get_conn()
     try:
         row = await conn.fetchrow(
-            'SELECT id, name FROM "Restaurant" WHERE LOWER(name) LIKE $1 AND "isActive" = true LIMIT 1',
+            """
+            SELECT id, name, area, "cuisineTypes", "priceRange", "imageUrls", "avgRating"
+            FROM "Restaurant"
+            WHERE LOWER(name) LIKE $1 AND "isActive" = true
+            LIMIT 1
+            """,
             f"%{name.lower().strip()}%",
         )
         return dict(row) if row else None

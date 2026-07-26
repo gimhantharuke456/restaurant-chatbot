@@ -12,7 +12,7 @@ class AgentState(TypedDict):
     messages: Annotated[List[BaseMessage], operator.add]
 
     # Routing
-    intent: Optional[str]           # SEARCH | RECOMMEND | RESERVE | PAYMENT | GENERAL
+    intent: Optional[str]           # SEARCH | RECOMMEND | RESERVE | PAYMENT | MENU | GENERAL
     current_agent: Optional[str]
 
     # Agent outputs
@@ -20,6 +20,7 @@ class AgentState(TypedDict):
     recommendation_results: Optional[List[dict]]
     reservation_details: Optional[dict]
     payment_details: Optional[dict]
+    menu_results: Optional[List[dict]]
 
     # Final answer written by whichever agent last ran
     final_response: Optional[str]

@@ -77,6 +77,7 @@ async def chat(request: ChatRequest, authorization: str = Header(default=None)):
             "recommendation_results": None,
             "reservation_details": None,
             "payment_details": None,
+            "menu_results": None,
             "final_response": None,
             "error": None,
             "auth_token": auth_token,
@@ -86,7 +87,7 @@ async def chat(request: ChatRequest, authorization: str = Header(default=None)):
             session_id=request.session_id,
             message=result.get("final_response") or "I couldn't process that request. Please try again.",
             intent=result.get("intent"),
-            data=result.get("search_results") or result.get("recommendation_results"),
+            data=result.get("search_results") or result.get("recommendation_results") or result.get("menu_results"),
             guest_limit_reached=False,
         )
     except Exception as e:
@@ -121,6 +122,7 @@ async def demo_chat(request: ChatRequest):
             "recommendation_results": None,
             "reservation_details": None,
             "payment_details": None,
+            "menu_results": None,
             "final_response": None,
             "error": None,
             "auth_token": None,
@@ -131,7 +133,7 @@ async def demo_chat(request: ChatRequest):
             session_id=request.session_id,
             message=result.get("final_response") or "I couldn't process that request. Please try again.",
             intent=result.get("intent"),
-            data=result.get("search_results") or result.get("recommendation_results"),
+            data=result.get("search_results") or result.get("recommendation_results") or result.get("menu_results"),
             guest_limit_reached=False,
             trace=result.get("trace") or [],
         )

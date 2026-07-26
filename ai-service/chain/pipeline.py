@@ -9,6 +9,7 @@ from agents.discovery import search_restaurants
 from agents.recommendation import recommend_restaurants
 from agents.reservation import handle_reservation
 from agents.payment import handle_payment
+from agents.menu import show_menu
 from agents.general import handle_general
 from tools.trace import record, now
 
@@ -17,6 +18,7 @@ _ROUTE_MAP = {
     "RECOMMEND": recommend_restaurants,
     "RESERVE": handle_reservation,
     "PAYMENT": handle_payment,
+    "MENU": show_menu,
     "GENERAL": handle_general,
 }
 
@@ -25,6 +27,7 @@ _AGENT_LABELS = {
     "RECOMMEND": "Recommendation Agent",
     "RESERVE": "Reservation Agent",
     "PAYMENT": "Payment Agent",
+    "MENU": "Menu Agent",
     "GENERAL": "General Agent",
 }
 
