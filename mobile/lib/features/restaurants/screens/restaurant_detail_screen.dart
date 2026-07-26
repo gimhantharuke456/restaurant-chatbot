@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../core/motion/app_motion.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../features/favorites/widgets/favorite_button.dart';
 import '../../../shared/widgets/error_retry_view.dart';
 import '../../../shared/widgets/loading_view.dart';
 import '../providers/restaurant_detail_provider.dart';
@@ -31,7 +32,10 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
     final detail = context.watch<RestaurantDetailProvider>();
 
     return Scaffold(
-      appBar: AppBar(title: Text(detail.restaurant?.name ?? 'Restaurant')),
+      appBar: AppBar(
+        title: Text(detail.restaurant?.name ?? 'Restaurant'),
+        actions: [FavoriteButton(restaurantId: widget.restaurantId)],
+      ),
       body: Builder(builder: (context) {
         if (detail.isLoading && detail.restaurant == null) {
           return const LoadingView();

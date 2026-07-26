@@ -6,13 +6,14 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/booking/screens/booking_flow_screen.dart';
 import '../../features/chat/screens/chat_screen.dart';
+import '../../features/favorites/screens/favorites_screen.dart';
 import '../../features/reservations/screens/reservations_screen.dart';
 import '../../features/restaurants/data/restaurant_repository.dart';
 import '../../features/restaurants/providers/restaurant_detail_provider.dart';
 import '../../features/restaurants/screens/home_screen.dart';
 import '../../features/restaurants/screens/restaurant_detail_screen.dart';
 import '../../shared/widgets/app_shell.dart';
-import '../../shared/widgets/coming_soon_screen.dart';
+import '../../shared/widgets/more_menu_screen.dart';
 import '../motion/page_transitions.dart';
 
 GoRouter buildAppRouter(AuthProvider authProvider) {
@@ -57,7 +58,7 @@ GoRouter buildAppRouter(AuthProvider authProvider) {
           GoRoute(
             path: '/more',
             pageBuilder: (context, state) =>
-                buildPageTransition(state: state, child: const ComingSoonScreen(title: 'More')),
+                buildPageTransition(state: state, child: const MoreMenuScreen()),
           ),
         ],
       ),
@@ -77,6 +78,10 @@ GoRouter buildAppRouter(AuthProvider authProvider) {
           state: state,
           child: BookingFlowScreen(restaurantId: state.pathParameters['id']!),
         ),
+      ),
+      GoRoute(
+        path: '/favorites',
+        pageBuilder: (context, state) => buildPageTransition(state: state, child: const FavoritesScreen()),
       ),
     ],
   );
