@@ -4,8 +4,10 @@ import '../../chat/data/chat_repository.dart';
 import '../data/guest_chat_repository.dart';
 
 const _restaurantListSentinel = '__RESTAURANT_LIST__';
+const _menuListSentinel = '__MENU_LIST__';
 const _restaurantListGuestReply =
     'Here are some restaurants I found for you! Sign in to see full details and book a table.';
+const _menuListGuestReply = 'Here\'s their menu! Sign in to order and book a table.';
 
 class GuestChatMessage {
   final String id;
@@ -43,7 +45,14 @@ class GuestChatProvider extends ChangeNotifier {
         history: List.of(_history),
       );
 
-      final reply = result.message == _restaurantListSentinel ? _restaurantListGuestReply : result.message;
+      final String reply;
+      if (result.message == _restaurantListSentinel) {
+        reply = _restaurantListGuestReply;
+      } else if (result.message == _menuListSentinel) {
+        reply = _menuListGuestReply;
+      } else {
+        reply = result.message;
+      }
       messages = [...messages, GuestChatMessage(id: _uuid.v4(), isUser: false, content: reply)];
       _history.add(ChatHistoryEntry(role: 'assistant', content: reply));
       if (result.limitReached) limitReached = true;

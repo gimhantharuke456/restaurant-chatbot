@@ -55,7 +55,7 @@ export function ChatWindow() {
         ) : (
           <div className="max-w-2xl mx-auto space-y-4">
             {messages.map(msg => (
-              <MessageBubble key={msg.id} message={msg} />
+              <MessageBubble key={msg.id} message={msg} onSend={sendMessage} />
             ))}
 
             {loading && (

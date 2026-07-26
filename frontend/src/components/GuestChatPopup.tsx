@@ -45,7 +45,12 @@ export function GuestChatPopup() {
         body: JSON.stringify({ message: text, sessionId, history }),
       });
       const data = await res.json() as { message: string };
-      const reply = data.message === "__RESTAURANT_LIST__" ? "Here are some restaurants I found for you! Sign in to see full details and book a table." : data.message;
+      let reply = data.message;
+      if (data.message === "__RESTAURANT_LIST__") {
+        reply = "Here are some restaurants I found for you! Sign in to see full details and book a table.";
+      } else if (data.message === "__MENU_LIST__") {
+        reply = "Here's their menu! Sign in to order and book a table.";
+      }
       setMessages((p) => [...p, { id: uid(), role: "assistant", content: reply }]);
       historyRef.current = [...historyRef.current, { role: "assistant", content: reply }];
     } catch {

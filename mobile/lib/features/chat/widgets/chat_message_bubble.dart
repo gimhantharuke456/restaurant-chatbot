@@ -4,10 +4,12 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/motion/entrance.dart';
 import '../../../core/theme/app_colors.dart';
 import '../models/chat_message_model.dart';
+import 'chat_menu_item_card.dart';
 import 'chat_payment_button.dart';
 import 'chat_restaurant_card.dart';
 
 const _restaurantListSentinel = '__RESTAURANT_LIST__';
+const _menuListSentinel = '__MENU_LIST__';
 
 class ChatMessageBubble extends StatelessWidget {
   final ChatMessageModel message;
@@ -23,8 +25,11 @@ class ChatMessageBubble extends StatelessWidget {
     final isRestaurantList = message.content == _restaurantListSentinel &&
         message.data != null &&
         message.data!.isNotEmpty;
+    final isMenuList = message.content == _menuListSentinel &&
+        message.menuData != null &&
+        message.menuData!.isNotEmpty;
 
-    if (isRestaurantList) {
+    if (isRestaurantList || isMenuList) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -45,7 +50,9 @@ class ChatMessageBubble extends StatelessWidget {
                 color: AppColors.muted,
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: ChatRestaurantList(items: message.data!),
+              child: isRestaurantList
+                  ? ChatRestaurantList(items: message.data!)
+                  : ChatMenuItemList(items: message.menuData!),
             ),
           ),
         ],

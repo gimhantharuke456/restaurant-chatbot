@@ -1,7 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import type { Message, RestaurantResult } from "@/hooks/useChat";
-import { Star, MapPin, Utensils, CreditCard, ExternalLink, ArrowRight } from "lucide-react";
+import type { Message, RestaurantResult, MenuItemResult } from "@/hooks/useChat";
+import { Star, MapPin, Utensils, CreditCard, ExternalLink, ArrowRight, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ReactMarkdown from "react-markdown";
 
@@ -65,6 +66,48 @@ function RestaurantList({ items }: { items: RestaurantResult[] }) {
     <div className="flex flex-col gap-2 w-full max-w-sm">
       <p className="text-xs text-muted-foreground mb-1">Found {items.length} restaurant{items.length !== 1 ? "s" : ""}</p>
       {items.map(r => <RestaurantCard key={r.id} r={r} />)}
+    </div>
+  );
+}
+
+// ── Menu item cards ───────────────────────────────────────────────────────────
+
+function MenuItemCard({ item, onOrder }: { item: MenuItemResult; onOrder: (item: MenuItemResult) => void }) {
+  return (
+    <button
+      onClick={() => onOrder(item)}
+      className="flex gap-3 items-center rounded-xl border border-border bg-card/80 p-2.5 w-full text-left hover:border-primary/40 hover:bg-card transition-colors group"
+    >
+      {item.imageUrl ? (
+        <div className="relative h-14 w-14 shrink-0 rounded-lg overflow-hidden bg-muted">
+          <Image src={item.imageUrl} alt={item.name} fill className="object-cover" unoptimized />
+        </div>
+      ) : (
+        <div className="h-14 w-14 shrink-0 rounded-lg bg-muted flex items-center justify-center">
+          <UtensilsCrossed className="h-5 w-5 text-muted-foreground" />
+        </div>
+      )}
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-foreground leading-tight group-hover:text-primary transition-colors">
+          {item.name}
+        </p>
+        {item.description && (
+          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{item.description}</p>
+        )}
+        <p className="text-sm font-semibold text-primary mt-1">LKR {item.price.toLocaleString()}</p>
+      </div>
+      <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+    </button>
+  );
+}
+
+function MenuItemList({ items, onOrder }: { items: MenuItemResult[]; onOrder: (item: MenuItemResult) => void }) {
+  return (
+    <div className="flex flex-col gap-2 w-full max-w-sm">
+      <p className="text-xs text-muted-foreground mb-1">
+        {items[0]?.restaurantName}&apos;s menu · tap a dish to start ordering
+      </p>
+      {items.map(item => <MenuItemCard key={item.id} item={item} onOrder={onOrder} />)}
     </div>
   );
 }
@@ -156,9 +199,10 @@ function MessageText({ content }: { content: string }) {
 
 // ── Main export ───────────────────────────────────────────────────────────────
 
-export function MessageBubble({ message }: { message: Message }) {
+export function MessageBubble({ message, onSend }: { message: Message; onSend: (content: string) => void }) {
   const isUser = message.role === "user";
   const isRestaurantList = message.content === "__RESTAURANT_LIST__" && message.data && message.data.length > 0;
+  const isMenuList = message.content === "__MENU_LIST__" && message.data && message.data.length > 0;
 
   return (
     <div className={cn("flex gap-3 items-end", isUser && "flex-row-reverse")}>
@@ -172,7 +216,12 @@ export function MessageBubble({ message }: { message: Message }) {
       </div>
 
       {isRestaurantList ? (
-        <RestaurantList items={message.data!} />
+        <RestaurantList items={message.data as RestaurantResult[]} />
+      ) : isMenuList ? (
+        <MenuItemList
+          items={message.data as MenuItemResult[]}
+          onOrder={(item) => onSend(`I'd like to order ${item.name}`)}
+        />
       ) : (
         <div
           className={cn(

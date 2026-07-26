@@ -1,5 +1,9 @@
 import '../../../core/network/api_client.dart';
+import '../models/chat_menu_item_result.dart';
 import '../models/chat_restaurant_result.dart';
+
+const restaurantListSentinel = '__RESTAURANT_LIST__';
+const menuListSentinel = '__MENU_LIST__';
 
 class ChatHistoryEntry {
   final String role;
@@ -13,8 +17,9 @@ class ChatHistoryEntry {
 class ChatSendResult {
   final String message;
   final List<ChatRestaurantResult>? data;
+  final List<ChatMenuItemResult>? menuData;
 
-  const ChatSendResult({required this.message, this.data});
+  const ChatSendResult({required this.message, this.data, this.menuData});
 }
 
 abstract class ChatRepository {
@@ -42,15 +47,20 @@ class ApiChatRepository implements ChatRepository {
       'history': history.map((h) => h.toJson()).toList(),
     }) as Map<String, dynamic>;
 
+    final responseMessage = json['message'] as String;
     final rawData = json['data'];
+
     List<ChatRestaurantResult>? parsedData;
+    List<ChatMenuItemResult>? parsedMenuData;
     if (rawData is List) {
-      parsedData = rawData
-          .whereType<Map<String, dynamic>>()
-          .map(ChatRestaurantResult.fromJson)
-          .toList();
+      final maps = rawData.whereType<Map<String, dynamic>>();
+      if (responseMessage == menuListSentinel) {
+        parsedMenuData = maps.map(ChatMenuItemResult.fromJson).toList();
+      } else {
+        parsedData = maps.map(ChatRestaurantResult.fromJson).toList();
+      }
     }
 
-    return ChatSendResult(message: json['message'] as String, data: parsedData);
+    return ChatSendResult(message: responseMessage, data: parsedData, menuData: parsedMenuData);
   }
 }

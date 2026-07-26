@@ -154,7 +154,7 @@ export function ChatWidget() {
             ) : (
               <>
                 {messages.map((msg) => (
-                  <MessageBubble key={msg.id} message={msg} />
+                  <MessageBubble key={msg.id} message={msg} onSend={sendMessage} />
                 ))}
                 {loading && (
                   <div className="flex gap-3 items-end">

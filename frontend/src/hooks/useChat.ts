@@ -14,13 +14,28 @@ export interface RestaurantResult {
   imageUrls: string;
 }
 
+export interface MenuItemResult {
+  id: string;
+  restaurantId: string;
+  restaurantName: string;
+  name: string;
+  description?: string | null;
+  price: number;
+  category: string;
+  dietaryInfo: string[];
+  imageUrl?: string | null;
+}
+
 export interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
-  data?: RestaurantResult[];
+  data?: RestaurantResult[] | MenuItemResult[];
   timestamp: Date;
 }
+
+const RESTAURANT_LIST_SENTINEL = "__RESTAURANT_LIST__";
+const MENU_LIST_SENTINEL = "__MENU_LIST__";
 
 function uid() {
   return Math.random().toString(36).slice(2);
@@ -47,7 +62,7 @@ export function useChat(sessionId: string) {
       });
 
       if (!res.ok) throw new Error("Request failed");
-      const data = await res.json() as { message: string; data?: RestaurantResult[] };
+      const data = await res.json() as { message: string; data?: RestaurantResult[] | MenuItemResult[] };
 
       const aiMsg: Message = {
         id: uid(),
@@ -60,9 +75,13 @@ export function useChat(sessionId: string) {
 
       // Store a meaningful summary in history so the AI remembers what was shown
       let historyContent = data.message;
-      if (data.message === "__RESTAURANT_LIST__" && data.data?.length) {
-        const names = data.data.map(r => r.name).join(", ");
+      if (data.message === RESTAURANT_LIST_SENTINEL && data.data?.length) {
+        const names = (data.data as RestaurantResult[]).map(r => r.name).join(", ");
         historyContent = `Here are the restaurants I found: ${names}`;
+      } else if (data.message === MENU_LIST_SENTINEL && data.data?.length) {
+        const items = data.data as MenuItemResult[];
+        const names = items.map(i => i.name).join(", ");
+        historyContent = `Here's ${items[0].restaurantName}'s menu: ${names}`;
       }
       historyRef.current = [...historyRef.current, { role: "assistant", content: historyContent }];
     } catch {

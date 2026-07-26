@@ -4,6 +4,7 @@ import '../data/chat_repository.dart';
 import '../models/chat_message_model.dart';
 
 const _restaurantListSentinel = '__RESTAURANT_LIST__';
+const _menuListSentinel = '__MENU_LIST__';
 
 class ChatProvider extends ChangeNotifier {
   final ChatRepository _repository;
@@ -41,6 +42,7 @@ class ChatProvider extends ChangeNotifier {
         role: ChatRole.assistant,
         content: result.message,
         data: result.data,
+        menuData: result.menuData,
         timestamp: DateTime.now(),
       );
       messages = [...messages, assistantMessage];
@@ -52,6 +54,11 @@ class ChatProvider extends ChangeNotifier {
           result.data!.isNotEmpty) {
         final names = result.data!.map((r) => r.name).join(', ');
         historyContent = 'Here are the restaurants I found: $names';
+      } else if (result.message == _menuListSentinel &&
+          result.menuData != null &&
+          result.menuData!.isNotEmpty) {
+        final names = result.menuData!.map((i) => i.name).join(', ');
+        historyContent = "Here's ${result.menuData!.first.restaurantName}'s menu: $names";
       }
       _history.add(ChatHistoryEntry(role: 'assistant', content: historyContent));
     } catch (_) {
