@@ -188,6 +188,7 @@ model ChatSession {
   id        String   @id @default(uuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id])
+  title     String?
   messages  Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

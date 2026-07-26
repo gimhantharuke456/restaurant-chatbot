@@ -34,6 +34,14 @@ export interface Message {
   timestamp: Date;
 }
 
+export interface ChatSessionSummary {
+  id: string;
+  title: string | null;
+  messages: { role: string; content: string }[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 const RESTAURANT_LIST_SENTINEL = "__RESTAURANT_LIST__";
 const MENU_LIST_SENTINEL = "__MENU_LIST__";
 
@@ -41,12 +49,24 @@ function uid() {
   return Math.random().toString(36).slice(2);
 }
 
-export function useChat(sessionId: string) {
+// Persisted history only ever stores {role, content} — a resumed card-list
+// turn has no data to re-render, so fall back to a plain description rather
+// than showing the raw sentinel string.
+function displayContentForResume(content: string): string {
+  if (content === RESTAURANT_LIST_SENTINEL) return "(Showed restaurant recommendations)";
+  if (content === MENU_LIST_SENTINEL) return "(Showed a restaurant's menu)";
+  return content;
+}
+
+export function useChat() {
+  const [sessionId, setSessionId] = useState(uid);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const historyRef = useRef<{ role: string; content: string }[]>([]);
+  const sessionIdRef = useRef(sessionId);
 
   const sendMessage = useCallback(async (content: string) => {
+    const activeSessionId = sessionIdRef.current;
     const userMsg: Message = { id: uid(), role: "user", content, timestamp: new Date() };
     setMessages(prev => [...prev, userMsg]);
     setLoading(true);
@@ -58,7 +78,7 @@ export function useChat(sessionId: string) {
       const res = await fetch("/api/proxy/chat/message", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: content, sessionId, history }),
+        body: JSON.stringify({ message: content, sessionId: activeSessionId, history }),
       });
 
       if (!res.ok) throw new Error("Request failed");
@@ -95,12 +115,32 @@ export function useChat(sessionId: string) {
     } finally {
       setLoading(false);
     }
-  }, [sessionId]);
+  }, []);
 
+  // Starts a genuinely new conversation — a fresh sessionId so it becomes
+  // its own row (and its own title) in chat history, rather than continuing
+  // to append to whatever session was active before.
   const clearMessages = useCallback(() => {
+    const next = uid();
+    sessionIdRef.current = next;
+    setSessionId(next);
     setMessages([]);
     historyRef.current = [];
   }, []);
 
-  return { messages, loading, sendMessage, clearMessages };
+  const resumeSession = useCallback((session: ChatSessionSummary) => {
+    sessionIdRef.current = session.id;
+    setSessionId(session.id);
+    historyRef.current = session.messages.map(m => ({ role: m.role, content: m.content }));
+    setMessages(
+      session.messages.map(m => ({
+        id: uid(),
+        role: m.role === "user" ? "user" : "assistant",
+        content: displayContentForResume(m.content),
+        timestamp: new Date(),
+      })),
+    );
+  }, []);
+
+  return { sessionId, messages, loading, sendMessage, clearMessages, resumeSession };
 }

@@ -15,6 +15,20 @@ export interface AiServiceResponse {
 
 const GUEST_MESSAGE_LIMIT = 3;
 
+const generateSessionTitle = async (userMessage: string, assistantMessage: string): Promise<string> => {
+  const aiServiceUrl = process.env.AI_SERVICE_URL ?? "http://localhost:8000";
+  try {
+    const { data } = await axios.post<{ title: string }>(`${aiServiceUrl}/chat/title`, {
+      user_message: userMessage,
+      assistant_message: assistantMessage,
+    });
+    return data.title;
+  } catch (e: unknown) {
+    console.error("[chat] title generation failed (non-fatal):", e);
+    return userMessage.slice(0, 60);
+  }
+};
+
 export const sendMessage = async (
   input: SendMessageInput,
   userId: string,
@@ -53,9 +67,15 @@ export const sendMessage = async (
     { role: "assistant" as const, content: aiResponse.message },
   ];
 
+  // A brand new session (empty history) is exactly the first user+assistant
+  // exchange — generate its title from those two messages once, here, and
+  // never touch it again on subsequent turns.
+  const isNewSession = input.history.length === 0;
+  const title = isNewSession ? await generateSessionTitle(input.message, aiResponse.message) : undefined;
+
   await prisma.chatSession.upsert({
     where: { id: input.sessionId },
-    create: { id: input.sessionId, userId, messages: updatedMessages },
+    create: { id: input.sessionId, userId, messages: updatedMessages, title },
     update: { messages: updatedMessages },
   });
 
@@ -69,6 +89,7 @@ export const getHistory = async (userId: string) => {
     take: 20,
     select: {
       id: true,
+      title: true,
       messages: true,
       createdAt: true,
       updatedAt: true,

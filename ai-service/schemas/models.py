@@ -38,3 +38,12 @@ class PortalAIRequest(BaseModel):
 
 class PortalAIResponse(BaseModel):
     message: str
+
+
+class ChatTitleRequest(BaseModel):
+    user_message: str
+    assistant_message: str
+
+
+class ChatTitleResponse(BaseModel):
+    title: str

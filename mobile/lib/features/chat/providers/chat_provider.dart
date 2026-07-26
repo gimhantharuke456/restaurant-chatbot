@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
+import '../../chat_history/models/chat_session_model.dart';
 import '../data/chat_repository.dart';
 import '../models/chat_message_model.dart';
 
@@ -79,6 +80,31 @@ class ChatProvider extends ChangeNotifier {
     messages = [];
     _history.clear();
     sessionId = _uuid.v4();
+    notifyListeners();
+  }
+
+  // Persisted history only ever stores {role, content} — a resumed card-list
+  // turn has no data to re-render, so fall back to a plain description
+  // rather than showing the raw sentinel string.
+  String _displayContentForResume(String content) {
+    if (content == _restaurantListSentinel) return '(Showed restaurant recommendations)';
+    if (content == _menuListSentinel) return "(Showed a restaurant's menu)";
+    return content;
+  }
+
+  void resumeSession(ChatSessionModel session) {
+    sessionId = session.id;
+    _history
+      ..clear()
+      ..addAll(session.messages.map((m) => ChatHistoryEntry(role: m.role, content: m.content)));
+    messages = session.messages
+        .map((m) => ChatMessageModel(
+              id: _uuid.v4(),
+              role: m.role == 'user' ? ChatRole.user : ChatRole.assistant,
+              content: _displayContentForResume(m.content),
+              timestamp: DateTime.now(),
+            ))
+        .toList();
     notifyListeners();
   }
 }

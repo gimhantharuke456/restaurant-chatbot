@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useChat } from "@/hooks/useChat";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
@@ -13,13 +13,8 @@ const SUGGESTED = [
   "Book a table for 2 at 7pm tomorrow",
 ];
 
-function uid() {
-  return crypto.randomUUID();
-}
-
 export function ChatWindow() {
-  const [sessionId] = useState(uid);
-  const { messages, loading, sendMessage } = useChat(sessionId);
+  const { messages, loading, sendMessage } = useChat();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

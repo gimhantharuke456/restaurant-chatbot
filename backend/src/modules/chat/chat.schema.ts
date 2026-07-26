@@ -33,6 +33,7 @@ const ChatResponseSchema = z
 const ChatSessionSchema = z
   .object({
     id: z.string().uuid(),
+    title: z.string().nullable(),
     messages: z.array(ChatMessageSchema),
     createdAt: z.string().datetime(),
     updatedAt: z.string().datetime(),

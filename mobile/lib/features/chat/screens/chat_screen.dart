@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../shared/widgets/empty_state_view.dart';
 import '../providers/chat_provider.dart';
@@ -49,6 +50,11 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: const Text('AI Dining Assistant'),
         actions: [
+          IconButton(
+            tooltip: 'Chat history',
+            icon: const Icon(Icons.history),
+            onPressed: () => context.push('/chat-history'),
+          ),
           if (chat.messages.isNotEmpty)
             IconButton(
               tooltip: 'New conversation',

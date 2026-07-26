@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useChat } from "@/hooks/useChat";
 import { MessageBubble } from "./MessageBubble";
-import { UtensilsCrossed, X, Minus, Send, RotateCcw } from "lucide-react";
+import { ChatHistoryPanel } from "./ChatHistoryPanel";
+import { UtensilsCrossed, X, Minus, Send, RotateCcw, History } from "lucide-react";
 
 const SUGGESTED = [
   "Find a good seafood restaurant",
@@ -12,15 +13,11 @@ const SUGGESTED = [
   "What's open near Colombo?",
 ];
 
-function uid() {
-  return crypto.randomUUID();
-}
-
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [minimised, setMinimised] = useState(false);
-  const [sessionId] = useState(uid);
-  const { messages, loading, sendMessage, clearMessages } = useChat(sessionId);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const { messages, loading, sendMessage, clearMessages, resumeSession } = useChat();
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -78,7 +75,7 @@ export function ChatWidget() {
       {open && (
         <div
           className={`
-            flex flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl shadow-black/20
+            relative flex flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl shadow-black/20
             transition-all duration-300 ease-out
             ${minimised
               ? "h-0 opacity-0 pointer-events-none"
@@ -87,6 +84,17 @@ export function ChatWidget() {
           `}
           style={{ width: "360px", height: minimised ? 0 : "520px" }}
         >
+          {historyOpen && (
+            <ChatHistoryPanel
+              className="absolute inset-0 z-10 bg-background"
+              onClose={() => setHistoryOpen(false)}
+              onResume={(session) => {
+                resumeSession(session);
+                setHistoryOpen(false);
+              }}
+            />
+          )}
+
           {/* Header */}
           <div className="flex items-center gap-3 border-b bg-card px-4 py-3 shrink-0">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
@@ -100,9 +108,16 @@ export function ChatWidget() {
               </div>
             </div>
             <div className="flex items-center gap-1">
+              <button
+                onClick={() => setHistoryOpen((v) => !v)}
+                title="Chat history"
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              >
+                <History className="h-3.5 w-3.5" />
+              </button>
               {messages.length > 0 && (
                 <button
-                  onClick={() => clearMessages()}
+                  onClick={() => { setHistoryOpen(false); clearMessages(); }}
                   title="New conversation"
                   className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                 >

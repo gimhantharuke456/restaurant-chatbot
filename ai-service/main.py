@@ -11,7 +11,15 @@ from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_core.messages import HumanMessage, AIMessage
 
-from schemas.models import ChatRequest, ChatResponse, EmbedRequest, PortalAIRequest, PortalAIResponse
+from schemas.models import (
+    ChatRequest,
+    ChatResponse,
+    EmbedRequest,
+    PortalAIRequest,
+    PortalAIResponse,
+    ChatTitleRequest,
+    ChatTitleResponse,
+)
 from chain.pipeline import run_pipeline
 from config.neo4j import close_driver
 
@@ -141,6 +149,49 @@ async def demo_chat(request: ChatRequest):
         logger.error("Demo chat handler error: %s", str(e))
         logger.error(traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
+
+
+_TITLE_SYSTEM_PROMPT = """Summarize the start of this conversation into a short chat title.
+Rules: 3-6 words, no punctuation at the end, no quotes, title case, capture the topic
+(e.g. the restaurant/cuisine/occasion/action being discussed). Respond with ONLY the title."""
+
+
+@app.post("/chat/title", response_model=ChatTitleResponse)
+async def generate_chat_title(request: ChatTitleRequest):
+    """Generates a short title from a session's first exchange (first user
+    message + first assistant reply), so chat history lists don't just show
+    'New chat' for everything. Best-effort — callers should fall back to a
+    truncated user message if this errors."""
+    from langchain_google_vertexai import ChatVertexAI
+    from langchain_core.messages import SystemMessage, HumanMessage as LCHumanMessage
+
+    llm = ChatVertexAI(
+        model_name=settings.gemini_model,
+        project=settings.vertex_project_id,
+        location=settings.vertex_location,
+        temperature=0.2,
+        # gemini-2.5-flash spends part of its output budget on internal
+        # reasoning tokens before the visible answer — a low limit here
+        # (e.g. 20) burns the whole budget on that and returns empty
+        # content. 200 leaves enough headroom for a reliable short title.
+        max_output_tokens=200,
+    )
+
+    try:
+        response = llm.invoke([
+            SystemMessage(content=_TITLE_SYSTEM_PROMPT),
+            LCHumanMessage(
+                content=f"User: {request.user_message}\nAssistant: {request.assistant_message}"
+            ),
+        ])
+        title = response.content.strip().strip('"\'').rstrip(".!?")
+        if not title:
+            title = request.user_message[:60]
+    except Exception as e:
+        logger.error("Chat title generation error: %s", str(e))
+        title = request.user_message[:60]
+
+    return ChatTitleResponse(title=title[:80])
 
 
 @app.post("/portal/message", response_model=PortalAIResponse)
