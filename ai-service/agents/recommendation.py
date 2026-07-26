@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from langchain_google_vertexai import ChatVertexAI
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
@@ -6,7 +8,39 @@ from config.settings import settings
 from knowledge.prompts import RECOMMENDATION_SYSTEM_PROMPT
 from tools.neo4j_tools import get_user_preferences
 from tools.search_tools import semantic_search
+from tools.weather_tools import get_current_weather
 from tools.trace import record, now
+
+_COLOMBO_TZ = ZoneInfo("Asia/Colombo")
+
+
+def _time_of_day(hour: int) -> str:
+    if hour < 11:
+        return "morning"
+    if hour < 15:
+        return "lunch"
+    if hour < 18:
+        return "afternoon"
+    if hour < 22:
+        return "evening"
+    return "late night"
+
+
+async def _situational_context() -> dict:
+    """Time-of-day, day-of-week, and (if configured) current weather in
+    Colombo — folded into every recommendation path so the LLM can favor,
+    e.g., a lively dinner spot on Friday evening or an indoor place when
+    it's raining, without the user having to say so."""
+    local_now = datetime.now(_COLOMBO_TZ)
+    context = {
+        "time_of_day": _time_of_day(local_now.hour),
+        "day_of_week": local_now.strftime("%A"),
+        "is_weekend": local_now.weekday() >= 5,
+    }
+    weather = await get_current_weather()
+    if weather:
+        context["weather"] = f"{weather['condition'].lower()}, {weather['temp_c']}°C"
+    return context
 
 llm = ChatVertexAI(
     model_name=settings.gemini_model,
@@ -61,6 +95,9 @@ async def recommend_restaurants(state: dict) -> dict:
         preferenceCount=len(user_prefs["preferences"]), visitedCount=len(user_prefs["visited"]),
     )
 
+    situational = await _situational_context()
+    record(state, "tool_call", "Situational Context (time/day/weather)", **situational)
+
     # If we have Neo4j history, use it directly
     if user_prefs["preferences"]:
         top_cuisines = [p["cuisine"] for p in user_prefs["preferences"][:3]]
@@ -73,6 +110,7 @@ async def recommend_restaurants(state: dict) -> dict:
             "user_preferences": user_prefs["preferences"],
             "visited_restaurants": user_prefs["visited"],
             "recommendations": fresh,
+            "situational_context": situational,
         }
         response = llm.invoke([
             SystemMessage(content=RECOMMENDATION_SYSTEM_PROMPT),
@@ -119,6 +157,7 @@ async def recommend_restaurants(state: dict) -> dict:
             "occasion": occasion,
             "visited_restaurants": [],
             "recommendations": results[:3],
+            "situational_context": situational,
         }
         response = llm.invoke([
             SystemMessage(content=RECOMMENDATION_SYSTEM_PROMPT),
@@ -139,6 +178,7 @@ async def recommend_restaurants(state: dict) -> dict:
         "occasion": "",
         "visited_restaurants": [],
         "recommendations": results[:3],
+        "situational_context": situational,
     }
     response = llm.invoke([
         SystemMessage(

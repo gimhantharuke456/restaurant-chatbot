@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     # Backend API (Node/Express service)
     backend_url: str = "http://localhost:3000"
 
+    # Weather (OpenWeatherMap) — used to add weather-aware context to
+    # recommendations; optional, features degrade gracefully without it.
+    openweather_api_key: str = ""
+
     # Firebase / Firestore
     firebase_project_id: str = "your-firebase-project-id"
     firebase_private_key: str = ""
