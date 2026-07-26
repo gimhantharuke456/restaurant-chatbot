@@ -17,6 +17,8 @@ router.get(
   restaurantController.getRestaurants,
 );
 
+router.get("/promotions", restaurantController.getAllActivePromotions);
+
 router.get("/:id", restaurantController.getRestaurantById);
 
 router.post(

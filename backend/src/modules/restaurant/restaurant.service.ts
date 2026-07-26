@@ -123,6 +123,27 @@ export const getActivePromotions = async (restaurantId: string) => {
   });
 };
 
+export const getAllActivePromotions = async () => {
+  const now = new Date();
+  const promotions = await prisma.promotion.findMany({
+    where: { isActive: true, startDate: { lte: now }, endDate: { gte: now } },
+    orderBy: { createdAt: "desc" },
+    include: {
+      restaurant: {
+        select: { id: true, name: true, area: true, cuisineTypes: true, imageUrls: true, priceRange: true },
+      },
+    },
+  });
+  return promotions.map((p) => ({
+    ...p,
+    restaurant: {
+      ...p.restaurant,
+      cuisineTypes: JSON.parse(p.restaurant.cuisineTypes) as string[],
+      imageUrls: JSON.parse(p.restaurant.imageUrls) as string[],
+    },
+  }));
+};
+
 // ── helper ────────────────────────────────────────────────────────────────────
 
 const parseRestaurant = (r: Restaurant) => ({

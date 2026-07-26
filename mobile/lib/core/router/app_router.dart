@@ -12,6 +12,7 @@ import '../../features/loyalty/screens/loyalty_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
 import '../../features/payment_history/screens/payment_history_screen.dart';
+import '../../features/promotions/screens/promotions_screen.dart';
 import '../../features/reservations/screens/reservations_screen.dart';
 import '../../features/waitlist/screens/waitlist_screen.dart';
 import '../../features/restaurants/data/restaurant_repository.dart';
@@ -114,6 +115,10 @@ GoRouter buildAppRouter(AuthProvider authProvider) {
         path: '/payments',
         pageBuilder: (context, state) =>
             buildPageTransition(state: state, child: const PaymentHistoryScreen()),
+      ),
+      GoRoute(
+        path: '/promotions',
+        pageBuilder: (context, state) => buildPageTransition(state: state, child: const PromotionsScreen()),
       ),
     ],
   );

@@ -53,3 +53,8 @@ export const getRestaurantPromotions = async (req: Request, res: Response): Prom
   const promotions = await restaurantService.getActivePromotions(String(req.params.id));
   res.json(promotions);
 };
+
+export const getAllActivePromotions = async (_req: Request, res: Response): Promise<void> => {
+  const promotions = await restaurantService.getAllActivePromotions();
+  res.json(promotions);
+};

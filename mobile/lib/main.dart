@@ -28,6 +28,8 @@ import 'features/profile/data/profile_repository.dart';
 import 'features/profile/providers/profile_provider.dart';
 import 'features/payment_history/data/payment_history_repository.dart';
 import 'features/payment_history/providers/payment_history_provider.dart';
+import 'features/promotions/data/promotions_repository.dart';
+import 'features/promotions/providers/promotions_provider.dart';
 import 'features/reservations/data/reservations_repository.dart';
 import 'features/reservations/providers/reservations_provider.dart';
 import 'features/restaurants/data/restaurant_repository.dart';
@@ -65,6 +67,7 @@ class RestaurantChatbotApp extends StatelessWidget {
     final notificationsRepository = ApiNotificationsRepository(apiClient);
     final profileRepository = ApiProfileRepository(apiClient);
     final paymentHistoryRepository = ApiPaymentHistoryRepository(apiClient);
+    final promotionsRepository = ApiPromotionsRepository(apiClient);
     final authProvider = AuthProvider(
       repository: FirebaseAuthRepository(apiClient: apiClient),
       tokenStorage: tokenStorage,
@@ -110,6 +113,9 @@ class RestaurantChatbotApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<PaymentHistoryProvider>(
           create: (_) => PaymentHistoryProvider(paymentHistoryRepository),
+        ),
+        ChangeNotifierProvider<PromotionsProvider>(
+          create: (_) => PromotionsProvider(promotionsRepository),
         ),
       ],
       child: MaterialApp.router(
