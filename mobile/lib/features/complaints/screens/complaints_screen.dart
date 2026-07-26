@@ -1,0 +1,184 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../core/motion/entrance.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/empty_state_view.dart';
+import '../../../shared/widgets/error_retry_view.dart';
+import '../../../shared/widgets/loading_view.dart';
+import '../models/complaint_model.dart';
+import '../providers/complaints_provider.dart';
+
+const _statusColors = {
+  'OPEN': AppColors.destructive,
+  'UNDER_REVIEW': AppColors.primary,
+  'RESOLVED': Colors.green,
+  'CLOSED': AppColors.mutedForeground,
+};
+const _statusLabels = {
+  'OPEN': 'Open',
+  'UNDER_REVIEW': 'Under Review',
+  'RESOLVED': 'Resolved',
+  'CLOSED': 'Closed',
+};
+
+class ComplaintsScreen extends StatefulWidget {
+  const ComplaintsScreen({super.key});
+
+  @override
+  State<ComplaintsScreen> createState() => _ComplaintsScreenState();
+}
+
+class _ComplaintsScreenState extends State<ComplaintsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ComplaintsProvider>().fetch();
+    });
+  }
+
+  Future<void> _openForm() async {
+    final subjectController = TextEditingController();
+    final descriptionController = TextEditingController();
+    final provider = context.read<ComplaintsProvider>();
+
+    final submitted = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
+          title: const Text('New complaint'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: subjectController,
+                decoration: const InputDecoration(labelText: 'Subject'),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: descriptionController,
+                maxLines: 4,
+                decoration: const InputDecoration(labelText: 'Description'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const Text('Cancel')),
+            ElevatedButton(
+              onPressed: subjectController.text.trim().isEmpty || descriptionController.text.trim().isEmpty
+                  ? null
+                  : () async {
+                      final ok = await provider.submit(
+                        subject: subjectController.text.trim(),
+                        description: descriptionController.text.trim(),
+                      );
+                      if (dialogContext.mounted) Navigator.pop(dialogContext, ok);
+                    },
+              child: const Text('Submit'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (submitted == false && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to submit complaint. Please try again.')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<ComplaintsProvider>();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('My Complaints'),
+        actions: [IconButton(onPressed: _openForm, icon: const Icon(Icons.add))],
+      ),
+      body: Builder(builder: (context) {
+        if (provider.isLoading && provider.complaints.isEmpty) {
+          return const LoadingView();
+        }
+        if (provider.error != null && provider.complaints.isEmpty) {
+          return ErrorRetryView(message: provider.error!, onRetry: provider.fetch);
+        }
+        if (provider.complaints.isEmpty) {
+          return const EmptyStateView(
+            icon: Icons.report_problem_outlined,
+            title: 'No complaints filed',
+            subtitle: 'Tap + to raise an issue with us.',
+          );
+        }
+
+        return RefreshIndicator(
+          onRefresh: provider.fetch,
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: provider.complaints.length,
+            itemBuilder: (context, index) {
+              final complaint = provider.complaints[index];
+              return staggeredEntrance(_ComplaintCard(complaint: complaint), index: index);
+            },
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class _ComplaintCard extends StatelessWidget {
+  final ComplaintModel complaint;
+
+  const _ComplaintCard({required this.complaint});
+
+  @override
+  Widget build(BuildContext context) {
+    final statusColor = _statusColors[complaint.status] ?? AppColors.mutedForeground;
+    return Card(
+      color: AppColors.card,
+      margin: const EdgeInsets.only(bottom: 10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(complaint.subject, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: statusColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    _statusLabels[complaint.status] ?? complaint.status,
+                    style: TextStyle(color: statusColor, fontSize: 11, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Text(complaint.description, style: const TextStyle(color: AppColors.mutedForeground, fontSize: 13)),
+            if (complaint.adminNote != null && complaint.adminNote!.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(color: AppColors.muted, borderRadius: BorderRadius.circular(8)),
+                child: Text(
+                  'Response: ${complaint.adminNote}',
+                  style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}

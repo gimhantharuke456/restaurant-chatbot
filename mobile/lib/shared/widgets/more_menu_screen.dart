@@ -25,6 +25,12 @@ class MoreMenuScreen extends StatelessWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push('/loyalty'),
           ),
+          ListTile(
+            leading: const Icon(Icons.report_problem_outlined),
+            title: const Text('My Complaints'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/complaints'),
+          ),
         ],
       ),
     );

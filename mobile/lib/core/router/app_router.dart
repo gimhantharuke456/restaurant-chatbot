@@ -6,6 +6,7 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/booking/screens/booking_flow_screen.dart';
 import '../../features/chat/screens/chat_screen.dart';
+import '../../features/complaints/screens/complaints_screen.dart';
 import '../../features/favorites/screens/favorites_screen.dart';
 import '../../features/loyalty/screens/loyalty_screen.dart';
 import '../../features/reservations/screens/reservations_screen.dart';
@@ -87,6 +88,10 @@ GoRouter buildAppRouter(AuthProvider authProvider) {
       GoRoute(
         path: '/loyalty',
         pageBuilder: (context, state) => buildPageTransition(state: state, child: const LoyaltyScreen()),
+      ),
+      GoRoute(
+        path: '/complaints',
+        pageBuilder: (context, state) => buildPageTransition(state: state, child: const ComplaintsScreen()),
       ),
     ],
   );
