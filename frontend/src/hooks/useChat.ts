@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { resolveLocation } from "@/lib/geolocation";
 
 export interface RestaurantResult {
   id: string;
@@ -75,10 +76,16 @@ export function useChat() {
     historyRef.current = [...history, { role: "user", content }];
 
     try {
+      const location = await resolveLocation();
       const res = await fetch("/api/proxy/chat/message", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: content, sessionId: activeSessionId, history }),
+        body: JSON.stringify({
+          message: content,
+          sessionId: activeSessionId,
+          history,
+          ...(location ?? {}),
+        }),
       });
 
       if (!res.ok) throw new Error("Request failed");

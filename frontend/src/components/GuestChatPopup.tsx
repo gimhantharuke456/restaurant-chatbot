@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { MessageSquare, X, Send, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { resolveLocation } from "@/lib/geolocation";
 
 interface Message {
   id: string;
@@ -39,10 +40,11 @@ export function GuestChatPopup() {
     historyRef.current = [...history, { role: "user", content: text }];
 
     try {
+      const location = await resolveLocation();
       const res = await fetch("/api/proxy/chat/guest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, sessionId, history }),
+        body: JSON.stringify({ message: text, sessionId, history, ...(location ?? {}) }),
       });
       const data = await res.json() as { message: string };
       let reply = data.message;

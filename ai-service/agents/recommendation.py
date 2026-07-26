@@ -87,6 +87,7 @@ async def recommend_restaurants(state: dict) -> dict:
     user_id = state["user_id"]
     messages = state["messages"]
     user_message = messages[-1].content
+    lat, lng = state.get("lat"), state.get("lng")
 
     t0 = now()
     user_prefs = get_user_preferences(user_id)
@@ -96,13 +97,15 @@ async def recommend_restaurants(state: dict) -> dict:
     )
 
     situational = await _situational_context()
+    if lat is not None and lng is not None:
+        situational["user_location_shared"] = True
     record(state, "tool_call", "Situational Context (time/day/weather)", **situational)
 
     # If we have Neo4j history, use it directly
     if user_prefs["preferences"]:
         top_cuisines = [p["cuisine"] for p in user_prefs["preferences"][:3]]
         query = f"restaurants serving {', '.join(top_cuisines)} cuisine in Colombo"
-        results = await semantic_search(query=query, limit=8)
+        results = await semantic_search(query=query, limit=8, lat=lat, lng=lng)
         record(state, "tool_call", "Semantic Search (personalised)", query=query, resultCount=len(results))
         visited_ids = {r["id"] for r in user_prefs["visited"]}
         fresh = [r for r in results if r["id"] not in visited_ids][:3]
@@ -151,7 +154,7 @@ async def recommend_restaurants(state: dict) -> dict:
             query_parts.append(f"for {occasion}")
         query = f"restaurants in Colombo serving {' '.join(query_parts)}"
 
-        results = await semantic_search(query=query, limit=5)
+        results = await semantic_search(query=query, limit=5, lat=lat, lng=lng)
         context = {
             "user_preferences": [{"cuisine": c} for c in cuisines],
             "occasion": occasion,
@@ -172,7 +175,7 @@ async def recommend_restaurants(state: dict) -> dict:
     if not already_asked:
         return {**state, "final_response": _NEW_USER_RESPONSE}
 
-    results = await semantic_search(query="popular highly rated restaurants in Colombo", limit=5)
+    results = await semantic_search(query="popular highly rated restaurants in Colombo", limit=5, lat=lat, lng=lng)
     context = {
         "user_preferences": [],
         "occasion": "",

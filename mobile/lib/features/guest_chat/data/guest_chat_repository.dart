@@ -13,6 +13,8 @@ abstract class GuestChatRepository {
     required String message,
     required String sessionId,
     required List<ChatHistoryEntry> history,
+    double? lat,
+    double? lng,
   });
 }
 
@@ -26,11 +28,15 @@ class ApiGuestChatRepository implements GuestChatRepository {
     required String message,
     required String sessionId,
     required List<ChatHistoryEntry> history,
+    double? lat,
+    double? lng,
   }) async {
     final json = await _apiClient.post('/chat/guest', body: {
       'message': message,
       'sessionId': sessionId,
       'history': history.map((h) => h.toJson()).toList(),
+      'lat': ?lat,
+      'lng': ?lng,
     }) as Map<String, dynamic>;
 
     return GuestChatResult(

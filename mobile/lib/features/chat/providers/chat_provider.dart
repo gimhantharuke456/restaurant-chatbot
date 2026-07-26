@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
+import '../../../core/location/location_helper.dart';
 import '../../chat_history/models/chat_session_model.dart';
 import '../data/chat_repository.dart';
 import '../models/chat_message_model.dart';
@@ -32,10 +33,13 @@ class ChatProvider extends ChangeNotifier {
     _history.add(ChatHistoryEntry(role: 'user', content: content));
 
     try {
+      final location = await resolveLocation();
       final result = await _repository.sendMessage(
         message: content,
         sessionId: sessionId,
         history: List.of(_history),
+        lat: location?.lat,
+        lng: location?.lng,
       );
 
       final assistantMessage = ChatMessageModel(

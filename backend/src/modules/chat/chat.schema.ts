@@ -15,6 +15,8 @@ export const SendMessageBodySchema = z
     message: z.string().min(1).max(2000),
     sessionId: z.string().uuid(),
     history: z.array(ChatMessageSchema).default([]),
+    lat: z.number().min(-90).max(90).optional(),
+    lng: z.number().min(-180).max(180).optional(),
   })
   .openapi("SendMessageBody");
 

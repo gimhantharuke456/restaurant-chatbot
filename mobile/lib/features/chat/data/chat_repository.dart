@@ -27,6 +27,8 @@ abstract class ChatRepository {
     required String message,
     required String sessionId,
     required List<ChatHistoryEntry> history,
+    double? lat,
+    double? lng,
   });
 }
 
@@ -40,11 +42,15 @@ class ApiChatRepository implements ChatRepository {
     required String message,
     required String sessionId,
     required List<ChatHistoryEntry> history,
+    double? lat,
+    double? lng,
   }) async {
     final json = await _apiClient.post('/chat/message', body: {
       'message': message,
       'sessionId': sessionId,
       'history': history.map((h) => h.toJson()).toList(),
+      'lat': ?lat,
+      'lng': ?lng,
     }) as Map<String, dynamic>;
 
     final responseMessage = json['message'] as String;

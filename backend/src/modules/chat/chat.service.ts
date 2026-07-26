@@ -45,6 +45,8 @@ export const sendMessage = async (
         session_id: input.sessionId,
         message: input.message,
         history: input.history,
+        lat: input.lat,
+        lng: input.lng,
       },
       authToken ? { headers: { Authorization: `Bearer ${authToken}` } } : undefined,
     );
@@ -129,6 +131,8 @@ export const sendGuestMessage = async (input: SendMessageInput): Promise<AiServi
       session_id: input.sessionId,
       message: input.message,
       history: input.history,
+      lat: input.lat,
+      lng: input.lng,
     });
     return data;
   } catch (e: unknown) {

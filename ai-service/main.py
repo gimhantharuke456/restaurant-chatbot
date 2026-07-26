@@ -89,6 +89,8 @@ async def chat(request: ChatRequest, authorization: str = Header(default=None)):
             "final_response": None,
             "error": None,
             "auth_token": auth_token,
+            "lat": request.lat,
+            "lng": request.lng,
         })
 
         return ChatResponse(
@@ -135,6 +137,8 @@ async def demo_chat(request: ChatRequest):
             "error": None,
             "auth_token": None,
             "trace": [],
+            "lat": request.lat,
+            "lng": request.lng,
         })
 
         return ChatResponse(

@@ -12,6 +12,8 @@ class ChatRequest(BaseModel):
     session_id: str
     message: str
     history: list[Message] = []
+    lat: Optional[float] = None
+    lng: Optional[float] = None
 
 
 class ChatResponse(BaseModel):
