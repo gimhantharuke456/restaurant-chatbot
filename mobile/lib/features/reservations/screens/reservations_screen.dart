@@ -7,6 +7,7 @@ import '../../../shared/widgets/loading_view.dart';
 import '../models/my_reservation_model.dart';
 import '../providers/reservations_provider.dart';
 import '../widgets/reservation_card.dart';
+import '../widgets/review_dialog.dart';
 
 class ReservationsScreen extends StatefulWidget {
   const ReservationsScreen({super.key});
@@ -41,6 +42,22 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
     );
     if (confirmed == true && mounted) {
       await context.read<ReservationsProvider>().cancel(reservation.id);
+    }
+  }
+
+  Future<void> _writeReview(MyReservationModel reservation) async {
+    final result = await showReviewDialog(
+      context,
+      restaurantName: reservation.restaurantName,
+      initialRating: reservation.reviewRating,
+      initialComment: reservation.reviewComment,
+    );
+    if (result != null && mounted) {
+      await context.read<ReservationsProvider>().submitReview(
+            reservation.id,
+            rating: result.rating,
+            comment: result.comment,
+          );
     }
   }
 
@@ -93,7 +110,10 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, letterSpacing: 0.5)),
                 const SizedBox(height: 8),
                 ...past.asMap().entries.map((e) => staggeredEntrance(
-                      ReservationCard(reservation: e.value),
+                      ReservationCard(
+                        reservation: e.value,
+                        onReview: () => _writeReview(e.value),
+                      ),
                       index: e.key,
                     )),
               ],
