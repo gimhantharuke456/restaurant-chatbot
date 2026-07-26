@@ -8,6 +8,7 @@ from config.settings import settings
 from knowledge.prompts import PAYMENT_SYSTEM_PROMPT
 from tools.search_tools import lookup_restaurant_by_name
 from tools.payment_tools import get_restaurant_menu, get_reservation_details, create_checkout_session
+from tools.trace import record, now
 
 llm = ChatVertexAI(
     model_name=settings.gemini_model,
@@ -180,14 +181,21 @@ async def handle_payment(state: dict) -> dict:
     restaurant = await lookup_restaurant_by_name(restaurant_name) if restaurant_name else None
     menu_items: list[dict] = []
     if restaurant:
+        t0 = now()
         menu_items = await get_restaurant_menu(restaurant["id"])
+        record(state, "tool_call", "Fetch Restaurant Menu", started_at=t0, restaurant=restaurant_name, itemCount=len(menu_items))
 
     print(
         f"[payment] booking={booking_ref} restaurant={restaurant_name!r} "
         f"menu_items={len(menu_items)} auth={'yes' if auth_token else 'NO'}"
     )
 
+    t1 = now()
     order_state = await _extract_order_state(messages, menu_items)
+    record(
+        state, "extraction", "Extract Order State", started_at=t1,
+        itemCount=len(order_state["order_items"]), confirmed=order_state["order_confirmed"],
+    )
     print(
         f"[payment] order_state: menu_shown={order_state['menu_presented']} "
         f"items={len(order_state['order_items'])} confirmed={order_state['order_confirmed']} "
@@ -205,7 +213,12 @@ async def handle_payment(state: dict) -> dict:
             ])
             return {**state, "final_response": resp.content}
 
+        t2 = now()
         result = await create_checkout_session(booking_ref, order_state["order_items"], auth_token)
+        record(
+            state, "backend_call", "POST /api/payments/checkout-session", started_at=t2,
+            success=bool(result), amount=(result or {}).get("amount"),
+        )
         if result:
             bill = _format_bill(order_state["order_items"])
             system_prompt = (
@@ -242,7 +255,12 @@ async def handle_payment(state: dict) -> dict:
             "quantity": party_size,
             "category": "Deposit",
         }]
+        t3 = now()
         result = await create_checkout_session(booking_ref, deposit_items, auth_token)
+        record(
+            state, "backend_call", "POST /api/payments/checkout-session (deposit)", started_at=t3,
+            success=bool(result), amount=(result or {}).get("amount"),
+        )
         if result:
             system_prompt = (
                 PAYMENT_SYSTEM_PROMPT

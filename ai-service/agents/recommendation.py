@@ -6,6 +6,7 @@ from config.settings import settings
 from knowledge.prompts import RECOMMENDATION_SYSTEM_PROMPT
 from tools.neo4j_tools import get_user_preferences
 from tools.search_tools import semantic_search
+from tools.trace import record, now
 
 llm = ChatVertexAI(
     model_name=settings.gemini_model,
@@ -53,13 +54,19 @@ async def recommend_restaurants(state: dict) -> dict:
     messages = state["messages"]
     user_message = messages[-1].content
 
+    t0 = now()
     user_prefs = get_user_preferences(user_id)
+    record(
+        state, "tool_call", "Neo4j Preference Lookup", started_at=t0,
+        preferenceCount=len(user_prefs["preferences"]), visitedCount=len(user_prefs["visited"]),
+    )
 
     # If we have Neo4j history, use it directly
     if user_prefs["preferences"]:
         top_cuisines = [p["cuisine"] for p in user_prefs["preferences"][:3]]
         query = f"restaurants serving {', '.join(top_cuisines)} cuisine in Colombo"
         results = await semantic_search(query=query, limit=8)
+        record(state, "tool_call", "Semantic Search (personalised)", query=query, resultCount=len(results))
         visited_ids = {r["id"] for r in user_prefs["visited"]}
         fresh = [r for r in results if r["id"] not in visited_ids][:3]
         context = {

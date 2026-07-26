@@ -29,3 +29,7 @@ class AgentState(TypedDict):
 
     # Auth token forwarded from the HTTP request — used to call the backend API
     auth_token: Optional[str]
+
+    # Step-by-step trace of the pipeline run — see tools/trace.py. Populated
+    # for the /demo/chat endpoint that powers the agent-demo dashboard.
+    trace: Optional[List[dict]]

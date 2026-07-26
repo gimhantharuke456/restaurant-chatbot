@@ -9,6 +9,7 @@ from config.settings import settings
 from knowledge.prompts import RESERVATION_SYSTEM_PROMPT
 from tools.firestore_tools import get_availability
 from tools.search_tools import lookup_restaurant_by_name
+from tools.trace import record, now
 
 llm = ChatVertexAI(
     model_name=settings.gemini_model,
@@ -137,6 +138,7 @@ async def handle_reservation(state: dict) -> dict:
     conversation = _build_conversation_text(messages)
 
     # Extract accumulated details from FULL conversation
+    t0 = now()
     extract_response = llm.invoke([
         SystemMessage(content=_EXTRACT_PROMPT),
         HumanMessage(content=conversation),
@@ -149,6 +151,8 @@ async def handle_reservation(state: dict) -> dict:
         details = json.loads(raw)
     except (json.JSONDecodeError, IndexError):
         details = {"action": "CHECK"}
+
+    record(state, "extraction", "Extract Reservation Details", started_at=t0, action=details.get("action"), details=details)
 
     # Auto-resolve restaurant_id from Postgres when not already extracted
     if not details.get("restaurant_id") and details.get("restaurant_name"):
@@ -166,8 +170,13 @@ async def handle_reservation(state: dict) -> dict:
 
     if details.get("action") == "BOOK" and details.get("restaurant_id") and details.get("date"):
         try:
+            t1 = now()
             slots = get_availability(details["restaurant_id"], details["date"])
             context["available_slots"] = [s for s in slots if s.get("available")]
+            record(
+                state, "tool_call", "Firestore Availability Check", started_at=t1,
+                date=details["date"], availableSlots=len(context["available_slots"]),
+            )
         except Exception:
             pass
 
@@ -186,7 +195,12 @@ async def handle_reservation(state: dict) -> dict:
         and not existing_ref
         and auth_token
     ):
+        t2 = now()
         booking_result = await _call_backend_create_reservation(details, auth_token)
+        record(
+            state, "backend_call", "POST /api/reservations", started_at=t2,
+            success=bool(booking_result), reservationId=(booking_result or {}).get("id"),
+        )
         if booking_result:
             context["booking_ref"] = booking_result.get("id")
             context["booking_confirmed"] = True
@@ -211,19 +225,24 @@ async def handle_reservation(state: dict) -> dict:
             except Exception:
                 pass
         if reservation_id:
+            t3 = now()
             success = await _call_backend_cancel_reservation(reservation_id, auth_token)
+            record(state, "backend_call", "DELETE /api/reservations/:id", started_at=t3, success=success, reservationId=reservation_id)
             context["cancel_success"] = success
             context["cancelled_reservation_id"] = reservation_id if success else None
             print(f"[reservation] cancel {'succeeded' if success else 'failed'} for {reservation_id}")
     elif details.get("action") == "MODIFY" and auth_token:
         reservation_id = existing_ref
         if reservation_id:
+            t4 = now()
             modify_result = await _call_backend_modify_reservation(reservation_id, details, auth_token)
+            record(state, "backend_call", "PUT /api/reservations/:id", started_at=t4, success=modify_result is not None, reservationId=reservation_id)
             context["modify_success"] = modify_result is not None
             context["modified_reservation"] = modify_result
             print(f"[reservation] modify {'succeeded' if modify_result else 'failed'} for {reservation_id}")
     elif not auth_token and details.get("action") in ("BOOK", "CANCEL", "MODIFY"):
         context["auth_required"] = True
+        record(state, "auth_check", "Auth Required", action=details.get("action"))
         print("[reservation] SKIPPED action: auth_token is missing")
 
     # Pass full conversation + booking outcome to the response LLM

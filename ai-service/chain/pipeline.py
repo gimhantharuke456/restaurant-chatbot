@@ -10,6 +10,7 @@ from agents.recommendation import recommend_restaurants
 from agents.reservation import handle_reservation
 from agents.payment import handle_payment
 from agents.general import handle_general
+from tools.trace import record, now
 
 _ROUTE_MAP = {
     "SEARCH": search_restaurants,
@@ -17,6 +18,14 @@ _ROUTE_MAP = {
     "RESERVE": handle_reservation,
     "PAYMENT": handle_payment,
     "GENERAL": handle_general,
+}
+
+_AGENT_LABELS = {
+    "SEARCH": "Discovery Agent",
+    "RECOMMEND": "Recommendation Agent",
+    "RESERVE": "Reservation Agent",
+    "PAYMENT": "Payment Agent",
+    "GENERAL": "General Agent",
 }
 
 
@@ -27,9 +36,14 @@ async def run_pipeline(state: dict) -> dict:
     intent = state.get("intent", "GENERAL")
     agent_fn = _ROUTE_MAP.get(intent, handle_general)
 
+    record(state, "routing", "Routed to Specialist Agent", intent=intent, agent=_AGENT_LABELS.get(intent, intent))
+
+    t0 = now()
     if inspect.iscoroutinefunction(agent_fn):
         state = await agent_fn(state)
     else:
         state = agent_fn(state)
+
+    record(state, "agent_complete", f"{_AGENT_LABELS.get(intent, intent)} Finished", started_at=t0)
 
     return state

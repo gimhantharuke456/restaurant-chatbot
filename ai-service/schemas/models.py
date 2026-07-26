@@ -20,6 +20,7 @@ class ChatResponse(BaseModel):
     intent: Optional[str] = None
     data: Optional[Any] = None
     guest_limit_reached: bool = False
+    trace: Optional[list[dict]] = None
 
 
 class EmbedRequest(BaseModel):

@@ -2,6 +2,7 @@ from langchain_google_vertexai import ChatVertexAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from config.settings import settings
+from tools.trace import record, now
 
 GENERAL_SYSTEM_PROMPT = """You are a helpful AI assistant for a restaurant discovery and reservation platform.
 
@@ -40,9 +41,11 @@ def handle_general(state: dict) -> dict:
     ]
     history_text = "\n".join(history_lines) if history_lines else "(no prior history)"
 
+    t0 = now()
     response = llm.invoke([
         SystemMessage(content=GENERAL_SYSTEM_PROMPT),
         HumanMessage(content=f"Conversation history:\n{history_text}\n\nUser: {user_message}"),
     ])
+    record(state, "llm_call", "General Response Generation", started_at=t0)
 
     return {**state, "final_response": response.content}

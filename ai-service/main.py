@@ -95,6 +95,52 @@ async def chat(request: ChatRequest, authorization: str = Header(default=None)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/demo/chat", response_model=ChatResponse)
+async def demo_chat(request: ChatRequest):
+    """Unauthenticated endpoint for the agent-demo dashboard. Runs the exact
+    same orchestrator + specialist-agent pipeline as /chat, but always
+    returns the step-by-step trace and is never subject to the guest message
+    limit. No auth_token is forwarded, so reservation/payment actions will
+    correctly surface their real 'sign in required' branch rather than
+    actually mutating data — safe to demo without a real account."""
+    try:
+        history = [
+            HumanMessage(content=m.content) if m.role == "user"
+            else AIMessage(content=m.content)
+            for m in request.history
+        ]
+        history.append(HumanMessage(content=request.message))
+
+        result = await run_pipeline({
+            "user_id": request.user_id or f"demo_{request.session_id}",
+            "session_id": request.session_id,
+            "messages": history,
+            "intent": None,
+            "current_agent": None,
+            "search_results": None,
+            "recommendation_results": None,
+            "reservation_details": None,
+            "payment_details": None,
+            "final_response": None,
+            "error": None,
+            "auth_token": None,
+            "trace": [],
+        })
+
+        return ChatResponse(
+            session_id=request.session_id,
+            message=result.get("final_response") or "I couldn't process that request. Please try again.",
+            intent=result.get("intent"),
+            data=result.get("search_results") or result.get("recommendation_results"),
+            guest_limit_reached=False,
+            trace=result.get("trace") or [],
+        )
+    except Exception as e:
+        logger.error("Demo chat handler error: %s", str(e))
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/portal/message", response_model=PortalAIResponse)
 async def portal_message(request: PortalAIRequest):
     """AI assistant for restaurant panel — answers business questions using provided analytics context."""

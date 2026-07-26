@@ -14,6 +14,7 @@ import adminRoutes from "./modules/admin/admin.routes.js";
 import portalRoutes from "./modules/restaurant-portal/portal.routes.js";
 import waitlistRoutes from "./modules/waitlist/waitlist.routes.js";
 import uploadRoutes from "./modules/upload/upload.routes.js";
+import agentDemoRoutes from "./modules/agent-demo/agent-demo.routes.js";
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/restaurant-portal", portalRoutes);
 app.use("/api/waitlist", waitlistRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/agent-demo", agentDemoRoutes);
 
 app.use(errorHandler);
 

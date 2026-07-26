@@ -5,6 +5,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from config.settings import settings
 from knowledge.prompts import DISCOVERY_SYSTEM_PROMPT
 from tools.search_tools import semantic_search
+from tools.trace import record, now
 
 llm = ChatVertexAI(
     model_name=settings.gemini_model,
@@ -40,7 +41,12 @@ async def search_restaurants(state: dict) -> dict:
     query_text = filters.pop("query_text", user_message) or user_message
     active_filters = {k: v for k, v in filters.items() if v}
 
+    t0 = now()
     results = await semantic_search(query=query_text, limit=5, filters=active_filters)
+    record(
+        state, "tool_call", "Semantic Search (pgvector)", started_at=t0,
+        query=query_text, filters=active_filters, resultCount=len(results),
+    )
 
     if results:
         final_response = "__RESTAURANT_LIST__"

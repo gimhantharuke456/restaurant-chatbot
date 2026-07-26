@@ -4,6 +4,7 @@ from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
 from config.settings import settings
 from knowledge.prompts import ORCHESTRATOR_SYSTEM_PROMPT
+from tools.trace import record, now
 
 _BOOKING_MARKER = "Booking ref:"
 _PAYMENT_LINK_MARKER = "Payment link:"
@@ -17,6 +18,7 @@ llm = ChatVertexAI(
 
 
 def orchestrate(state: dict) -> dict:
+    t0 = now()
     messages = state["messages"]
     user_message = messages[-1].content
 
@@ -41,13 +43,20 @@ def orchestrate(state: dict) -> dict:
             raw = raw[4:]
         raw = raw.strip()
 
+    entities: dict = {}
     try:
         parsed = json.loads(raw)
         intent = parsed.get("intent", "GENERAL")
         final_response = parsed.get("response", "")
+        entities = parsed.get("entities", {}) or {}
     except (json.JSONDecodeError, AttributeError):
         intent = "GENERAL"
         final_response = response.content
+
+    record(
+        state, "orchestrator", "Intent Classification", started_at=t0,
+        intent=intent, entities=entities, userMessage=user_message,
+    )
 
     # After a booking is confirmed, force payment/ordering flow until the
     # payment link is sent — regardless of what the user typed.
@@ -58,6 +67,10 @@ def orchestrate(state: dict) -> dict:
     if booking_confirmed and not payment_sent:
         intent = "PAYMENT"
         final_response = ""  # payment agent generates the response
+        record(
+            state, "orchestrator", "Forced Payment Follow-up",
+            reason="A booking was confirmed earlier in this conversation and no payment link has been sent yet.",
+        )
 
     return {
         **state,
