@@ -22,6 +22,8 @@ import 'features/favorites/data/favorites_repository.dart';
 import 'features/favorites/providers/favorites_provider.dart';
 import 'features/loyalty/data/loyalty_repository.dart';
 import 'features/loyalty/providers/loyalty_provider.dart';
+import 'features/notifications/data/notifications_repository.dart';
+import 'features/notifications/providers/notifications_provider.dart';
 import 'features/reservations/data/reservations_repository.dart';
 import 'features/reservations/providers/reservations_provider.dart';
 import 'features/restaurants/data/restaurant_repository.dart';
@@ -56,6 +58,7 @@ class RestaurantChatbotApp extends StatelessWidget {
     final loyaltyRepository = ApiLoyaltyRepository(apiClient);
     final complaintsRepository = ApiComplaintsRepository(apiClient);
     final waitlistRepository = ApiWaitlistRepository(apiClient);
+    final notificationsRepository = ApiNotificationsRepository(apiClient);
     final authProvider = AuthProvider(
       repository: FirebaseAuthRepository(apiClient: apiClient),
       tokenStorage: tokenStorage,
@@ -92,6 +95,9 @@ class RestaurantChatbotApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<WaitlistProvider>(
           create: (_) => WaitlistProvider(waitlistRepository),
+        ),
+        ChangeNotifierProvider<NotificationsProvider>(
+          create: (_) => NotificationsProvider(notificationsRepository),
         ),
       ],
       child: MaterialApp.router(
