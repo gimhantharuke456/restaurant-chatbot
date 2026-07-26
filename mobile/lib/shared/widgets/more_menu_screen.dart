@@ -31,6 +31,12 @@ class MoreMenuScreen extends StatelessWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push('/complaints'),
           ),
+          ListTile(
+            leading: const Icon(Icons.watch_later_outlined),
+            title: const Text('My Waitlists'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/waitlist'),
+          ),
         ],
       ),
     );

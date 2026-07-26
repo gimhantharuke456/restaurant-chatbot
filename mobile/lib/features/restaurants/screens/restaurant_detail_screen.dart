@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../core/motion/app_motion.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../features/favorites/widgets/favorite_button.dart';
+import '../../../features/waitlist/widgets/join_waitlist_sheet.dart';
 import '../../../shared/widgets/error_retry_view.dart';
 import '../../../shared/widgets/loading_view.dart';
 import '../providers/restaurant_detail_provider.dart';
@@ -129,6 +130,16 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
               key: const Key('book_table_button'),
               onPressed: () => context.push('/restaurants/${widget.restaurantId}/book'),
               child: const Text('Book a table'),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: () => showJoinWaitlistSheet(
+                context,
+                restaurantId: widget.restaurantId,
+                restaurantName: restaurant.name,
+              ),
+              icon: const Icon(Icons.watch_later_outlined),
+              label: const Text('Join Waitlist'),
             ),
           ],
         ).animate().fadeIn(duration: AppMotion.standard, curve: AppMotion.standardCurve);

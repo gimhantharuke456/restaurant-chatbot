@@ -26,6 +26,8 @@ import 'features/reservations/data/reservations_repository.dart';
 import 'features/reservations/providers/reservations_provider.dart';
 import 'features/restaurants/data/restaurant_repository.dart';
 import 'features/restaurants/providers/restaurant_provider.dart';
+import 'features/waitlist/data/waitlist_repository.dart';
+import 'features/waitlist/providers/waitlist_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +55,7 @@ class RestaurantChatbotApp extends StatelessWidget {
     final favoritesRepository = ApiFavoritesRepository(apiClient);
     final loyaltyRepository = ApiLoyaltyRepository(apiClient);
     final complaintsRepository = ApiComplaintsRepository(apiClient);
+    final waitlistRepository = ApiWaitlistRepository(apiClient);
     final authProvider = AuthProvider(
       repository: FirebaseAuthRepository(apiClient: apiClient),
       tokenStorage: tokenStorage,
@@ -86,6 +89,9 @@ class RestaurantChatbotApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<ComplaintsProvider>(
           create: (_) => ComplaintsProvider(complaintsRepository),
+        ),
+        ChangeNotifierProvider<WaitlistProvider>(
+          create: (_) => WaitlistProvider(waitlistRepository),
         ),
       ],
       child: MaterialApp.router(
