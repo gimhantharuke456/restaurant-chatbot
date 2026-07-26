@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/app_network_image.dart';
 import '../models/promotion_with_restaurant_model.dart';
 
 class PromotionBrowseCard extends StatelessWidget {
@@ -25,11 +26,7 @@ class PromotionBrowseCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (promotion.coverImageUrl != null)
-              SizedBox(
-                height: 120,
-                width: double.infinity,
-                child: Image.network(promotion.coverImageUrl!, fit: BoxFit.cover),
-              ),
+              AppNetworkImage(url: promotion.coverImageUrl, height: 120),
             Padding(
               padding: const EdgeInsets.all(14),
               child: Column(

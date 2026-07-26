@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/app_network_image.dart';
 import '../../../shared/widgets/empty_state_view.dart';
 import '../../../shared/widgets/loading_view.dart';
 import '../../restaurants/models/menu_item_model.dart';
@@ -60,6 +61,14 @@ class BookingMenuCartStep extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Row(
                       children: [
+                        AppNetworkImage(
+                          url: item.imageUrl,
+                          width: 48,
+                          height: 48,
+                          borderRadius: BorderRadius.circular(8),
+                          fallbackIcon: Icons.restaurant_menu,
+                        ),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

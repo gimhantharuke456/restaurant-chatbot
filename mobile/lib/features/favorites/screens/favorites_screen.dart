@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../core/motion/entrance.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/app_network_image.dart';
 import '../../../shared/widgets/empty_state_view.dart';
 import '../../../shared/widgets/error_retry_view.dart';
 import '../../../shared/widgets/loading_view.dart';
@@ -96,18 +97,11 @@ class _FavoriteCard extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-              ClipRRect(
+              AppNetworkImage(
+                url: favorite.coverImageUrl,
+                width: 56,
+                height: 56,
                 borderRadius: BorderRadius.circular(10),
-                child: SizedBox(
-                  width: 56,
-                  height: 56,
-                  child: favorite.coverImageUrl != null
-                      ? Image.network(favorite.coverImageUrl!, fit: BoxFit.cover)
-                      : Container(
-                          color: AppColors.secondary,
-                          child: const Icon(Icons.restaurant, color: AppColors.mutedForeground),
-                        ),
-                ),
               ),
               const SizedBox(width: 12),
               Expanded(

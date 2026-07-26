@@ -6,6 +6,7 @@ import '../../../core/motion/app_motion.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../features/favorites/widgets/favorite_button.dart';
 import '../../../features/waitlist/widgets/join_waitlist_sheet.dart';
+import '../../../shared/widgets/app_network_image.dart';
 import '../../../shared/widgets/error_retry_view.dart';
 import '../../../shared/widgets/loading_view.dart';
 import '../providers/restaurant_detail_provider.dart';
@@ -53,15 +54,10 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            ClipRRect(
+            AppNetworkImage(
+              url: restaurant.coverImageUrl,
+              height: 180,
               borderRadius: BorderRadius.circular(14),
-              child: SizedBox(
-                height: 180,
-                width: double.infinity,
-                child: restaurant.coverImageUrl != null
-                    ? Image.network(restaurant.coverImageUrl!, fit: BoxFit.cover)
-                    : Container(color: AppColors.secondary),
-              ),
             ),
             const SizedBox(height: 16),
             Text(restaurant.name, style: Theme.of(context).textTheme.headlineSmall),
@@ -108,6 +104,13 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
             ...detail.menu.take(5).map((item) => ListTile(
                   key: Key('menu_item_${item.id}'),
                   contentPadding: EdgeInsets.zero,
+                  leading: AppNetworkImage(
+                    url: item.imageUrl,
+                    width: 48,
+                    height: 48,
+                    borderRadius: BorderRadius.circular(8),
+                    fallbackIcon: Icons.restaurant_menu,
+                  ),
                   title: Text(item.name),
                   subtitle: item.description != null ? Text(item.description!) : null,
                   trailing: Text('LKR ${item.price.toStringAsFixed(0)}'),

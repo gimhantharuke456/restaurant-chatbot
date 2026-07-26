@@ -49,4 +49,12 @@ class ChatRestaurantResult {
       return [cuisineTypes];
     }
   }
+
+  String? get coverImageUrl {
+    try {
+      final decoded = jsonDecode(imageUrls);
+      if (decoded is List && decoded.isNotEmpty) return decoded.first.toString();
+    } catch (_) {}
+    return null;
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/app_network_image.dart';
 import '../models/chat_restaurant_result.dart';
 
 const _priceLabels = {
@@ -55,6 +56,13 @@ class ChatRestaurantCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
+                    AppNetworkImage(
+                      url: restaurant.coverImageUrl,
+                      width: 48,
+                      height: 48,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Text(
                         restaurant.name,

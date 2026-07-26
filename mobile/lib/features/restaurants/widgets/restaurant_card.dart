@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/motion/entrance.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/app_network_image.dart';
 import '../models/restaurant_model.dart';
 
 class RestaurantCard extends StatelessWidget {
@@ -35,18 +36,11 @@ class RestaurantCard extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-              ClipRRect(
+              AppNetworkImage(
+                url: restaurant.imageUrls.isNotEmpty ? restaurant.imageUrls.first : null,
+                width: 64,
+                height: 64,
                 borderRadius: BorderRadius.circular(10),
-                child: SizedBox(
-                  width: 64,
-                  height: 64,
-                  child: restaurant.imageUrls.isNotEmpty
-                      ? Image.network(restaurant.imageUrls.first, fit: BoxFit.cover)
-                      : Container(
-                          color: AppColors.secondary,
-                          child: const Icon(Icons.restaurant, color: AppColors.mutedForeground),
-                        ),
-                ),
               ),
               const SizedBox(width: 12),
               Expanded(
