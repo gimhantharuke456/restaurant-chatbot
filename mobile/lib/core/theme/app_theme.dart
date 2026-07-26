@@ -48,4 +48,49 @@ class AppTheme {
       ),
     );
   }
+
+  static ThemeData get light {
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      scaffoldBackgroundColor: AppColors.lightBackground,
+      primaryColor: AppColors.primary,
+      colorScheme: const ColorScheme.light(
+        primary: AppColors.primary,
+        onPrimary: Colors.white,
+        secondary: AppColors.lightSecondary,
+        onSecondary: AppColors.lightSecondaryForeground,
+        surface: AppColors.lightCard,
+        onSurface: AppColors.lightForeground,
+        error: AppColors.destructive,
+        onError: Colors.white,
+      ),
+      cardColor: AppColors.lightCard,
+      dividerColor: AppColors.lightBorder,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: AppColors.lightCard,
+        foregroundColor: AppColors.lightForeground,
+        elevation: 0,
+      ),
+      textTheme: const TextTheme(
+        bodyLarge: TextStyle(color: AppColors.lightForeground),
+        bodyMedium: TextStyle(color: AppColors.lightForeground),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.lightSecondary,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.lightBorder),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      ),
+    );
+  }
 }

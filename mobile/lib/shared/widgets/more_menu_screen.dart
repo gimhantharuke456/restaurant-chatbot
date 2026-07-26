@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../core/theme/theme_provider.dart';
 import '../../features/notifications/providers/notifications_provider.dart';
 
 /// A simple hub for secondary features that don't warrant their own
@@ -88,6 +89,17 @@ class _MoreMenuScreenState extends State<MoreMenuScreen> {
             title: const Text('Promotions & Offers'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push('/promotions'),
+          ),
+          const Divider(),
+          SwitchListTile(
+            secondary: Icon(
+              context.watch<ThemeProvider>().isDarkMode
+                  ? Icons.dark_mode
+                  : Icons.light_mode,
+            ),
+            title: const Text('Dark Mode'),
+            value: context.watch<ThemeProvider>().isDarkMode,
+            onChanged: (_) => context.read<ThemeProvider>().toggleTheme(),
           ),
         ],
       ),

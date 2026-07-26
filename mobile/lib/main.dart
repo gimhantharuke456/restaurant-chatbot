@@ -14,6 +14,7 @@ import 'core/network/auth_token_holder.dart';
 import 'core/router/app_router.dart';
 import 'core/storage/token_storage.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_provider.dart';
 import 'features/auth/data/auth_repository.dart';
 import 'features/auth/providers/auth_provider.dart';
 import 'features/booking/data/booking_repository.dart';
@@ -96,6 +97,7 @@ class RestaurantChatbotApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
         Provider<TokenStorage>.value(value: tokenStorage),
         Provider<ApiClient>.value(value: apiClient),
         Provider<RestaurantRepository>.value(value: restaurantRepository),
@@ -137,12 +139,17 @@ class RestaurantChatbotApp extends StatelessWidget {
           create: (_) => GuestChatProvider(guestChatRepository),
         ),
       ],
-      child: MaterialApp.router(
-        title: 'Restaurant Chatbot',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.dark,
-        routerConfig: router,
-      ),
+      builder: (context, child) {
+        final themeProvider = context.watch<ThemeProvider>();
+        return MaterialApp.router(
+          title: 'Restaurant Chatbot',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: themeProvider.themeMode,
+          routerConfig: router,
+        );
+      },
     );
   }
 }
