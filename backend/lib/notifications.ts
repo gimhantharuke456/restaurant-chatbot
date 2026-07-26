@@ -1,5 +1,6 @@
 import { prisma } from "./db.js";
 import { adminMessaging } from "../src/config/firebase.js";
+import { emitToUser } from "./socket.js";
 import type { NotificationType } from "../generated/prisma/client.js";
 
 export const createNotification = async (
@@ -9,9 +10,24 @@ export const createNotification = async (
   message: string,
   data?: Record<string, unknown>,
 ): Promise<void> => {
-  await prisma.notification
+  const notification = await prisma.notification
     .create({ data: { userId, type, title, message, data: (data ?? undefined) as object | undefined } })
-    .catch((err: unknown) => console.error("[notification] create failed (non-fatal):", err));
+    .catch((err: unknown) => {
+      console.error("[notification] create failed (non-fatal):", err);
+      return null;
+    });
+
+  if (notification) {
+    emitToUser(userId, "notification:new", {
+      id: notification.id,
+      type: notification.type,
+      title: notification.title,
+      message: notification.message,
+      data: notification.data,
+      isRead: notification.isRead,
+      createdAt: notification.createdAt.toISOString(),
+    });
+  }
 
   // FCM push — best-effort, non-blocking
   prisma.deviceToken

@@ -4,8 +4,11 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'core/firebase/google_signin_config.dart';
+import 'core/local_notifications/local_notifications_service.dart';
 import 'core/network/api_client.dart';
 import 'core/payments/stripe_config.dart';
+import 'core/realtime/realtime_notifications_coordinator.dart';
+import 'core/realtime/socket_service.dart';
 import 'firebase_options.dart';
 import 'core/network/auth_token_holder.dart';
 import 'core/router/app_router.dart';
@@ -47,11 +50,15 @@ void main() async {
   );
   Stripe.publishableKey = StripeConfig.publishableKey;
   await Stripe.instance.applySettings();
-  runApp(const RestaurantChatbotApp());
+  final localNotifications = LocalNotificationsService();
+  await localNotifications.initialize();
+  runApp(RestaurantChatbotApp(localNotifications: localNotifications));
 }
 
 class RestaurantChatbotApp extends StatelessWidget {
-  const RestaurantChatbotApp({super.key});
+  final LocalNotificationsService localNotifications;
+
+  const RestaurantChatbotApp({super.key, required this.localNotifications});
 
   @override
   Widget build(BuildContext context) {
@@ -71,13 +78,21 @@ class RestaurantChatbotApp extends StatelessWidget {
     final paymentHistoryRepository = ApiPaymentHistoryRepository(apiClient);
     final promotionsRepository = ApiPromotionsRepository(apiClient);
     final guestChatRepository = ApiGuestChatRepository(apiClient);
+    final authRepository = FirebaseAuthRepository(apiClient: apiClient);
     final authProvider = AuthProvider(
-      repository: FirebaseAuthRepository(apiClient: apiClient),
+      repository: authRepository,
       tokenStorage: tokenStorage,
       tokenHolder: tokenHolder,
     )..restoreSession();
     apiClient.onUnauthorized = authProvider.signOut;
     final router = buildAppRouter(authProvider);
+    final notificationsProvider = NotificationsProvider(notificationsRepository);
+    RealtimeNotificationsCoordinator(
+      socketService: SocketService(),
+      localNotifications: localNotifications,
+      notificationsProvider: notificationsProvider,
+      tokenChanges: authRepository.idTokenChanges(),
+    );
 
     return MultiProvider(
       providers: [
@@ -108,9 +123,7 @@ class RestaurantChatbotApp extends StatelessWidget {
         ChangeNotifierProvider<WaitlistProvider>(
           create: (_) => WaitlistProvider(waitlistRepository),
         ),
-        ChangeNotifierProvider<NotificationsProvider>(
-          create: (_) => NotificationsProvider(notificationsRepository),
-        ),
+        ChangeNotifierProvider<NotificationsProvider>.value(value: notificationsProvider),
         ChangeNotifierProvider<ProfileProvider>(
           create: (_) => ProfileProvider(profileRepository),
         ),

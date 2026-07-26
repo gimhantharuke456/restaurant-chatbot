@@ -28,6 +28,15 @@ class NotificationsProvider extends ChangeNotifier {
     }
   }
 
+  /// Inserts a notification pushed live over the socket connection, without
+  /// a network round-trip — used by [RealtimeNotificationsCoordinator].
+  void receiveLive(NotificationModel notification) {
+    if (notifications.any((n) => n.id == notification.id)) return;
+    notifications = [notification, ...notifications];
+    if (!notification.isRead) unreadCount++;
+    notifyListeners();
+  }
+
   Future<void> markRead(String id) async {
     final index = notifications.indexWhere((n) => n.id == id);
     if (index == -1 || notifications[index].isRead) return;
