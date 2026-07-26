@@ -22,14 +22,14 @@ _NEW_USER_RESPONSE = (
     "2. What's the occasion — a romantic date, family dinner, business lunch, or casual hangout?"
 )
 
-_EXTRACT_PREFS_PROMPT = """Extract any stated cuisine preferences and occasion from the conversation.
+_EXTRACT_PREFS_PROMPT = """Extract any stated cuisine preferences and occasion from the ENTIRE conversation
+below, including the very latest message — the user may state their taste in their first message
+(e.g. "suggest a romantic Italian place") rather than waiting to be asked.
 Return JSON only:
 {
   "cuisines": ["list of cuisine types mentioned, or empty"],
-  "occasion": "occasion mentioned or empty",
-  "preferences_stated": true or false
-}
-If the user has answered questions about cuisine or occasion, set preferences_stated to true."""
+  "occasion": "occasion mentioned or empty"
+}"""
 
 
 def _conversation_text(messages: list) -> str:
@@ -80,46 +80,73 @@ async def recommend_restaurants(state: dict) -> dict:
         ])
         return {**state, "recommendation_results": fresh, "final_response": response.content}
 
-    # No Neo4j history — try to extract preferences from the conversation
+    # No Neo4j history — ALWAYS try to extract stated preferences from the
+    # full conversation so far (including the very latest message), rather
+    # than only after clarifying questions have already been asked. Gating
+    # extraction behind "already asked" meant a first message like "suggest
+    # a romantic Italian place" was ignored outright and the clarifying
+    # questions were asked anyway.
     conversation = _conversation_text(messages)
+    extract_response = llm.invoke([
+        SystemMessage(content=_EXTRACT_PREFS_PROMPT),
+        HumanMessage(content=conversation),
+    ])
+    try:
+        raw = extract_response.content.strip()
+        if raw.startswith("```"):
+            raw = raw.split("```")[1].lstrip("json").strip()
+        prefs = json.loads(raw)
+    except (json.JSONDecodeError, IndexError):
+        prefs = {}
+
+    cuisines = prefs.get("cuisines") or []
+    occasion = (prefs.get("occasion") or "").strip()
+    record(state, "extraction", "Extract Stated Preferences", cuisines=cuisines, occasion=occasion)
+
     already_asked = _clarifying_questions_already_asked(messages[:-1])
 
-    if already_asked:
-        # User has answered the clarifying questions — extract and use their stated preferences
-        extract_response = llm.invoke([
-            SystemMessage(content=_EXTRACT_PREFS_PROMPT),
-            HumanMessage(content=conversation),
+    if cuisines or occasion:
+        query_parts = []
+        if cuisines:
+            query_parts.append(f"{', '.join(cuisines)} cuisine")
+        if occasion:
+            query_parts.append(f"for {occasion}")
+        query = f"restaurants in Colombo serving {' '.join(query_parts)}"
+
+        results = await semantic_search(query=query, limit=5)
+        context = {
+            "user_preferences": [{"cuisine": c} for c in cuisines],
+            "occasion": occasion,
+            "visited_restaurants": [],
+            "recommendations": results[:3],
+        }
+        response = llm.invoke([
+            SystemMessage(content=RECOMMENDATION_SYSTEM_PROMPT),
+            HumanMessage(content=f"User: {user_message}\n\nContext:\n{json.dumps(context, default=str)}"),
         ])
-        try:
-            raw = extract_response.content.strip()
-            if raw.startswith("```"):
-                raw = raw.split("```")[1].lstrip("json").strip()
-            prefs = json.loads(raw)
-        except (json.JSONDecodeError, IndexError):
-            prefs = {"cuisines": [], "occasion": "", "preferences_stated": False}
+        return {**state, "recommendation_results": results[:3], "final_response": response.content}
 
-        if prefs.get("preferences_stated") and (prefs.get("cuisines") or prefs.get("occasion")):
-            cuisines = prefs.get("cuisines", [])
-            occasion = prefs.get("occasion", "")
-            query_parts = []
-            if cuisines:
-                query_parts.append(f"{', '.join(cuisines)} cuisine")
-            if occasion:
-                query_parts.append(f"for {occasion}")
-            query = f"restaurants in Colombo serving {' '.join(query_parts)}"
+    # Nothing extractable. Ask the clarifying questions — but only ONCE per
+    # conversation. If we already asked and still got nothing usable back,
+    # don't repeat the same question again (that's the loop this was fixing)
+    # — fall back to a generic well-reviewed recommendation instead.
+    if not already_asked:
+        return {**state, "final_response": _NEW_USER_RESPONSE}
 
-            results = await semantic_search(query=query, limit=5)
-            context = {
-                "user_preferences": [{"cuisine": c} for c in cuisines],
-                "occasion": occasion,
-                "visited_restaurants": [],
-                "recommendations": results[:3],
-            }
-            response = llm.invoke([
-                SystemMessage(content=RECOMMENDATION_SYSTEM_PROMPT),
-                HumanMessage(content=f"User: {user_message}\n\nContext:\n{json.dumps(context, default=str)}"),
-            ])
-            return {**state, "recommendation_results": results[:3], "final_response": response.content}
-
-    # Clarifying questions not yet asked (or answers not extractable) — ask them
-    return {**state, "final_response": _NEW_USER_RESPONSE}
+    results = await semantic_search(query="popular highly rated restaurants in Colombo", limit=5)
+    context = {
+        "user_preferences": [],
+        "occasion": "",
+        "visited_restaurants": [],
+        "recommendations": results[:3],
+    }
+    response = llm.invoke([
+        SystemMessage(
+            content=RECOMMENDATION_SYSTEM_PROMPT
+            + "\n\nThe user didn't give a clear cuisine or occasion even after being asked. "
+              "Don't ask again — recommend a few generally well-reviewed options instead, and "
+              "mention they can always narrow it down later with a cuisine or occasion."
+        ),
+        HumanMessage(content=f"User: {user_message}\n\nContext:\n{json.dumps(context, default=str)}"),
+    ])
+    return {**state, "recommendation_results": results[:3], "final_response": response.content}
