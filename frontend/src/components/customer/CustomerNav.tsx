@@ -5,12 +5,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { AUTH_COOKIE } from "@/lib/cookie";
-import { CalendarDays, User, LogOut, UtensilsCrossed, Home, Bell, Trophy, MessageSquareWarning, Heart, Clock } from "lucide-react";
+import { CalendarDays, User, LogOut, UtensilsCrossed, Home, Bell, Trophy, MessageSquareWarning, MessageCircle, Heart, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/home", label: "Home", icon: Home },
+  { href: "/chat", label: "Chat", icon: MessageCircle },
   { href: "/reservations", label: "Reservations", icon: CalendarDays },
   { href: "/favorites", label: "Favorites", icon: Heart },
   { href: "/waitlist", label: "Waitlist", icon: Clock },
