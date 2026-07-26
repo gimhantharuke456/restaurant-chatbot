@@ -77,6 +77,12 @@ class _MoreMenuScreenState extends State<MoreMenuScreen> {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push('/profile'),
           ),
+          ListTile(
+            leading: const Icon(Icons.receipt_long_outlined),
+            title: const Text('Payment History'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/payments'),
+          ),
         ],
       ),
     );
