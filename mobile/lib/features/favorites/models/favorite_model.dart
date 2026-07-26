@@ -45,7 +45,7 @@ class FavoriteModel {
     final restaurant = json['restaurant'] as Map<String, dynamic>? ?? {};
     return FavoriteModel(
       id: json['id'] as String,
-      collection: json['collection'] as String? ?? 'Saved',
+      collection: json['collection'] as String? ?? 'Favorites',
       restaurantId: restaurant['id'] as String? ?? json['restaurantId'] as String,
       restaurantName: restaurant['name'] as String? ?? 'Restaurant',
       restaurantArea: restaurant['area'] as String? ?? '',

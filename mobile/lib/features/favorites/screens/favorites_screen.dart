@@ -54,22 +54,41 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           );
         }
 
+        final byCollection = <String, List<FavoriteModel>>{};
+        for (final fav in provider.favorites) {
+          byCollection.putIfAbsent(fav.collection, () => []).add(fav);
+        }
+
         return RefreshIndicator(
           onRefresh: provider.fetch,
-          child: ListView.builder(
+          child: ListView(
             padding: const EdgeInsets.all(16),
-            itemCount: provider.favorites.length,
-            itemBuilder: (context, index) {
-              final fav = provider.favorites[index];
-              return staggeredEntrance(
-                _FavoriteCard(
-                  favorite: fav,
-                  onTap: () => context.push('/restaurants/${fav.restaurantId}'),
-                  onRemove: () => provider.remove(fav.restaurantId),
+            children: [
+              for (final entry in byCollection.entries) ...[
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8, top: 8),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.favorite, color: AppColors.destructive, size: 16),
+                      const SizedBox(width: 6),
+                      Text(entry.key, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                      const SizedBox(width: 6),
+                      Text('(${entry.value.length})',
+                          style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12)),
+                    ],
+                  ),
                 ),
-                index: index,
-              );
-            },
+                for (var i = 0; i < entry.value.length; i++)
+                  staggeredEntrance(
+                    _FavoriteCard(
+                      favorite: entry.value[i],
+                      onTap: () => context.push('/restaurants/${entry.value[i].restaurantId}'),
+                      onRemove: () => provider.remove(entry.value[i].restaurantId),
+                    ),
+                    index: i,
+                  ),
+              ],
+            ],
           ),
         );
       }),

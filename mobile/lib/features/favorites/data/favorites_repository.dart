@@ -4,7 +4,7 @@ import '../models/favorite_model.dart';
 abstract class FavoritesRepository {
   Future<List<FavoriteModel>> getFavorites();
   Future<bool> checkFavorite(String restaurantId);
-  Future<void> addFavorite(String restaurantId, {String collection = 'Saved'});
+  Future<void> addFavorite(String restaurantId, {String collection = 'Favorites'});
   Future<void> removeFavorite(String restaurantId);
 }
 
@@ -27,7 +27,7 @@ class ApiFavoritesRepository implements FavoritesRepository {
   }
 
   @override
-  Future<void> addFavorite(String restaurantId, {String collection = 'Saved'}) async {
+  Future<void> addFavorite(String restaurantId, {String collection = 'Favorites'}) async {
     await _apiClient.post('/users/me/favorites', body: {
       'restaurantId': restaurantId,
       'collection': collection,
