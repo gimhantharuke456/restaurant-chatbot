@@ -43,6 +43,12 @@ router.get(
   restaurantController.getAvailability,
 );
 
+router.get(
+  "/:id/slot-capacity",
+  validate(AvailabilityQuerySchema, "query"),
+  restaurantController.getSlotCapacity,
+);
+
 router.get("/:id/menu", restaurantController.getMenu);
 router.get("/:id/reviews", restaurantController.getRestaurantReviews);
 router.get("/:id/promotions", restaurantController.getRestaurantPromotions);

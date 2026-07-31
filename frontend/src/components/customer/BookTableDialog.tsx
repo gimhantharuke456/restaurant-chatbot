@@ -13,11 +13,11 @@ import Image from "next/image";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
-interface Slot {
+interface SlotCapacity {
   time: string;
+  bookedSeats: number;
+  maxCapacity: number;
   available: boolean;
-  totalTables: number;
-  bookedTables: number;
 }
 
 interface MenuItem {
@@ -75,7 +75,7 @@ export function BookTableDialog({
   const [time, setTime] = useState("");
   const [partySize, setPartySize] = useState(2);
   const [specialRequests, setSpecialRequests] = useState("");
-  const [slots, setSlots] = useState<Slot[] | null>(null);
+  const [slotCapacity, setSlotCapacity] = useState<SlotCapacity[] | null>(null);
   const [loadingSlots, setLoadingSlots] = useState(false);
 
   // Step 2 state
@@ -89,20 +89,29 @@ export function BookTableDialog({
 
   const maxParty = totalSeats ?? 20;
 
-  // Fetch availability when date changes
+  // Fetch per-slot booked capacity when date changes
   useEffect(() => {
     if (!open || !date) return;
-    setSlots(null);
+    setSlotCapacity(null);
     setTime("");
     setLoadingSlots(true);
-    fetch(`/api/proxy/restaurants/${restaurantId}/availability?date=${date}`)
+    fetch(`/api/proxy/restaurants/${restaurantId}/slot-capacity?date=${date}`)
       .then((r) => r.json())
-      .then((data: Slot[]) => {
-        setSlots(Array.isArray(data) && data.length > 0 ? data : null);
+      .then((data: SlotCapacity[]) => {
+        setSlotCapacity(Array.isArray(data) ? data : null);
       })
-      .catch(() => setSlots(null))
+      .catch(() => setSlotCapacity(null))
       .finally(() => setLoadingSlots(false));
   }, [date, open, restaurantId]);
+
+  // If party size grows past what's left in the selected slot, deselect it
+  useEffect(() => {
+    if (!time || !slotCapacity) return;
+    const cap = slotCapacity.find((s) => s.time === time);
+    if (cap && cap.maxCapacity - cap.bookedSeats < partySize) {
+      setTime("");
+    }
+  }, [partySize, slotCapacity, time]);
 
   // Fetch menu when entering step 2
   const fetchMenu = useCallback(async () => {
@@ -205,7 +214,7 @@ export function BookTableDialog({
     setPartySize(2);
     setSpecialRequests("");
     setError(null);
-    setSlots(null);
+    setSlotCapacity(null);
     setCart(new Map());
     setMenuItems([]);
   };
@@ -215,7 +224,7 @@ export function BookTableDialog({
     if (!v) reset();
   };
 
-  const displaySlots = slots ?? defaultSlots().map((t) => ({ time: t, available: true, totalTables: 0, bookedTables: 0 }));
+  const timeSlots = defaultSlots();
 
   // Dialog width: wider for menu step
   const contentClass = step === 1
@@ -260,6 +269,11 @@ export function BookTableDialog({
         {/* ── Step 1: Date / Time / Party ── */}
         {step === 1 && (
           <div className="px-6 py-5 space-y-5">
+            {error && (
+              <p className="rounded-lg bg-destructive/10 border border-destructive/20 px-3 py-2 text-xs text-destructive">
+                {error}
+              </p>
+            )}
             {/* Date */}
             <div className="space-y-1.5">
               <label className="flex items-center gap-1.5 text-xs font-semibold text-foreground uppercase tracking-wide">
@@ -281,7 +295,6 @@ export function BookTableDialog({
               <label className="flex items-center gap-1.5 text-xs font-semibold text-foreground uppercase tracking-wide">
                 <Clock className="h-3.5 w-3.5 text-primary" />
                 Time
-                {slots && <span className="ml-auto text-[10px] font-normal text-green-600 normal-case">Live availability</span>}
               </label>
               {loadingSlots ? (
                 <div className="flex gap-1.5 flex-wrap">
@@ -291,23 +304,24 @@ export function BookTableDialog({
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-1">
-                  {displaySlots.map((s) => {
-                    const unavailable = slots ? !s.available : false;
+                  {timeSlots.map((t) => {
+                    const cap = slotCapacity?.find((s) => s.time === t);
+                    const full = cap ? cap.maxCapacity - cap.bookedSeats < partySize : false;
                     return (
                       <button
-                        key={s.time}
+                        key={t}
                         type="button"
-                        disabled={unavailable}
-                        onClick={() => setTime(s.time)}
+                        disabled={full}
+                        onClick={() => { setTime(t); setError(null); }}
                         className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors
-                          ${unavailable
+                          ${full
                             ? "border-border/30 text-muted-foreground/40 cursor-not-allowed line-through"
-                            : time === s.time
+                            : time === t
                               ? "border-primary bg-primary text-primary-foreground"
                               : "border-border bg-card text-foreground hover:border-primary/50 hover:bg-muted/50"
                           }`}
                       >
-                        {s.time}
+                        {t}
                       </button>
                     );
                   })}

@@ -1,57 +1,20 @@
-===============================================================
-  RESTAURANT CHATBOT — STARTUP COMMANDS
-  Run each service in a separate terminal tab
-===============================================================
-
-── PREREQUISITES ──────────────────────────────────────────────
-PostgreSQL must be running locally (default port 5432)
-Redis must be running locally (default port 6379)
-
-
-── 1. BACKEND  (port 3000) ────────────────────────────────────
-cd restaurant-chatbot/backend
-npm install
-npm run dev
-
-  First-time setup (run once, in order):
-    npm run db:migrate          # apply all migrations
-    npm run seed:admin          # create system admin
-    npm run seed:restaurant-admin  # create restaurant admin + data
-
-
-── 2. AI SERVICE  (port 8000) ─────────────────────────────────
 cd restaurant-chatbot/ai-service
-python3 -m venv .venv           # first time only
+python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt  # first time only
+pip install -r requirements.txt
 python3 main.py
 
-  Or with uvicorn directly:
-    uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+cd restaurant-chatbot/backend
+npm install
+npx prisma generate
+npx prisma migrate dev
+npm run seed:admin
+npm run seed:restaurant-admin
+npm run seed
+npm run dev
 
 
-── 3. FRONTEND  (port 3001) ───────────────────────────────────
 cd restaurant-chatbot/frontend
 npm install
 npm run dev
-
-  Access the app at:  http://localhost:3001
-
-
-── DEFAULT CREDENTIALS ────────────────────────────────────────
-System Admin:
-  email:    admin@restaurant.com
-  password: admin123
-
-Restaurant Admin:
-  email:    restaurant@restaurant.com
-  password: restaurant123
-
-
-── STARTUP ORDER ──────────────────────────────────────────────
-1. PostgreSQL + Redis
-2. Backend  (wait for "Server running on port 3000")
-3. AI Service  (wait for "Application startup complete")
-4. Frontend  (wait for "Ready on http://localhost:3001")
-
-===============================================================

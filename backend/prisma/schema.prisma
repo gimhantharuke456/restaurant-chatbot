@@ -63,6 +63,7 @@ model Restaurant {
   longitude     Float?
   socialMedia   Json?
   totalSeats    Int?
+  maxCapacity   Int           @default(10)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   adminId       String

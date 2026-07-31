@@ -199,10 +199,20 @@ function MessageText({ content }: { content: string }) {
 
 // ── Main export ───────────────────────────────────────────────────────────────
 
+function isRestaurantData(data: RestaurantResult[] | MenuItemResult[]): data is RestaurantResult[] {
+  return data.length > 0 && "cuisineTypes" in data[0];
+}
+
+function isMenuData(data: RestaurantResult[] | MenuItemResult[]): data is MenuItemResult[] {
+  return data.length > 0 && "restaurantId" in data[0];
+}
+
 export function MessageBubble({ message, onSend }: { message: Message; onSend: (content: string) => void }) {
   const isUser = message.role === "user";
-  const isRestaurantList = message.content === "__RESTAURANT_LIST__" && message.data && message.data.length > 0;
-  const isMenuList = message.content === "__MENU_LIST__" && message.data && message.data.length > 0;
+  const isSentinelRestaurantList = message.content === "__RESTAURANT_LIST__" && message.data && message.data.length > 0;
+  const isSentinelMenuList = message.content === "__MENU_LIST__" && message.data && message.data.length > 0;
+  const hasInlineRestaurantData = !isSentinelRestaurantList && message.data && message.data.length > 0 && isRestaurantData(message.data);
+  const hasInlineMenuData = !isSentinelMenuList && message.data && message.data.length > 0 && isMenuData(message.data);
 
   return (
     <div className={cn("flex gap-3 items-end", isUser && "flex-row-reverse")}>
@@ -215,23 +225,34 @@ export function MessageBubble({ message, onSend }: { message: Message; onSend: (
         {isUser ? "U" : "AI"}
       </div>
 
-      {isRestaurantList ? (
+      {isSentinelRestaurantList ? (
         <RestaurantList items={message.data as RestaurantResult[]} />
-      ) : isMenuList ? (
+      ) : isSentinelMenuList ? (
         <MenuItemList
           items={message.data as MenuItemResult[]}
           onOrder={(item) => onSend(`I'd like to order ${item.name}`)}
         />
       ) : (
-        <div
-          className={cn(
-            "max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
-            isUser
-              ? "bg-primary text-primary-foreground rounded-br-sm whitespace-pre-wrap break-words"
-              : "bg-muted text-foreground rounded-bl-sm"
+        <div className="flex flex-col gap-3 max-w-[75%]">
+          <div
+            className={cn(
+              "rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
+              isUser
+                ? "bg-primary text-primary-foreground rounded-br-sm whitespace-pre-wrap break-words"
+                : "bg-muted text-foreground rounded-bl-sm"
+            )}
+          >
+            {isUser ? message.content : <MessageText content={message.content} />}
+          </div>
+          {hasInlineRestaurantData && (
+            <RestaurantList items={message.data as RestaurantResult[]} />
           )}
-        >
-          {isUser ? message.content : <MessageText content={message.content} />}
+          {hasInlineMenuData && (
+            <MenuItemList
+              items={message.data as MenuItemResult[]}
+              onOrder={(item) => onSend(`I'd like to order ${item.name}`)}
+            />
+          )}
         </div>
       )}
     </div>

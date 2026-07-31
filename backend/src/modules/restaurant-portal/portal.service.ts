@@ -26,6 +26,7 @@ export const registerRestaurant = async (
     longitude?: number;
     socialMedia?: object;
     totalSeats?: number;
+    maxCapacity?: number;
   },
 ) => {
   const existing = await prisma.restaurant.findFirst({ where: { adminId } });
@@ -48,6 +49,7 @@ export const registerRestaurant = async (
       longitude: input.longitude ?? null,
       socialMedia: input.socialMedia ?? undefined,
       totalSeats: input.totalSeats ?? null,
+      ...(input.maxCapacity !== undefined && { maxCapacity: input.maxCapacity }),
     },
   });
 };
@@ -108,6 +110,7 @@ export const updateMyRestaurant = async (
     longitude?: number;
     socialMedia?: object;
     totalSeats?: number;
+    maxCapacity?: number;
   },
 ) => {
   const restaurant = await prisma.restaurant.findFirst({ where: { adminId } });

@@ -38,6 +38,13 @@ export const getAvailability = async (req: Request, res: Response): Promise<void
   res.json(slots);
 };
 
+export const getSlotCapacity = async (req: Request, res: Response): Promise<void> => {
+  const { date } = req.query as { date: string };
+  const slots = await restaurantService.getSlotCapacity(String(req.params.id), date);
+  if (!slots) { res.status(404).json({ error: "Restaurant not found" }); return; }
+  res.json(slots);
+};
+
 export const getMenu = async (req: Request, res: Response): Promise<void> => {
   const items = await restaurantService.getMenu(String(req.params.id));
   res.json(items);

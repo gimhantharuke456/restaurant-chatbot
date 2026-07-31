@@ -21,7 +21,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "How do I book a table through the chatbot?",
-    a: "Just tell the assistant what you're looking for — e.g. "Book a table for 2 at a Japanese restaurant tonight". It will confirm your date, time, and party size, then create the reservation in seconds. You can also use the direct "Book Table" button on any restaurant page.",
+    a: "Just tell the assistant what you're looking for — e.g. “Book a table for 2 at a Japanese restaurant tonight”. It will confirm your date, time, and party size, then create the reservation in seconds. You can also use the direct “Book Table” button on any restaurant page.",
   },
   {
     q: "Can I pre-order food before I arrive?",

@@ -116,6 +116,46 @@ export const getAvailability = async (restaurantId: string, date: string): Promi
   return doc.exists ? (doc.data()?.slots ?? []) : [];
 };
 
+const pad = (n: number) => String(n).padStart(2, "0");
+
+const DEFAULT_TIME_SLOTS: string[] = (() => {
+  const slots: string[] = [];
+  for (let h = 9; h <= 21; h++) {
+    slots.push(`${pad(h)}:00`);
+    slots.push(`${pad(h)}:30`);
+  }
+  return slots;
+})();
+
+export const getSlotCapacity = async (restaurantId: string, date: string) => {
+  const restaurant = await prisma.restaurant.findUnique({ where: { id: restaurantId } });
+  if (!restaurant) return null;
+
+  const reservations = await prisma.reservation.findMany({
+    where: {
+      restaurantId,
+      date: new Date(date),
+      status: { in: ["PENDING", "CONFIRMED"] },
+    },
+    select: { time: true, partySize: true },
+  });
+
+  const bookedByTime = new Map<string, number>();
+  for (const r of reservations) {
+    bookedByTime.set(r.time, (bookedByTime.get(r.time) ?? 0) + r.partySize);
+  }
+
+  return DEFAULT_TIME_SLOTS.map((time) => {
+    const bookedSeats = bookedByTime.get(time) ?? 0;
+    return {
+      time,
+      bookedSeats,
+      maxCapacity: restaurant.maxCapacity,
+      available: bookedSeats < restaurant.maxCapacity,
+    };
+  });
+};
+
 export const getMenu = async (restaurantId: string) => {
   return prisma.menuItem.findMany({
     where: { restaurantId, isAvailable: true },

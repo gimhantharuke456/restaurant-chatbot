@@ -160,6 +160,22 @@ registry.registerPath({
 
 registry.registerPath({
   method: "get",
+  path: "/api/restaurants/{id}/slot-capacity",
+  tags: ["Restaurants"],
+  summary: "Get per-time-slot booked seats vs. maxCapacity for a given date",
+  request: {
+    params: z.object({ id: z.string().uuid() }),
+    query: AvailabilityQuerySchema,
+  },
+  responses: {
+    200: { description: "Array of time slots with bookedSeats/maxCapacity/available" },
+    400: { description: "Missing or invalid date param" },
+    404: { description: "Restaurant not found" },
+  },
+});
+
+registry.registerPath({
+  method: "get",
   path: "/api/restaurants/{id}/menu",
   tags: ["Restaurants"],
   summary: "Get available menu items for a restaurant",
