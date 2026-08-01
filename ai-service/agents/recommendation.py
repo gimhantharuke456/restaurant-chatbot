@@ -172,7 +172,12 @@ async def recommend_restaurants(state: dict) -> dict:
     # conversation. If we already asked and still got nothing usable back,
     # don't repeat the same question again (that's the loop this was fixing)
     # — fall back to a generic well-reviewed recommendation instead.
-    if not already_asked:
+    # Don't ask clarifying questions when the user's intent is already clear
+    # (e.g. "best reviews", "top rated", "most popular")
+    _clear_intent_words = {"best", "top", "highest", "popular", "review", "reviews", "rated", "rating"}
+    has_clear_intent = bool(_clear_intent_words & set(user_message.lower().split()))
+
+    if not already_asked and not has_clear_intent:
         return {**state, "final_response": _NEW_USER_RESPONSE}
 
     results = await semantic_search(query="popular highly rated restaurants in Colombo", limit=5, lat=lat, lng=lng)

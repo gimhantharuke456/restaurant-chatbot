@@ -1,0 +1,39 @@
+INFO:     Will watch for changes in these directories: ['/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/ai-service']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [33985] using StatReload
+/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/ai-service/venv/lib/python3.14/site-packages/langgraph/cache/base/__init__.py:8: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/ai-service/agents/orchestrator.py:12: LangChainDeprecationWarning: The class `ChatVertexAI` was deprecated in LangChain 3.2.0 and will be removed in 4.0.0. An updated version of the class exists in the `langchain-google-genai package and should be used instead. To use it run `pip install -U `langchain-google-genai` and import as `from `langchain_google_genai import ChatGoogleGenerativeAI``.
+  llm = ChatVertexAI(
+INFO:     Started server process [33992]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:55323 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55434 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55483 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55483 - "POST /chat/title HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55497 - "POST /chat HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'knowledge/prompts.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [33992]
+/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/ai-service/venv/lib/python3.14/site-packages/langgraph/cache/base/__init__.py:8: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/ai-service/agents/orchestrator.py:12: LangChainDeprecationWarning: The class `ChatVertexAI` was deprecated in LangChain 3.2.0 and will be removed in 4.0.0. An updated version of the class exists in the `langchain-google-genai package and should be used instead. To use it run `pip install -U `langchain-google-genai` and import as `from `langchain_google_genai import ChatGoogleGenerativeAI``.
+  llm = ChatVertexAI(
+INFO:     Started server process [34409]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'agents/recommendation.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [34409]
+/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/ai-service/venv/lib/python3.14/site-packages/langgraph/cache/base/__init__.py:8: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/ai-service/agents/orchestrator.py:12: LangChainDeprecationWarning: The class `ChatVertexAI` was deprecated in LangChain 3.2.0 and will be removed in 4.0.0. An updated version of the class exists in the `langchain-google-genai package and should be used instead. To use it run `pip install -U `langchain-google-genai` and import as `from `langchain_google_genai import ChatGoogleGenerativeAI``.
+  llm = ChatVertexAI(
+INFO:     Started server process [34451]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.

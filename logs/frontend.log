@@ -2,12 +2,12 @@
 > frontend@0.1.0 dev
 > next dev
 
-⚠ Port 3000 is in use by process 10139, using available port 3001 instead.
+⚠ Port 3000 is in use by process 34071, using available port 3001 instead.
 ▲ Next.js 16.2.6 (Turbopack)
 - Local:         http://localhost:3001
 - Network:       http://192.168.1.165:3001
 - Environments: .env
-✓ Ready in 352ms
+✓ Ready in 2.7s
 ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
  We detected multiple lockfiles and selected the directory of /Users/gimhanrajapaksha/Desktop/projects/agent_project/package-lock.json as the root directory.
  To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
@@ -18,52 +18,12 @@
 - Experiments (use with caution):
   · optimizePackageImports
 
- GET / 200 in 5.9s (next.js: 916ms, application-code: 4.9s)
- GET / 200 in 578ms (next.js: 106ms, application-code: 472ms)
- POST /api/proxy/chat/guest 200 in 4.8s (next.js: 1033ms, application-code: 3.8s)
- POST /api/proxy/chat/guest 200 in 3.1s (next.js: 10ms, application-code: 3.1s)
- POST /api/proxy/chat/guest 200 in 2.7s (next.js: 5ms, application-code: 2.6s)
- POST /api/proxy/chat/guest 200 in 28ms (next.js: 6ms, application-code: 22ms)
- GET / 200 in 1108ms (next.js: 107ms, application-code: 1001ms)
-[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
-
-- A server/client branch `if (typeof window !== 'undefined')`.
-- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
-- Date formatting in a user's locale which doesn't match the server.
-- External changing data without sending a snapshot of it along with the HTML.
-- Invalid HTML tag nesting.
-
-It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
-
-https://react.dev/link/hydration-mismatch
-
-  ...
-    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
-      <AppDevOverlayErrorBoundary globalError={[...]}>
-        <ReplaySsrOnlyErrors>
-        <DevRootHTTPAccessFallbackBoundary>
-          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
-            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
-              <RedirectBoundary>
-                <RedirectErrorBoundary router={{...}}>
-                  <Head>
-                  <__next_root_layout_boundary__>
-                    <SegmentViewNode type="layout" pagePath="layout.tsx">
-                      <SegmentTrieNode>
-                      <link>
-                      <script>
-                      <script>
-                      <script>
-                      <RootLayout>
-                        <html lang="en" className="h-full ant...">
-                          <body
-                            className="min-h-full flex flex-col"
--                           cz-shortcut-listen="true"
-                          >
-                  ...
- 
- GET / 200 in 200ms (next.js: 6ms, application-code: 194ms)
- POST /api/proxy/chat/guest 200 in 4.5s (next.js: 10ms, application-code: 4.5s)
- POST /api/proxy/chat/guest 200 in 5.8s (next.js: 20ms, application-code: 5.8s)
- POST /api/proxy/chat/guest 200 in 3.1s (next.js: 13ms, application-code: 3.1s)
-[?25h
+ GET / 200 in 6.3s (next.js: 1293ms, application-code: 5.0s)
+ GET / 200 in 6.3s (next.js: 1022ms, application-code: 5.3s)
+ POST /api/proxy/chat/guest 200 in 6.1s (next.js: 1195ms, application-code: 4.9s)
+ GET /login 200 in 204ms (next.js: 119ms, application-code: 85ms)
+ POST /api/proxy/auth/register 201 in 355ms (next.js: 19ms, application-code: 336ms)
+ GET /api/proxy/auth/me 200 in 304ms (next.js: 1433µs, application-code: 302ms)
+ GET /home 200 in 175ms (next.js: 65ms, application-code: 110ms)
+ POST /api/proxy/chat/message 200 in 4.8s (next.js: 19ms, application-code: 4.8s)
+ POST /api/proxy/chat/message 200 in 3.9s (next.js: 18ms, application-code: 3.9s)
