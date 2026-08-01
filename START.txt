@@ -1,8 +1,8 @@
 cd restaurant-chatbot/ai-service
-python3 -m venv .venv
-source .venv/bin/activate
+python -m venv .venv
+.venv\Scripts\activate
 pip install -r requirements.txt
-python3 main.py
+uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 
 
 cd restaurant-chatbot/backend

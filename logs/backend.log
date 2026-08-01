@@ -1,27 +1,10 @@
 
 > backend@1.0.0 dev
-> tsx watch src/index.ts
+> tsx prisma/seed/dedupe-restaurants.ts && tsx prisma/seed/backfill-coordinates.ts && tsx watch src/index.ts
 
+[dedupe-restaurants] no duplicates found
+[dedupe-restaurants] no duplicate menu items found
+[backfill-coordinates] all restaurants already have coordinates
 Backend running on port 3000
 Swagger UI: http://localhost:3000/api/docs
-7:20:04 AM [tsx] change in ./src/modules/admin/admin.controller.ts Restarting...
-cBackend running on port 3000
-Swagger UI: http://localhost:3000/api/docs
-7:20:07 AM [tsx] change in ./src/modules/admin/admin.controller.ts Restarting...
-cBackend running on port 3000
-Swagger UI: http://localhost:3000/api/docs
-7:20:12 AM [tsx] change in ./src/modules/admin/admin.controller.ts Restarting...
-cBackend running on port 3000
-Swagger UI: http://localhost:3000/api/docs
-7:20:16 AM [tsx] change in ./src/modules/admin/admin.controller.ts Restarting...
-cBackend running on port 3000
-Swagger UI: http://localhost:3000/api/docs
-7:20:19 AM [tsx] change in ./src/modules/admin/admin.controller.ts Restarting...
-cBackend running on port 3000
-Swagger UI: http://localhost:3000/api/docs
-7:20:23 AM [tsx] change in ./src/modules/admin/admin.controller.ts Restarting...
-cBackend running on port 3000
-Swagger UI: http://localhost:3000/api/docs
-7:20:26 AM [tsx] change in ./src/modules/admin/admin.controller.ts Restarting...
-cBackend running on port 3000
-Swagger UI: http://localhost:3000/api/docs
+Socket.IO ready

@@ -2,12 +2,12 @@
 > frontend@0.1.0 dev
 > next dev
 
-⚠ Port 3000 is in use by process 56699, using available port 3001 instead.
+⚠ Port 3000 is in use by process 8000, using available port 3001 instead.
 ▲ Next.js 16.2.6 (Turbopack)
 - Local:         http://localhost:3001
 - Network:       http://192.168.1.165:3001
 - Environments: .env
-✓ Ready in 439ms
+✓ Ready in 381ms
 ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
  We detected multiple lockfiles and selected the directory of /Users/gimhanrajapaksha/Desktop/projects/agent_project/package-lock.json as the root directory.
  To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
@@ -18,108 +18,14 @@
 - Experiments (use with caution):
   · optimizePackageImports
 
- GET / 200 in 6.7s (next.js: 2.2s, application-code: 4.5s)
- GET / 200 in 1858ms (next.js: 187ms, application-code: 1670ms)
- GET /login 200 in 657ms (next.js: 545ms, application-code: 112ms)
- POST /api/proxy/auth/register 201 in 1100ms (next.js: 960ms, application-code: 139ms)
- GET /api/proxy/auth/me 200 in 306ms (next.js: 17ms, application-code: 289ms)
- GET /chat 200 in 86ms (next.js: 52ms, application-code: 34ms)
- GET /home 200 in 317ms (next.js: 56ms, application-code: 261ms)
- GET /home 200 in 241ms (next.js: 1793µs, application-code: 240ms)
- POST /api/proxy/chat/message 200 in 4.8s (next.js: 9ms, application-code: 4.7s)
- GET /restaurants/198ad31f-3262-41fd-846a-c0fe482d2aa7 200 in 810ms (next.js: 377ms, application-code: 434ms)
- GET /api/proxy/users/me/favorites/198ad31f-3262-41fd-846a-c0fe482d2aa7/check 200 in 168ms (next.js: 12ms, application-code: 156ms)
- GET /api/proxy/users/me/favorites/198ad31f-3262-41fd-846a-c0fe482d2aa7/check 200 in 7ms (next.js: 1276µs, application-code: 6ms)
-[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
-[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
-[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
-[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
- GET /api/proxy/restaurants/198ad31f-3262-41fd-846a-c0fe482d2aa7/availability?date=2026-07-15 200 in 1243ms (next.js: 6ms, application-code: 1237ms)
- GET /api/proxy/restaurants/198ad31f-3262-41fd-846a-c0fe482d2aa7/availability?date=2026-07-15 200 in 973ms (next.js: 8ms, application-code: 965ms)
- POST /api/proxy/chat/message 200 in 4.1s (next.js: 8ms, application-code: 4.1s)
- GET /waitlist 200 in 99ms (next.js: 60ms, application-code: 39ms)
- GET /api/proxy/waitlist 200 in 505ms (next.js: 7ms, application-code: 498ms)
- GET /api/proxy/waitlist 200 in 25ms (next.js: 3ms, application-code: 22ms)
-○ Compiling /favorites ...
- GET /favorites 200 in 4.4s (next.js: 4.4s, application-code: 41ms)
- GET /loyalty 200 in 1653ms (next.js: 1128ms, application-code: 525ms)
- GET /notifications 200 in 147ms (next.js: 51ms, application-code: 96ms)
- GET /complaints 200 in 81ms (next.js: 54ms, application-code: 27ms)
- GET /api/proxy/users/me/complaints 200 in 155ms (next.js: 12ms, application-code: 143ms)
- GET /api/proxy/users/me/complaints 200 in 12ms (next.js: 1940µs, application-code: 10ms)
- GET /profile 200 in 185ms (next.js: 45ms, application-code: 140ms)
- GET /home 200 in 134ms (next.js: 11ms, application-code: 123ms)
- GET /restaurants/2cb3531b-e5c7-4565-b3c9-cbb411636bf8 200 in 2.3s (next.js: 254ms, application-code: 2.1s)
- GET /api/proxy/users/me/favorites/2cb3531b-e5c7-4565-b3c9-cbb411636bf8/check 200 in 63ms (next.js: 9ms, application-code: 54ms)
- GET /api/proxy/users/me/favorites/2cb3531b-e5c7-4565-b3c9-cbb411636bf8/check 200 in 17ms (next.js: 6ms, application-code: 11ms)
- GET /login 200 in 49ms (next.js: 16ms, application-code: 33ms)
- GET /api/proxy/auth/me 200 in 424ms (next.js: 51ms, application-code: 372ms)
- GET /restaurant 200 in 325ms (next.js: 131ms, application-code: 194ms)
- GET /restaurant/reservations 200 in 214ms (next.js: 81ms, application-code: 134ms)
- GET /api/proxy/restaurant-portal/reservations?from=2026-07-01&to=2026-07-31&limit=500 200 in 40ms (next.js: 15ms, application-code: 25ms)
- GET /api/proxy/restaurant-portal/reservations?from=2026-07-01&to=2026-07-31&limit=500 200 in 33ms (next.js: 3ms, application-code: 30ms)
- GET /restaurant/payments 200 in 199ms (next.js: 58ms, application-code: 141ms)
- GET /restaurant/reviews 200 in 241ms (next.js: 99ms, application-code: 142ms)
- GET /restaurant/menu 200 in 267ms (next.js: 54ms, application-code: 213ms)
-○ Compiling /restaurant/promotions ...
- GET /restaurant/promotions 200 in 3.2s (next.js: 2.8s, application-code: 383ms)
- GET /restaurant/availability 200 in 2.2s (next.js: 2.2s, application-code: 60ms)
- GET /restaurant/holidays 200 in 609ms (next.js: 569ms, application-code: 40ms)
- GET /api/proxy/restaurant-portal/holidays 200 in 272ms (next.js: 9ms, application-code: 263ms)
- GET /api/proxy/restaurant-portal/holidays 200 in 25ms (next.js: 9ms, application-code: 16ms)
- GET /restaurant/ai 200 in 1236ms (next.js: 1197ms, application-code: 38ms)
- GET /restaurant/analytics 200 in 2.5s (next.js: 2.2s, application-code: 383ms)
- GET /restaurant/profile 200 in 127ms (next.js: 40ms, application-code: 86ms)
- GET /api/uploadthing 200 in 456ms (next.js: 412ms, application-code: 44ms)
- GET /api/uploadthing 200 in 11ms (next.js: 7ms, application-code: 4ms)
- GET /api/uploadthing 200 in 5ms (next.js: 1137µs, application-code: 4ms)
- GET /api/uploadthing 200 in 9ms (next.js: 5ms, application-code: 4ms)
- GET /api/uploadthing 200 in 6ms (next.js: 1163µs, application-code: 5ms)
- GET /api/uploadthing 200 in 4ms (next.js: 1580µs, application-code: 2ms)
- GET / 200 in 173ms (next.js: 20ms, application-code: 153ms)
- GET /login 200 in 24ms (next.js: 4ms, application-code: 20ms)
- GET /api/proxy/auth/me 200 in 321ms (next.js: 40ms, application-code: 281ms)
- GET /admin 200 in 655ms (next.js: 123ms, application-code: 532ms)
- GET /admin/restaurants 200 in 607ms (next.js: 279ms, application-code: 328ms)
- GET /admin/verification 200 in 509ms (next.js: 391ms, application-code: 118ms)
- GET /admin/users 200 in 1036ms (next.js: 244ms, application-code: 792ms)
- GET /admin/reservations 200 in 577ms (next.js: 121ms, application-code: 456ms)
- GET /admin/payments 200 in 391ms (next.js: 174ms, application-code: 217ms)
-○ Compiling /admin/reviews ...
- GET /admin/reviews 200 in 4.3s (next.js: 4.2s, application-code: 159ms)
- GET /admin/complaints 200 in 1479ms (next.js: 1426ms, application-code: 53ms)
- GET /api/proxy/admin/complaints?page=1&limit=20 200 in 191ms (next.js: 30ms, application-code: 160ms)
- GET /api/proxy/admin/complaints?page=1&limit=20 200 in 20ms (next.js: 3ms, application-code: 16ms)
-[browser] Uncaught TypeError: Cannot read properties of undefined (reading 'length')
-    at AdminComplaintsPage (src/app/admin/complaints/page.tsx:172:22)
-  170 |       {loading ? (
-  171 |         <div className="text-sm text-muted-foreground">Loading…</div>
-> 172 |       ) : complaints.length === 0 ? (
-      |                      ^
-  173 |         <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed ...
-  174 |           <MessageSquareWarning className="h-10 w-10 text-muted-foreground" />
-  175 |           <p className="text-sm text-muted-foreground">No complaints found.</p>
- GET /admin/payments 200 in 523ms (next.js: 13ms, application-code: 510ms)
- GET /admin/complaints 200 in 100ms (next.js: 40ms, application-code: 60ms)
- GET /api/proxy/admin/complaints?page=1&limit=20 200 in 421ms (next.js: 12ms, application-code: 410ms)
-[browser] Uncaught TypeError: Cannot read properties of undefined (reading 'length')
-    at AdminComplaintsPage (src/app/admin/complaints/page.tsx:172:22)
-  170 |       {loading ? (
-  171 |         <div className="text-sm text-muted-foreground">Loading…</div>
-> 172 |       ) : complaints.length === 0 ? (
-      |                      ^
-  173 |         <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed ...
-  174 |           <MessageSquareWarning className="h-10 w-10 text-muted-foreground" />
-  175 |           <p className="text-sm text-muted-foreground">No complaints found.</p>
- GET /api/proxy/admin/complaints?page=1&limit=20 200 in 80ms (next.js: 20ms, application-code: 61ms)
- GET /admin/payments 200 in 346ms (next.js: 36ms, application-code: 310ms)
- GET /admin/reviews 200 in 74ms (next.js: 19ms, application-code: 56ms)
-○ Compiling /admin/notifications ...
- GET /admin/notifications 200 in 4.2s (next.js: 4.1s, application-code: 118ms)
- GET /admin/analytics 200 in 252ms (next.js: 61ms, application-code: 191ms)
- GET /admin/settings 200 in 97ms (next.js: 55ms, application-code: 42ms)
- GET /admin/logs 200 in 907ms (next.js: 166ms, application-code: 741ms)
- GET /admin/settings 200 in 258ms (next.js: 15ms, application-code: 244ms)
- GET /admin/complaints 200 in 966ms (next.js: 450ms, application-code: 516ms)
- GET /api/proxy/admin/complaints?page=1&limit=20 200 in 1561ms (next.js: 48ms, application-code: 1513ms)
- GET /api/proxy/admin/complaints?page=1&limit=20 200 in 51ms (next.js: 8ms, application-code: 43ms)
+ GET / 200 in 7.3s (next.js: 2.3s, application-code: 5.0s)
+ GET / 200 in 190ms (next.js: 22ms, application-code: 168ms)
+ GET /agent-demo 200 in 223ms (next.js: 99ms, application-code: 123ms)
+ POST /api/proxy/agent-demo/chat 200 in 7.6s (next.js: 677ms, application-code: 7.0s)
+ POST /api/proxy/agent-demo/chat 200 in 3.1s (next.js: 35ms, application-code: 3.0s)
+[browser] Each child in a list should have a unique "key" prop.
+
+Check the render method of `div`. It was passed a child from DemoRestaurantCard. See https://react.dev/link/warning-keys for more information. 
+ POST /api/proxy/agent-demo/chat 200 in 2.4s (next.js: 23ms, application-code: 2.4s)
+ POST /api/proxy/agent-demo/chat 200 in 4.0s (next.js: 17ms, application-code: 4.0s)
+[?25h

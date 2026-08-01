@@ -1,4 +1,5 @@
 import { serverFetch } from "@/lib/server/api";
+import { requireRestaurantAdmin } from "@/lib/server/auth";
 
 interface PortalStats {
   restaurantName: string;
@@ -20,7 +21,15 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
 }
 
 export default async function RestaurantDashboard() {
-  const stats = await serverFetch<PortalStats>("restaurant-portal/stats");
+  await requireRestaurantAdmin();
+  const stats = await serverFetch<PortalStats>("restaurant-portal/stats").catch(() => null);
+  if (!stats) {
+    return (
+      <div className="p-8 text-muted-foreground text-sm">
+        Could not load dashboard. Make sure the backend is running and the restaurant account is seeded.
+      </div>
+    );
+  }
 
   return (
     <div className="p-8 space-y-6">
