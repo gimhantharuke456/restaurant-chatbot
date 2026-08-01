@@ -82,17 +82,18 @@ class BookingDateTimeStep extends StatelessWidget {
             runSpacing: 8,
             children: (slots ?? const <SlotModel>[]).map((s) {
               final isSelected = selectedTime == s.time;
+              final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.45);
               return ChoiceChip(
                 label: Text(s.time),
                 selected: isSelected,
                 onSelected: s.available ? (_) => onTimeSelected(s.time) : null,
-                disabledColor: AppColors.muted,
+                disabledColor: Theme.of(context).colorScheme.secondary,
                 selectedColor: AppColors.primary,
                 labelStyle: TextStyle(
                   color: !s.available
-                      ? AppColors.mutedForeground
+                      ? muted
                       : isSelected
-                          ? AppColors.foreground
+                          ? Colors.white
                           : null,
                   decoration: !s.available ? TextDecoration.lineThrough : null,
                 ),

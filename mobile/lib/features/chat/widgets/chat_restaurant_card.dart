@@ -18,6 +18,7 @@ class ChatRestaurantList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -25,7 +26,7 @@ class ChatRestaurantList extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 6, left: 4),
           child: Text(
             'Found ${items.length} restaurant${items.length != 1 ? 's' : ''}',
-            style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12),
+            style: TextStyle(color: muted, fontSize: 12),
           ),
         ),
         ...items.map((r) => ChatRestaurantCard(restaurant: r)),
@@ -41,10 +42,13 @@ class ChatRestaurantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
+    final cardColor = Theme.of(context).cardColor;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Material(
-        color: AppColors.card,
+        color: cardColor,
         borderRadius: BorderRadius.circular(14),
         child: InkWell(
           borderRadius: BorderRadius.circular(14),
@@ -78,19 +82,19 @@ class ChatRestaurantCard extends StatelessWidget {
                       ),
                     ],
                     const SizedBox(width: 4),
-                    const Icon(Icons.chevron_right, size: 16, color: AppColors.mutedForeground),
+                    Icon(Icons.chevron_right, size: 16, color: muted),
                   ],
                 ),
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(Icons.location_on_outlined, size: 13, color: AppColors.mutedForeground),
+                    Icon(Icons.location_on_outlined, size: 13, color: muted),
                     const SizedBox(width: 3),
-                    Text(restaurant.area, style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12)),
-                    const Text(' · ', style: TextStyle(color: AppColors.mutedForeground, fontSize: 12)),
+                    Text(restaurant.area, style: TextStyle(color: muted, fontSize: 12)),
+                    Text(' · ', style: TextStyle(color: muted, fontSize: 12)),
                     Text(
                       _priceLabels[restaurant.priceRange] ?? restaurant.priceRange,
-                      style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12),
+                      style: TextStyle(color: muted, fontSize: 12),
                     ),
                   ],
                 ),
@@ -117,7 +121,7 @@ class ChatRestaurantCard extends StatelessWidget {
                     restaurant.description!,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12, height: 1.3),
+                    style: TextStyle(color: muted, fontSize: 12, height: 1.3),
                   ),
                 ],
               ],

@@ -62,7 +62,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _nameController.text.trim(),
       extras: {
         if (_phoneController.text.trim().isNotEmpty) 'phone': _phoneController.text.trim(),
-        if (_dateOfBirth != null) 'dateOfBirth': _dateOfBirth!.toIso8601String(),
+        if (_dateOfBirth != null) 'dateOfBirth': _dateOfBirth!.toUtc().toIso8601String(),
         if (_preferredLanguage != null) 'preferredLanguage': _preferredLanguage,
         if (_cuisines.isNotEmpty) 'cuisines': _cuisines,
         if (_budgetPreference != null) 'budgetPreference': _budgetPreference,

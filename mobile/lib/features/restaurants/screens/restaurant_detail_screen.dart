@@ -65,7 +65,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
             const SizedBox(height: 4),
             Text(
               '${restaurant.address}, ${restaurant.area}',
-              style: const TextStyle(color: AppColors.mutedForeground),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55)),
             ),
             const SizedBox(height: 8),
             Row(
@@ -93,14 +93,16 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                     margin: const EdgeInsets.only(bottom: 8),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.accent,
+                      color: Theme.of(context).colorScheme.secondary,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(promo.title, style: const TextStyle(fontWeight: FontWeight.w600)),
-                        Text(promo.description, style: const TextStyle(color: AppColors.mutedForeground)),
+                        Text(promo.description, style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55),
+                        )),
                       ],
                     ),
                   )),
@@ -109,7 +111,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
             Text('Menu', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             if (detail.menu.isEmpty)
-              const Text('No menu items yet', style: TextStyle(color: AppColors.mutedForeground)),
+              Text('No menu items yet', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55))),
             ...detail.menu.take(5).map((item) => ListTile(
                   key: Key('menu_item_${item.id}'),
                   contentPadding: EdgeInsets.zero,
@@ -128,7 +130,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
             Text('Reviews', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             if (detail.reviews == null || detail.reviews!.data.isEmpty)
-              const Text('No reviews yet', style: TextStyle(color: AppColors.mutedForeground)),
+              Text('No reviews yet', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55))),
             ...?detail.reviews?.data.take(3).map((review) => ListTile(
                   key: Key('review_${review.id}'),
                   contentPadding: EdgeInsets.zero,

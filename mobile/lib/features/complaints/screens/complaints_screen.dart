@@ -42,42 +42,84 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
     final descriptionController = TextEditingController();
     final provider = context.read<ComplaintsProvider>();
 
-    final submitted = await showDialog<bool>(
+    final submitted = await showModalBottomSheet<bool>(
       context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (dialogContext, setDialogState) => AlertDialog(
-          title: const Text('New complaint'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: subjectController,
-                decoration: const InputDecoration(labelText: 'Subject'),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: descriptionController,
-                maxLines: 4,
-                decoration: const InputDecoration(labelText: 'Description'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const Text('Cancel')),
-            ElevatedButton(
-              onPressed: subjectController.text.trim().isEmpty || descriptionController.text.trim().isEmpty
-                  ? null
-                  : () async {
-                      final ok = await provider.submit(
-                        subject: subjectController.text.trim(),
-                        description: descriptionController.text.trim(),
-                      );
-                      if (dialogContext.mounted) Navigator.pop(dialogContext, ok);
-                    },
-              child: const Text('Submit'),
+      isScrollControlled: true,
+      useSafeArea: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) => StatefulBuilder(
+        builder: (sheetContext, setSheetState) {
+          final canSubmit = subjectController.text.trim().isNotEmpty &&
+              descriptionController.text.trim().isNotEmpty;
+
+          return Padding(
+            padding: EdgeInsets.fromLTRB(
+              20, 20, 20,
+              MediaQuery.of(sheetContext).viewInsets.bottom + 24,
             ),
-          ],
-        ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Text(
+                        'New Complaint',
+                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(sheetContext, false),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: subjectController,
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: const InputDecoration(
+                    labelText: 'Subject',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (_) => setSheetState(() {}),
+                ),
+                const SizedBox(height: 14),
+                TextField(
+                  controller: descriptionController,
+                  maxLines: 4,
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: const InputDecoration(
+                    labelText: 'Description',
+                    alignLabelWithHint: true,
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (_) => setSheetState(() {}),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: canSubmit
+                      ? () async {
+                          final ok = await provider.submit(
+                            subject: subjectController.text.trim(),
+                            description: descriptionController.text.trim(),
+                          );
+                          if (sheetContext.mounted) Navigator.pop(sheetContext, ok);
+                        }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(48),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text('Submit'),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
 

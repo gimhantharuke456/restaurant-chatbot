@@ -18,15 +18,13 @@ class RestaurantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return staggeredEntrance(
-      _buildCard(context),
-      index: index,
-    );
+    return staggeredEntrance(_buildCard(context), index: index);
   }
 
   Widget _buildCard(BuildContext context) {
+    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
+
     return Card(
-      color: AppColors.card,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: InkWell(
@@ -56,7 +54,7 @@ class RestaurantCard extends StatelessWidget {
                       restaurant.distanceKm != null
                           ? '${restaurant.area} · ${restaurant.priceRange} · ${restaurant.distanceKm} km away'
                           : '${restaurant.area} · ${restaurant.priceRange}',
-                      style: const TextStyle(color: AppColors.mutedForeground, fontSize: 13),
+                      style: TextStyle(color: muted, fontSize: 13),
                     ),
                     const SizedBox(height: 4),
                     Row(
@@ -67,14 +65,14 @@ class RestaurantCard extends StatelessWidget {
                           restaurant.avgRating != null
                               ? '${restaurant.avgRating!.toStringAsFixed(1)} (${restaurant.totalReviews})'
                               : 'No reviews yet',
-                          style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12),
+                          style: TextStyle(color: muted, fontSize: 12),
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: AppColors.mutedForeground),
+              Icon(Icons.chevron_right, color: muted),
             ],
           ),
         ),

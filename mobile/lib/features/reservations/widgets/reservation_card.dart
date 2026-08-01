@@ -7,7 +7,7 @@ const _statusColors = {
   'CONFIRMED': Colors.green,
   'CANCELLED': AppColors.destructive,
   'COMPLETED': Colors.blue,
-  'NO_SHOW': AppColors.mutedForeground,
+  'NO_SHOW': Colors.grey,
 };
 
 class ReservationCard extends StatelessWidget {
@@ -19,12 +19,13 @@ class ReservationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = _statusColors[reservation.status] ?? AppColors.mutedForeground;
+    final statusColor = _statusColors[reservation.status] ?? Colors.grey;
+    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
+    final mutedBg = Theme.of(context).colorScheme.secondary;
     final dateLabel =
         '${reservation.date.year}-${reservation.date.month.toString().padLeft(2, '0')}-${reservation.date.day.toString().padLeft(2, '0')}';
 
     return Card(
-      color: AppColors.card,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
@@ -42,7 +43,7 @@ class ReservationCard extends StatelessWidget {
                           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
                       if (reservation.restaurantArea.isNotEmpty)
                         Text(reservation.restaurantArea,
-                            style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12)),
+                            style: TextStyle(color: muted, fontSize: 12)),
                     ],
                   ),
                 ),
@@ -79,7 +80,7 @@ class ReservationCard extends StatelessWidget {
                 children: [
                   Text(
                     '${reservation.preOrderItemCount} item${reservation.preOrderItemCount == 1 ? '' : 's'} pre-ordered',
-                    style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12),
+                    style: TextStyle(color: muted, fontSize: 12),
                   ),
                   Text(
                     'LKR ${reservation.preOrderAmount?.toStringAsFixed(0) ?? '0'}',
@@ -93,7 +94,7 @@ class ReservationCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.muted,
+                  color: mutedBg,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Column(
@@ -115,7 +116,7 @@ class ReservationCard extends StatelessWidget {
                         reservation.reviewComment!,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12),
+                        style: TextStyle(color: muted, fontSize: 12),
                       ),
                     ],
                   ],
@@ -158,12 +159,13 @@ class _InfoChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 13, color: AppColors.mutedForeground),
+        Icon(icon, size: 13, color: muted),
         const SizedBox(width: 4),
-        Text(label, style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12)),
+        Text(label, style: TextStyle(color: muted, fontSize: 12)),
       ],
     );
   }
