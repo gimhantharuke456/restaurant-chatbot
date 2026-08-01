@@ -75,9 +75,10 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, letterSpacing: 0.5)),
               const SizedBox(height: 8),
               if (provider.transactions.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Text('No activity yet', style: TextStyle(color: AppColors.mutedForeground)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text('No activity yet',
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55))),
                 ),
               ...provider.transactions.asMap().entries.map((e) => staggeredEntrance(
                     _TransactionTile(transaction: e.value),
@@ -98,7 +99,8 @@ class _TierCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tierColor = _tierColors[account.tier] ?? AppColors.mutedForeground;
+    final mutedColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
+    final tierColor = _tierColors[account.tier] ?? mutedColor;
     final nextThreshold = _tierNextThreshold[account.tier];
     final nextLabel = _tierNextLabel[account.tier];
     final min = _tierMin[account.tier] ?? 0;
@@ -108,7 +110,7 @@ class _TierCard extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(16)),
+      decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -125,22 +127,22 @@ class _TierCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(account.tier, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18)),
-                  Text('${account.points} pts', style: const TextStyle(color: AppColors.mutedForeground)),
+                  Text('${account.points} pts', style: TextStyle(color: mutedColor)),
                 ],
               ),
             ],
           ),
           const SizedBox(height: 16),
           if (nextThreshold == null)
-            const Text("You've reached the highest tier — Platinum!",
-                style: TextStyle(color: AppColors.mutedForeground, fontSize: 12))
+            Text("You've reached the highest tier — Platinum!",
+                style: TextStyle(color: mutedColor, fontSize: 12))
           else ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('${account.points} pts', style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12)),
+                Text('${account.points} pts', style: TextStyle(color: mutedColor, fontSize: 12)),
                 Text('$nextThreshold pts to $nextLabel',
-                    style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12)),
+                    style: TextStyle(color: mutedColor, fontSize: 12)),
               ],
             ),
             const SizedBox(height: 6),
@@ -149,14 +151,14 @@ class _TierCard extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: progress,
                 minHeight: 8,
-                backgroundColor: AppColors.muted,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
                 valueColor: const AlwaysStoppedAnimation(AppColors.primary),
               ),
             ),
           ],
           const SizedBox(height: 12),
           Text('Total earned: ${account.totalEarned} pts',
-              style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12)),
+              style: TextStyle(color: mutedColor, fontSize: 12)),
         ],
       ),
     );
@@ -170,6 +172,7 @@ class _TransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mutedColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
     final isPositive = transaction.points >= 0;
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -178,8 +181,8 @@ class _TransactionTile extends StatelessWidget {
           Container(
             width: 32,
             height: 32,
-            decoration: const BoxDecoration(color: AppColors.muted, shape: BoxShape.circle),
-            child: Icon(_txIcons[transaction.type] ?? Icons.swap_vert, size: 16, color: AppColors.mutedForeground),
+            decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, shape: BoxShape.circle),
+            child: Icon(_txIcons[transaction.type] ?? Icons.swap_vert, size: 16, color: mutedColor),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -189,7 +192,7 @@ class _TransactionTile extends StatelessWidget {
                 Text(transaction.description, style: const TextStyle(fontSize: 13)),
                 Text(
                   '${transaction.createdAt.year}-${transaction.createdAt.month.toString().padLeft(2, '0')}-${transaction.createdAt.day.toString().padLeft(2, '0')}',
-                  style: const TextStyle(color: AppColors.mutedForeground, fontSize: 11),
+                  style: TextStyle(color: mutedColor, fontSize: 11),
                 ),
               ],
             ),

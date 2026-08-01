@@ -2,12 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../models/waitlist_entry_model.dart';
 
-const _statusColors = {
-  'WAITING': AppColors.mutedForeground,
-  'NOTIFIED': AppColors.primary,
-  'EXPIRED': AppColors.mutedForeground,
-  'BOOKED': Colors.green,
-};
 const _statusLabels = {
   'WAITING': 'Waiting',
   'NOTIFIED': 'Table Available!',
@@ -24,9 +18,15 @@ class WaitlistCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = _statusColors[entry.status] ?? AppColors.mutedForeground;
+    final mutedColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
+    final statusColors = {
+      'WAITING': mutedColor,
+      'NOTIFIED': AppColors.primary,
+      'EXPIRED': mutedColor,
+      'BOOKED': Colors.green,
+    };
+    final statusColor = statusColors[entry.status] ?? mutedColor;
     return Card(
-      color: AppColors.card,
       margin: const EdgeInsets.only(bottom: 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
@@ -57,7 +57,7 @@ class WaitlistCard extends StatelessWidget {
             Text(
               '${entry.date.day}/${entry.date.month}/${entry.date.year} at ${entry.time} '
               '· ${entry.partySize} ${entry.partySize == 1 ? 'person' : 'people'}',
-              style: const TextStyle(color: AppColors.mutedForeground, fontSize: 13),
+              style: TextStyle(color: mutedColor, fontSize: 13),
             ),
             if (entry.status == 'WAITING') ...[
               const SizedBox(height: 6),
@@ -92,7 +92,7 @@ class WaitlistCard extends StatelessWidget {
                 icon: const Icon(Icons.close, size: 14),
                 label: const Text('Leave waitlist'),
                 style: TextButton.styleFrom(
-                  foregroundColor: AppColors.mutedForeground,
+                  foregroundColor: mutedColor,
                   padding: EdgeInsets.zero,
                   minimumSize: const Size(0, 0),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,

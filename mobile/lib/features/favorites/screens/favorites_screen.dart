@@ -59,6 +59,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           byCollection.putIfAbsent(fav.collection, () => []).add(fav);
         }
 
+        final mutedColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
+
         return RefreshIndicator(
           onRefresh: provider.fetch,
           child: ListView(
@@ -74,7 +76,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       Text(entry.key, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                       const SizedBox(width: 6),
                       Text('(${entry.value.length})',
-                          style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12)),
+                          style: TextStyle(color: mutedColor, fontSize: 12)),
                     ],
                   ),
                 ),
@@ -105,8 +107,8 @@ class _FavoriteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mutedColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
     return Card(
-      color: AppColors.card,
       margin: const EdgeInsets.only(bottom: 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: InkWell(
@@ -132,7 +134,7 @@ class _FavoriteCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       '${favorite.restaurantArea} · ${_priceLabels[favorite.priceRange] ?? favorite.priceRange}',
-                      style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12),
+                      style: TextStyle(color: mutedColor, fontSize: 12),
                     ),
                     if (favorite.avgRating != null) ...[
                       const SizedBox(height: 2),
@@ -141,7 +143,7 @@ class _FavoriteCard extends StatelessWidget {
                           const Icon(Icons.star, color: AppColors.primary, size: 12),
                           const SizedBox(width: 2),
                           Text(favorite.avgRating!.toStringAsFixed(1),
-                              style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12)),
+                              style: TextStyle(color: mutedColor, fontSize: 12)),
                         ],
                       ),
                     ],
@@ -150,7 +152,7 @@ class _FavoriteCard extends StatelessWidget {
               ),
               IconButton(
                 onPressed: onRemove,
-                icon: const Icon(Icons.delete_outline, color: AppColors.mutedForeground),
+                icon: Icon(Icons.delete_outline, color: mutedColor),
               ),
             ],
           ),

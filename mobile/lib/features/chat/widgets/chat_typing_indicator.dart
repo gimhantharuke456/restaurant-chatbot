@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
 
 class ChatTypingIndicator extends StatefulWidget {
   const ChatTypingIndicator({super.key});
@@ -29,35 +28,37 @@ class _ChatTypingIndicatorState extends State<ChatTypingIndicator>
 
   @override
   Widget build(BuildContext context) {
+    final secondary = Theme.of(context).colorScheme.secondary;
+    final mutedColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        const CircleAvatar(
+        CircleAvatar(
           radius: 14,
-          backgroundColor: AppColors.muted,
+          backgroundColor: secondary,
           child: Text(
             'AI',
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.mutedForeground),
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: mutedColor),
           ),
         ),
         const SizedBox(width: 8),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: AppColors.muted,
+            color: secondary,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: List.generate(3, _buildDot),
+            children: List.generate(3, (i) => _buildDot(i, mutedColor)),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildDot(int index) {
+  Widget _buildDot(int index, Color color) {
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -70,7 +71,7 @@ class _ChatTypingIndicatorState extends State<ChatTypingIndicator>
             child: Container(
               width: 8,
               height: 8,
-              decoration: const BoxDecoration(color: AppColors.mutedForeground, shape: BoxShape.circle),
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
             ),
           ),
         );

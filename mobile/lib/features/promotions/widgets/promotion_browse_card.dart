@@ -11,13 +11,14 @@ class PromotionBrowseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mutedColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: AppColors.card,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: AppColors.border),
         ),
@@ -60,12 +61,12 @@ class PromotionBrowseCard extends StatelessWidget {
                     promotion.description,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: AppColors.mutedForeground, fontSize: 13),
+                    style: TextStyle(color: mutedColor, fontSize: 13),
                   ),
                   const SizedBox(height: 10),
                   Row(
                     children: [
-                      const Icon(Icons.storefront_outlined, size: 14, color: AppColors.mutedForeground),
+                      Icon(Icons.storefront_outlined, size: 14, color: mutedColor),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
@@ -79,7 +80,7 @@ class PromotionBrowseCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     'Ends ${promotion.endDate.day}/${promotion.endDate.month}/${promotion.endDate.year}',
-                    style: const TextStyle(fontSize: 11, color: AppColors.mutedForeground),
+                    style: TextStyle(fontSize: 11, color: mutedColor),
                   ),
                 ],
               ),

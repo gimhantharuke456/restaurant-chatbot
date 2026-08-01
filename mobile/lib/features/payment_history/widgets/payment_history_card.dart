@@ -3,12 +3,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
 import '../models/payment_history_model.dart';
 
-const _statusColors = {
-  'SUCCEEDED': Colors.green,
-  'PENDING': AppColors.mutedForeground,
-  'FAILED': AppColors.destructive,
-  'REFUNDED': AppColors.primary,
-};
 const _statusLabels = {
   'SUCCEEDED': 'Paid',
   'PENDING': 'Pending',
@@ -23,9 +17,15 @@ class PaymentHistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = _statusColors[payment.status] ?? AppColors.mutedForeground;
+    final mutedColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
+    final statusColors = {
+      'SUCCEEDED': Colors.green,
+      'PENDING': mutedColor,
+      'FAILED': AppColors.destructive,
+      'REFUNDED': AppColors.primary,
+    };
+    final statusColor = statusColors[payment.status] ?? mutedColor;
     return Card(
-      color: AppColors.card,
       margin: const EdgeInsets.only(bottom: 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
@@ -56,7 +56,7 @@ class PaymentHistoryCard extends StatelessWidget {
             Text(
               '${payment.reservationDate.day}/${payment.reservationDate.month}/${payment.reservationDate.year}'
               '${payment.reservationTime.isNotEmpty ? ' at ${payment.reservationTime}' : ''}',
-              style: const TextStyle(color: AppColors.mutedForeground, fontSize: 13),
+              style: TextStyle(color: mutedColor, fontSize: 13),
             ),
             const SizedBox(height: 8),
             Row(

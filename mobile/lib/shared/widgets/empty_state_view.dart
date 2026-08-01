@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
 
 /// Shared icon + heading + subtext layout for "nothing here" states, with
 /// an optional trailing [child] slot (e.g. chat's suggested prompts).
@@ -19,6 +18,7 @@ class EmptyStateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mutedColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -28,8 +28,11 @@ class EmptyStateView extends StatelessWidget {
             Container(
               width: 64,
               height: 64,
-              decoration: BoxDecoration(color: AppColors.muted, borderRadius: BorderRadius.circular(16)),
-              child: Icon(icon, color: AppColors.mutedForeground, size: 28),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondary,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(icon, color: mutedColor, size: 28),
             ),
             const SizedBox(height: 16),
             Text(title, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
@@ -37,7 +40,7 @@ class EmptyStateView extends StatelessWidget {
             Text(
               subtitle,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.mutedForeground, fontSize: 13),
+              style: TextStyle(color: mutedColor, fontSize: 13),
             ),
             if (child != null) ...[
               const SizedBox(height: 20),

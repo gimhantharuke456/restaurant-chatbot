@@ -12,6 +12,7 @@ class ChatMenuItemList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mutedColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -19,7 +20,7 @@ class ChatMenuItemList extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 6, left: 4),
           child: Text(
             "${items.first.restaurantName}'s menu · tap a dish to start ordering",
-            style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12),
+            style: TextStyle(color: mutedColor, fontSize: 12),
           ),
         ),
         ...items.map((item) => ChatMenuItemCard(item: item)),
@@ -35,10 +36,11 @@ class ChatMenuItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mutedColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Material(
-        color: AppColors.card,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(14),
         child: InkWell(
           borderRadius: BorderRadius.circular(14),
@@ -69,7 +71,7 @@ class ChatMenuItemCard extends StatelessWidget {
                           item.description!,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12),
+                          style: TextStyle(color: mutedColor, fontSize: 12),
                         ),
                       ],
                       const SizedBox(height: 4),
@@ -81,7 +83,7 @@ class ChatMenuItemCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right, size: 18, color: AppColors.mutedForeground),
+                Icon(Icons.chevron_right, size: 18, color: mutedColor),
               ],
             ),
           ),

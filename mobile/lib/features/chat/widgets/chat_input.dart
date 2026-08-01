@@ -51,7 +51,7 @@ class _ChatInputState extends State<ChatInput> {
           icon: const Icon(Icons.send),
           style: IconButton.styleFrom(
             backgroundColor: AppColors.primary,
-            foregroundColor: AppColors.foreground,
+            foregroundColor: Colors.white,
           ),
         ),
       ],

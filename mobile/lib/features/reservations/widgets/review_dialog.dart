@@ -153,7 +153,7 @@ class _ReviewDialogContentState extends State<_ReviewDialogContent> {
                       width: 64,
                       height: 64,
                       decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.mutedForeground.withValues(alpha: 0.4)),
+                        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4)),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: _uploading

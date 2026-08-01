@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/empty_state_view.dart';
 import '../../../shared/widgets/error_retry_view.dart';
 import '../../../shared/widgets/loading_view.dart';
@@ -128,11 +127,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           if (_nearMeActive)
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text('Sorted by distance from you', style: TextStyle(color: AppColors.mutedForeground, fontSize: 12)),
+                child: Text(
+                  'Sorted by distance from you',
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55), fontSize: 12),
+                ),
               ),
             ),
           SizedBox(

@@ -11,6 +11,7 @@ class NotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isRead = notification.isRead;
+    final mutedColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
@@ -18,7 +19,7 @@ class NotificationTile extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: isRead ? AppColors.card : AppColors.primary.withValues(alpha: 0.08),
+          color: isRead ? Theme.of(context).cardColor : AppColors.primary.withValues(alpha: 0.08),
           border: Border.all(color: isRead ? AppColors.border : AppColors.primary.withValues(alpha: 0.3)),
           borderRadius: BorderRadius.circular(14),
         ),
@@ -47,14 +48,14 @@ class NotificationTile extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Text(notification.message, style: const TextStyle(color: AppColors.mutedForeground, fontSize: 13)),
+                  Text(notification.message, style: TextStyle(color: mutedColor, fontSize: 13)),
                 ],
               ),
             ),
             const SizedBox(width: 8),
             Text(
               '${notification.createdAt.day}/${notification.createdAt.month}',
-              style: const TextStyle(color: AppColors.mutedForeground, fontSize: 11),
+              style: TextStyle(color: mutedColor, fontSize: 11),
             ),
           ],
         ),

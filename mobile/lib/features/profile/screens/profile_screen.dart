@@ -207,7 +207,6 @@ class _AccountCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppColors.card,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -216,7 +215,7 @@ class _AccountCard extends StatelessWidget {
           children: [
             const Text('Account details', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
             const SizedBox(height: 12),
-            Text(email, style: const TextStyle(color: AppColors.mutedForeground)),
+            Text(email, style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55))),
             const SizedBox(height: 12),
             TextField(
               controller: nameController,

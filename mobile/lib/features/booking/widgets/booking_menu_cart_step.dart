@@ -52,7 +52,7 @@ class BookingMenuCartStep extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 8, top: 8),
                   child: Text(
                     category,
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: AppColors.mutedForeground),
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55)),
                   ),
                 ),
                 ...items.map((item) {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../core/theme/app_colors.dart';
 
 const _paymentLinkMarker = 'Payment link:';
 final _stripeUrlPattern = RegExp(r'https://checkout\.stripe\.com/[^\s<>"]+');
@@ -65,9 +64,9 @@ class ChatPaymentButton extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
-          const Text(
+          Text(
             'Tap below to complete your payment securely via Stripe. Link is valid for 24 hours.',
-            style: TextStyle(color: AppColors.mutedForeground, fontSize: 11.5),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55), fontSize: 11.5),
           ),
           const SizedBox(height: 10),
           SizedBox(

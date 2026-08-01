@@ -8,12 +8,6 @@ import '../../../shared/widgets/loading_view.dart';
 import '../models/complaint_model.dart';
 import '../providers/complaints_provider.dart';
 
-const _statusColors = {
-  'OPEN': AppColors.destructive,
-  'UNDER_REVIEW': AppColors.primary,
-  'RESOLVED': Colors.green,
-  'CLOSED': AppColors.mutedForeground,
-};
 const _statusLabels = {
   'OPEN': 'Open',
   'UNDER_REVIEW': 'Under Review',
@@ -177,9 +171,15 @@ class _ComplaintCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = _statusColors[complaint.status] ?? AppColors.mutedForeground;
+    final mutedColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
+    final statusColors = {
+      'OPEN': AppColors.destructive,
+      'UNDER_REVIEW': AppColors.primary,
+      'RESOLVED': Colors.green,
+      'CLOSED': mutedColor,
+    };
+    final statusColor = statusColors[complaint.status] ?? mutedColor;
     return Card(
-      color: AppColors.card,
       margin: const EdgeInsets.only(bottom: 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
@@ -206,12 +206,12 @@ class _ComplaintCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 6),
-            Text(complaint.description, style: const TextStyle(color: AppColors.mutedForeground, fontSize: 13)),
+            Text(complaint.description, style: TextStyle(color: mutedColor, fontSize: 13)),
             if (complaint.adminNote != null && complaint.adminNote!.isNotEmpty) ...[
               const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(color: AppColors.muted, borderRadius: BorderRadius.circular(8)),
+                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(8)),
                 child: Text(
                   'Response: ${complaint.adminNote}',
                   style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),

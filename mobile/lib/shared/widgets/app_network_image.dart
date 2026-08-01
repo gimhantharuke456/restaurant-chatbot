@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../core/motion/skeleton_loader.dart';
-import '../../core/theme/app_colors.dart';
 
 /// A disk/memory-cached network image (via `cached_network_image`) with a
 /// shimmer placeholder while loading and a fallback icon on error or when
@@ -27,6 +26,8 @@ class AppNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = Theme.of(context).colorScheme.secondary;
+    final iconColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
     final hasUrl = url != null && url!.isNotEmpty;
     return ClipRRect(
       borderRadius: borderRadius,
@@ -37,18 +38,18 @@ class AppNetworkImage extends StatelessWidget {
               height: height,
               fit: fit,
               placeholder: (context, _) => SkeletonLoader(width: width, height: height, borderRadius: borderRadius),
-              errorWidget: (context, _, _) => _fallback(),
+              errorWidget: (context, _, _) => _fallback(bgColor, iconColor),
             )
-          : _fallback(),
+          : _fallback(bgColor, iconColor),
     );
   }
 
-  Widget _fallback() {
+  Widget _fallback(Color bgColor, Color iconColor) {
     return Container(
       width: width,
       height: height,
-      color: AppColors.secondary,
-      child: Icon(fallbackIcon, color: AppColors.mutedForeground),
+      color: bgColor,
+      child: Icon(fallbackIcon, color: iconColor),
     );
   }
 }

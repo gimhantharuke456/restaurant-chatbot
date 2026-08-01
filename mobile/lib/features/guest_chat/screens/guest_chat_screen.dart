@@ -149,10 +149,10 @@ class _GuestChatIntro extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
+            Text(
               'Hi! I can help you discover restaurants. What are you craving?',
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.mutedForeground),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55)),
             ),
             const SizedBox(height: 16),
             ..._suggestions.map((s) => Padding(
@@ -188,12 +188,14 @@ class _GuestChatBubble extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
-                color: message.isUser ? AppColors.primary : AppColors.muted,
+                color: message.isUser ? AppColors.primary : Theme.of(context).colorScheme.secondary,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
                 message.content,
-                style: TextStyle(color: message.isUser ? Colors.white : AppColors.foreground),
+                style: TextStyle(
+                  color: message.isUser ? Colors.white : Theme.of(context).colorScheme.onSurface,
+                ),
               ),
             ),
           ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../core/motion/entrance.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/empty_state_view.dart';
 import '../../../shared/widgets/error_retry_view.dart';
 import '../../../shared/widgets/loading_view.dart';
@@ -98,8 +97,8 @@ class _SessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mutedColor = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55);
     return Card(
-      color: AppColors.card,
       margin: const EdgeInsets.only(bottom: 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: InkWell(
@@ -120,12 +119,12 @@ class _SessionCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
-                    Text(relativeTime, style: const TextStyle(color: AppColors.mutedForeground, fontSize: 12)),
+                    Text(relativeTime, style: TextStyle(color: mutedColor, fontSize: 12)),
                   ],
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.delete_outline, size: 20, color: AppColors.mutedForeground),
+                icon: Icon(Icons.delete_outline, size: 20, color: mutedColor),
                 onPressed: onDelete,
               ),
             ],
