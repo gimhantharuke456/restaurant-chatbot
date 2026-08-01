@@ -57,34 +57,24 @@ export const createReservation = async (
     );
   }
 
-  // ── Slot availability check via Firestore ────────────────────────────────
-  // Uses the same availability data the AI reservation agent reads, so there
-  // is one source of truth and no extra DB query needed.
-  // Firestore slots stay in sync: +1 on booking, -1 on cancellation.
-  try {
-    const availDoc = await adminFirestore
-      .collection("restaurants")
-      .doc(input.restaurantId)
-      .collection("availability")
-      .doc(input.date)
-      .get();
-
-    if (availDoc.exists) {
-      type Slot = { time: string; bookedTables: number; totalTables: number; available: boolean };
-      const slots: Slot[] = availDoc.data()?.slots ?? [];
-      const slot = slots.find((s) => s.time === input.time);
-
-      if (slot && !slot.available) {
-        throw Object.assign(
-          new Error("This time slot is fully booked. Please choose a different time."),
-          { status: 409 },
-        );
-      }
-    }
-  } catch (e: unknown) {
-    // Re-throw 409 conflicts; swallow Firestore read errors so a temporary
-    // Firestore outage never blocks bookings.
-    if ((e as { status?: number }).status === 409) throw e;
+  // ── Capacity check (authoritative, Postgres-based) ───────────────────────
+  // Sum partySize of all active reservations for this slot and ensure the
+  // incoming party still fits within maxCapacity.
+  const bookedSeatsAgg = await prisma.reservation.aggregate({
+    where: {
+      restaurantId: input.restaurantId,
+      date: new Date(input.date),
+      time: input.time,
+      status: { in: ["PENDING", "CONFIRMED"] },
+    },
+    _sum: { partySize: true },
+  });
+  const bookedSeats = bookedSeatsAgg._sum.partySize ?? 0;
+  if (bookedSeats + input.partySize > restaurant.maxCapacity) {
+    throw Object.assign(
+      new Error("This time slot is fully booked. Please choose a different time."),
+      { status: 409 },
+    );
   }
   // ─────────────────────────────────────────────────────────────────────────
 

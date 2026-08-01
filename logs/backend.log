@@ -8,3 +8,55 @@
 Backend running on port 3000
 Swagger UI: http://localhost:3000/api/docs
 Socket.IO ready
+SyntaxError: Unexpected token 'n', "null" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at createStrictSyntaxError (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/body-parser/lib/types/json.js:109:10)
+    at parse (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/body-parser/lib/types/json.js:66:15)
+    at /Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/body-parser/lib/read.js:162:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+    at invokeCallback (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/raw-body/index.js:238:16)
+    at done (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/raw-body/index.js:227:7)
+    at IncomingMessage.onEnd (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/raw-body/index.js:287:7)
+    at IncomingMessage.emit (node:events:519:28)
+    at endReadableNT (node:internal/streams/readable:1698:12) {
+  expose: true,
+  statusCode: 400,
+  status: 400,
+  body: 'null',
+  type: 'entity.parse.failed'
+}
+[2026-08-01T05:50:12.412Z] [PID: 10139] [32m[NODE-CRON][32m [33m[WARN][0m missed execution at Sat Aug 01 2026 11:15:00 GMT+0530 (India Standard Time)! Possible blocking IO or high CPU user at the same process used by node-cron.
+12:00:47 PM [tsx] change in ./src/modules/restaurant/restaurant.controller.ts Restarting...
+cBackend running on port 3000
+Swagger UI: http://localhost:3000/api/docs
+Socket.IO ready
+12:00:58 PM [tsx] change in ./src/modules/restaurant/restaurant.service.ts Restarting...
+cBackend running on port 3000
+Swagger UI: http://localhost:3000/api/docs
+Socket.IO ready
+12:02:00 PM [tsx] change in ./src/modules/reservation/reservation.service.ts Restarting...
+cBackend running on port 3000
+Swagger UI: http://localhost:3000/api/docs
+Socket.IO ready
+FirebaseAuthError: Firebase ID token has expired. Get a fresh ID token from your client app and try again (auth/id-token-expired). See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.
+    at FirebaseTokenVerifier.mapJwtErrorToAuthError (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/firebase-admin/lib/auth/token-verifier.js:271:20)
+    at /Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/firebase-admin/lib/auth/token-verifier.js:255:24
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async authenticate (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/src/middleware/auth.ts:17:19) {
+  errorInfo: {
+    code: 'auth/id-token-expired',
+    message: 'Firebase ID token has expired. Get a fresh ID token from your client app and try again (auth/id-token-expired). See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.'
+  },
+  codePrefix: 'auth'
+}
+FirebaseAuthError: Firebase ID token has expired. Get a fresh ID token from your client app and try again (auth/id-token-expired). See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.
+    at FirebaseTokenVerifier.mapJwtErrorToAuthError (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/firebase-admin/lib/auth/token-verifier.js:271:20)
+    at /Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/firebase-admin/lib/auth/token-verifier.js:255:24
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async authenticate (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/src/middleware/auth.ts:17:19) {
+  errorInfo: {
+    code: 'auth/id-token-expired',
+    message: 'Firebase ID token has expired. Get a fresh ID token from your client app and try again (auth/id-token-expired). See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.'
+  },
+  codePrefix: 'auth'
+}

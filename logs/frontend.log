@@ -19,3 +19,51 @@
   · optimizePackageImports
 
  GET / 200 in 5.9s (next.js: 916ms, application-code: 4.9s)
+ GET / 200 in 578ms (next.js: 106ms, application-code: 472ms)
+ POST /api/proxy/chat/guest 200 in 4.8s (next.js: 1033ms, application-code: 3.8s)
+ POST /api/proxy/chat/guest 200 in 3.1s (next.js: 10ms, application-code: 3.1s)
+ POST /api/proxy/chat/guest 200 in 2.7s (next.js: 5ms, application-code: 2.6s)
+ POST /api/proxy/chat/guest 200 in 28ms (next.js: 6ms, application-code: 22ms)
+ GET / 200 in 1108ms (next.js: 107ms, application-code: 1001ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="en" className="h-full ant...">
+                          <body
+                            className="min-h-full flex flex-col"
+-                           cz-shortcut-listen="true"
+                          >
+                  ...
+ 
+ GET / 200 in 200ms (next.js: 6ms, application-code: 194ms)
+ POST /api/proxy/chat/guest 200 in 4.5s (next.js: 10ms, application-code: 4.5s)
+ POST /api/proxy/chat/guest 200 in 5.8s (next.js: 20ms, application-code: 5.8s)
+ POST /api/proxy/chat/guest 200 in 3.1s (next.js: 13ms, application-code: 3.1s)
+[?25h

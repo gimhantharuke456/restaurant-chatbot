@@ -127,7 +127,7 @@ const DEFAULT_TIME_SLOTS: string[] = (() => {
   return slots;
 })();
 
-export const getSlotCapacity = async (restaurantId: string, date: string) => {
+export const getSlotCapacity = async (restaurantId: string, date: string, partySize?: number) => {
   const restaurant = await prisma.restaurant.findUnique({ where: { id: restaurantId } });
   if (!restaurant) return null;
 
@@ -145,13 +145,15 @@ export const getSlotCapacity = async (restaurantId: string, date: string) => {
     bookedByTime.set(r.time, (bookedByTime.get(r.time) ?? 0) + r.partySize);
   }
 
+  const needed = partySize ?? 1;
   return DEFAULT_TIME_SLOTS.map((time) => {
     const bookedSeats = bookedByTime.get(time) ?? 0;
+    const remaining = restaurant.maxCapacity - bookedSeats;
     return {
       time,
       bookedSeats,
       maxCapacity: restaurant.maxCapacity,
-      available: bookedSeats < restaurant.maxCapacity,
+      available: remaining >= needed,
     };
   });
 };

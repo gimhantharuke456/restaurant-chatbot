@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/network/api_exception.dart';
 import '../models/cart_item_model.dart';
 
 const _serviceChargeRate = 0.10;
@@ -27,16 +27,24 @@ class BookingReviewPayStep extends StatefulWidget {
 class _BookingReviewPayStepState extends State<BookingReviewPayStep> {
   bool _submitting = false;
   String? _error;
+  bool _slotConflict = false;
 
   Future<void> _submit() async {
     setState(() {
       _submitting = true;
       _error = null;
+      _slotConflict = false;
     });
     try {
       await widget.onPay();
     } catch (e) {
-      setState(() => _error = e.toString());
+      final isConflict = e is ApiException && e.statusCode == 409;
+      setState(() {
+        _slotConflict = isConflict;
+        _error = e is ApiException
+            ? e.message
+            : 'Something went wrong. Please try again.';
+      });
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
@@ -95,7 +103,14 @@ class _BookingReviewPayStepState extends State<BookingReviewPayStep> {
         ),
         if (_error != null) ...[
           const SizedBox(height: 12),
-          Text(_error!, style: const TextStyle(color: AppColors.destructive)),
+          Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 13)),
+          if (_slotConflict) ...[
+            const SizedBox(height: 4),
+            Text(
+              'Use the back arrow to pick a different time.',
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55), fontSize: 12),
+            ),
+          ],
         ],
         const SizedBox(height: 20),
         ElevatedButton(

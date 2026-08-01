@@ -7,7 +7,6 @@ from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
 from config.settings import settings
 from knowledge.prompts import RESERVATION_SYSTEM_PROMPT
-from tools.firestore_tools import get_availability
 from tools.search_tools import lookup_restaurant_by_name
 from tools.trace import record, now
 
@@ -171,10 +170,16 @@ async def handle_reservation(state: dict) -> dict:
     if details.get("action") == "BOOK" and details.get("restaurant_id") and details.get("date"):
         try:
             t1 = now()
-            slots = get_availability(details["restaurant_id"], details["date"])
+            party_size = int(details.get("party_size") or 1)
+            async with httpx.AsyncClient(timeout=10) as client:
+                resp = await client.get(
+                    f"{settings.backend_url}/api/restaurants/{details['restaurant_id']}/slot-capacity",
+                    params={"date": details["date"], "partySize": party_size},
+                )
+            slots = resp.json() if resp.status_code == 200 else []
             context["available_slots"] = [s for s in slots if s.get("available")]
             record(
-                state, "tool_call", "Firestore Availability Check", started_at=t1,
+                state, "tool_call", "Availability Check", started_at=t1,
                 date=details["date"], availableSlots=len(context["available_slots"]),
             )
         except Exception:

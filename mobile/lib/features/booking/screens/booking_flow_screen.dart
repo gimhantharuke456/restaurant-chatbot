@@ -53,13 +53,16 @@ class _BookingFlowScreenState extends State<BookingFlowScreen> {
   }
 
   Future<void> _loadSlots() async {
-    setState(() => _loadingSlots = true);
+    setState(() {
+      _loadingSlots = true;
+      _time = null; // reset selected time when date or party size changes
+    });
     final dateStr =
         '${_date.year.toString().padLeft(4, '0')}-${_date.month.toString().padLeft(2, '0')}-${_date.day.toString().padLeft(2, '0')}';
     try {
       final slots = await context
           .read<BookingRepository>()
-          .getAvailability(widget.restaurantId, dateStr);
+          .getAvailability(widget.restaurantId, dateStr, partySize: _partySize);
       if (mounted) setState(() => _slots = slots);
     } catch (_) {
       if (mounted) setState(() => _slots = null);
@@ -194,7 +197,10 @@ class _BookingFlowScreenState extends State<BookingFlowScreen> {
                   onTimeSelected: (t) => setState(() => _time = t),
                   partySize: _partySize,
                   maxParty: _restaurant?.totalSeats ?? 20,
-                  onPartySizeChanged: (p) => setState(() => _partySize = p),
+                  onPartySizeChanged: (p) {
+                    setState(() => _partySize = p);
+                    _loadSlots();
+                  },
                   specialRequests: _specialRequests,
                   onSpecialRequestsChanged: (v) => _specialRequests = v,
                   canContinue: _time != null,

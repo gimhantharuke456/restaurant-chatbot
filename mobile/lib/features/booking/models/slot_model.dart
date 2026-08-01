@@ -15,8 +15,9 @@ class SlotModel {
     return SlotModel(
       time: json['time'] as String,
       available: json['available'] as bool? ?? true,
-      totalTables: json['totalTables'] as int? ?? 0,
-      bookedTables: json['bookedTables'] as int? ?? 0,
+      // capacity-based endpoint uses maxCapacity/bookedSeats; Firestore-based uses totalTables/bookedTables
+      totalTables: (json['maxCapacity'] ?? json['totalTables']) as int? ?? 0,
+      bookedTables: (json['bookedSeats'] ?? json['bookedTables']) as int? ?? 0,
     );
   }
 }

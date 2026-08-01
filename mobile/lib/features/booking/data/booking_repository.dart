@@ -16,7 +16,7 @@ class PaymentIntentResult {
 }
 
 abstract class BookingRepository {
-  Future<List<SlotModel>> getAvailability(String restaurantId, String date);
+  Future<List<SlotModel>> getAvailability(String restaurantId, String date, {int partySize = 1});
 
   Future<ReservationModel> createReservation({
     required String restaurantId,
@@ -38,10 +38,10 @@ class ApiBookingRepository implements BookingRepository {
   ApiBookingRepository(this._apiClient);
 
   @override
-  Future<List<SlotModel>> getAvailability(String restaurantId, String date) async {
+  Future<List<SlotModel>> getAvailability(String restaurantId, String date, {int partySize = 1}) async {
     final json = await _apiClient.get(
-      '/restaurants/$restaurantId/availability',
-      query: {'date': date},
+      '/restaurants/$restaurantId/slot-capacity',
+      query: {'date': date, 'partySize': partySize.toString()},
     );
     if (json is! List) return [];
     return json
