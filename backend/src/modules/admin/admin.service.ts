@@ -1,5 +1,7 @@
 import { prisma } from "../../../lib/db.js";
 import { stripe } from "../../config/stripe.js";
+import { adminAuth } from "../../config/firebase.js";
+import { sendEmail } from "../../config/nodemailer.js";
 import type { z } from "zod";
 import type { UpdateRoleBodySchema } from "./admin.schema.js";
 
@@ -109,6 +111,115 @@ export const updateRestaurant = async (id: string, data: Record<string, unknown>
 
 export const toggleRestaurantActive = async (id: string, isActive: boolean) => {
   return prisma.restaurant.update({ where: { id }, data: { isActive } });
+};
+
+export interface CreateRestaurantInput {
+  name: string;
+  description?: string;
+  address: string;
+  area: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "FINE_DINING";
+  cuisineTypes?: string[];
+  adminEmail?: string;
+}
+
+const FRONTEND_URL = process.env.FRONTEND_URL ?? `http://localhost:${process.env.FRONTEND_PORT ?? 3001}`;
+
+async function provisionRestaurantAdmin(email: string): Promise<string> {
+  // 1. Get or create Firebase Auth user
+  let firebaseUid: string;
+  try {
+    const existing = await adminAuth.getUserByEmail(email);
+    firebaseUid = existing.uid;
+  } catch {
+    const created = await adminAuth.createUser({ email });
+    firebaseUid = created.uid;
+  }
+
+  // 2. Upsert Prisma user — ensure they have RESTAURANT_ADMIN role
+  const dbUser = await prisma.user.upsert({
+    where: { firebaseUid },
+    create: { firebaseUid, email, role: "RESTAURANT_ADMIN" },
+    update: { role: "RESTAURANT_ADMIN" },
+  });
+
+  // 3. Generate Firebase password-reset link so they can set their password
+  const resetLink = await adminAuth.generatePasswordResetLink(email, {
+    url: `${FRONTEND_URL}/login`,
+  });
+
+  // 4. Send setup email (non-fatal)
+  sendEmail(
+    email,
+    "You've been set up as a Restaurant Administrator",
+    `
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
+      <h2 style="color:#1a1a1a;">Welcome to Pamudi Restaurant Platform</h2>
+      <p>A restaurant profile has been created for you on our platform. You have been assigned the role of <strong>Restaurant Administrator</strong>.</p>
+      <p>To get started, please set up your account password by clicking the button below:</p>
+      <p style="margin:32px 0;">
+        <a href="${resetLink}"
+           style="background:#0f172a;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600;">
+          Set Up My Password
+        </a>
+      </p>
+      <p style="color:#6b7280;font-size:13px;">This link expires in 1 hour. If you did not expect this email, you can safely ignore it.</p>
+      <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;" />
+      <p style="color:#6b7280;font-size:12px;">Once your password is set, log in at <a href="${FRONTEND_URL}/login">${FRONTEND_URL}/login</a> to manage your restaurant, menu, reservations, and more.</p>
+    </div>
+    `,
+  ).catch((err) => console.error("Restaurant admin setup email failed (non-fatal):", err));
+
+  return dbUser.id;
+}
+
+export const createRestaurant = async (
+  data: CreateRestaurantInput,
+  creatingAdminId: string,
+) => {
+  let adminId = creatingAdminId;
+
+  if (data.adminEmail) {
+    adminId = await provisionRestaurantAdmin(data.adminEmail);
+  }
+
+  const r = await prisma.restaurant.create({
+    data: {
+      name: data.name,
+      description: data.description,
+      address: data.address,
+      area: data.area,
+      phone: data.phone,
+      email: data.email,
+      website: data.website,
+      priceRange: data.priceRange,
+      cuisineTypes: JSON.stringify(data.cuisineTypes ?? []),
+      imageUrls: JSON.stringify([]),
+      openingHours: {},
+      adminId,
+    },
+    include: { admin: { select: { id: true, name: true, email: true } } },
+  });
+  return parseRestaurant(r);
+};
+
+export const deleteRestaurant = async (id: string) => {
+  await prisma.$transaction([
+    prisma.reviewReply.deleteMany({ where: { review: { restaurantId: id } } }),
+    prisma.payment.deleteMany({ where: { reservation: { restaurantId: id } } }),
+    prisma.review.deleteMany({ where: { restaurantId: id } }),
+    prisma.reservation.deleteMany({ where: { restaurantId: id } }),
+    prisma.menuItem.deleteMany({ where: { restaurantId: id } }),
+    prisma.favorite.deleteMany({ where: { restaurantId: id } }),
+    prisma.waitlist.deleteMany({ where: { restaurantId: id } }),
+    prisma.promotion.deleteMany({ where: { restaurantId: id } }),
+    prisma.restaurantHoliday.deleteMany({ where: { restaurantId: id } }),
+    prisma.complaint.deleteMany({ where: { restaurantId: id } }),
+    prisma.restaurant.delete({ where: { id } }),
+  ]);
 };
 
 export interface UserListOptions {

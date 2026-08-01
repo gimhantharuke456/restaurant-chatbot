@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/admin/PageHeader";
 import { RestaurantTable } from "@/components/admin/RestaurantTable";
 import { RestaurantFilters } from "@/components/admin/RestaurantFilters";
 import { PaginationBar } from "@/components/admin/PaginationBar";
+import { CreateRestaurantDialog } from "@/components/admin/CreateRestaurantDialog";
 import { AdminRestaurant, PaginatedResponse } from "@/types/admin";
 
 interface SearchParams {
@@ -39,6 +40,7 @@ export default async function RestaurantsPage({
       <PageHeader
         title="Restaurants"
         description={`${result.total} total restaurants`}
+        actions={<CreateRestaurantDialog />}
       />
 
       <div className="space-y-4 p-8">

@@ -37,6 +37,25 @@ export const toggleRestaurantActive = async (req: Request, res: Response): Promi
   res.json(await adminService.toggleRestaurantActive(req.params.id, req.body.isActive as boolean));
 };
 
+export const createRestaurant = async (req: Request, res: Response): Promise<void> => {
+  const restaurant = await adminService.createRestaurant(
+    req.body as adminService.CreateRestaurantInput,
+    (req as any).user.dbId,
+  );
+  await adminService.logAdminAction(
+    (req as any).user.dbId, (req as any).user.email, "CREATE_RESTAURANT", "Restaurant", restaurant.id, restaurant.name, req.ip,
+  );
+  res.status(201).json(restaurant);
+};
+
+export const deleteRestaurant = async (req: Request, res: Response): Promise<void> => {
+  await adminService.deleteRestaurant(req.params.id);
+  await adminService.logAdminAction(
+    (req as any).user.dbId, (req as any).user.email, "DELETE_RESTAURANT", "Restaurant", req.params.id, undefined, req.ip,
+  );
+  res.status(204).send();
+};
+
 export const getAllReservations = async (req: Request, res: Response): Promise<void> => {
   const { page, limit, status, from, to } = req.query;
   res.json(

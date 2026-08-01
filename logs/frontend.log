@@ -2,12 +2,12 @@
 > frontend@0.1.0 dev
 > next dev
 
-⚠ Port 3000 is in use by process 34071, using available port 3001 instead.
+⚠ Port 3000 is in use by process 62826, using available port 3001 instead.
 ▲ Next.js 16.2.6 (Turbopack)
 - Local:         http://localhost:3001
 - Network:       http://192.168.1.165:3001
 - Environments: .env
-✓ Ready in 2.7s
+✓ Ready in 945ms
 ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
  We detected multiple lockfiles and selected the directory of /Users/gimhanrajapaksha/Desktop/projects/agent_project/package-lock.json as the root directory.
  To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
@@ -18,12 +18,20 @@
 - Experiments (use with caution):
   · optimizePackageImports
 
- GET / 200 in 6.3s (next.js: 1293ms, application-code: 5.0s)
- GET / 200 in 6.3s (next.js: 1022ms, application-code: 5.3s)
- POST /api/proxy/chat/guest 200 in 6.1s (next.js: 1195ms, application-code: 4.9s)
- GET /login 200 in 204ms (next.js: 119ms, application-code: 85ms)
- POST /api/proxy/auth/register 201 in 355ms (next.js: 19ms, application-code: 336ms)
- GET /api/proxy/auth/me 200 in 304ms (next.js: 1433µs, application-code: 302ms)
- GET /home 200 in 175ms (next.js: 65ms, application-code: 110ms)
- POST /api/proxy/chat/message 200 in 4.8s (next.js: 19ms, application-code: 4.8s)
- POST /api/proxy/chat/message 200 in 3.9s (next.js: 18ms, application-code: 3.9s)
+ GET / 200 in 8.6s (next.js: 2.3s, application-code: 6.3s)
+ GET / 200 in 1764ms (next.js: 62ms, application-code: 1702ms)
+ GET /login 200 in 156ms (next.js: 62ms, application-code: 94ms)
+ GET /login 200 in 138ms (next.js: 38ms, application-code: 100ms)
+ GET /api/proxy/auth/me 200 in 1540ms (next.js: 931ms, application-code: 609ms)
+ GET /admin 200 in 358ms (next.js: 60ms, application-code: 298ms)
+ GET /admin/restaurants 200 in 318ms (next.js: 91ms, application-code: 227ms)
+[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+ POST /api/proxy/admin/restaurants 201 in 483ms (next.js: 42ms, application-code: 441ms)
+ GET /admin/restaurants 200 in 116ms (next.js: 10ms, application-code: 105ms)
+○ Compiling /admin/restaurants/[id] ...
+ PATCH /api/proxy/admin/restaurants/7e0b3036-8b44-430d-abf1-64d23bf8a1ef 200 in 1082ms (next.js: 126ms, application-code: 956ms)
+ GET /admin/restaurants/7e0b3036-8b44-430d-abf1-64d23bf8a1ef 200 in 15.7s (next.js: 14.1s, application-code: 1594ms)
+ GET /admin/restaurants/7e0b3036-8b44-430d-abf1-64d23bf8a1ef 200 in 1181ms (next.js: 28ms, application-code: 1153ms)
+✓ Finished filesystem cache database compaction in 16.5s
+✓ Compiled in 389ms

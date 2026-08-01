@@ -6,6 +6,7 @@ import { MenuItemsTable } from "@/components/admin/MenuItemsTable";
 import { ReviewsTable } from "@/components/admin/ReviewsTable";
 import { VerifyRestaurantButton } from "@/components/admin/VerifyRestaurantButton";
 import { ToggleRestaurantButton } from "@/components/admin/ToggleRestaurantButton";
+import { DeleteRestaurantButton } from "@/components/admin/DeleteRestaurantButton";
 import { TabPanel } from "@/components/admin/TabPanel";
 import { AdminRestaurantDetail } from "@/types/admin";
 import Link from "next/link";
@@ -42,6 +43,10 @@ export default async function RestaurantDetailPage({
             <VerifyRestaurantButton
               id={restaurant.id}
               isVerified={restaurant.isVerified}
+            />
+            <DeleteRestaurantButton
+              id={restaurant.id}
+              name={restaurant.name}
             />
           </div>
         }

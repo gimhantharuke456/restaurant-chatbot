@@ -23,10 +23,12 @@ router.get("/logs", adminController.getLogs);
 
 // Restaurants
 router.get("/restaurants", adminController.getAllRestaurants);
+router.post("/restaurants", adminController.createRestaurant);
 router.get("/restaurants/:id", adminController.getRestaurantById);
 router.post("/restaurants/:id/verify", adminController.verifyRestaurant);
 router.patch("/restaurants/:id", adminController.updateRestaurant);
 router.patch("/restaurants/:id/active", validate(ToggleActiveBodySchema), adminController.toggleRestaurantActive);
+router.delete("/restaurants/:id", adminController.deleteRestaurant);
 
 // Analytics
 router.get("/analytics/reservations", adminController.getAnalyticsReservations);

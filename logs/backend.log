@@ -8,3 +8,22 @@
 Backend running on port 3000
 Swagger UI: http://localhost:3000/api/docs
 Socket.IO ready
+FirebaseAuthError: Firebase ID token has expired. Get a fresh ID token from your client app and try again (auth/id-token-expired). See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.
+    at FirebaseTokenVerifier.mapJwtErrorToAuthError (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/firebase-admin/lib/auth/token-verifier.js:271:20)
+    at /Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/firebase-admin/lib/auth/token-verifier.js:255:24
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async authenticate (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/src/middleware/auth.ts:17:19) {
+  errorInfo: {
+    code: 'auth/id-token-expired',
+    message: 'Firebase ID token has expired. Get a fresh ID token from your client app and try again (auth/id-token-expired). See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.'
+  },
+  codePrefix: 'auth'
+}
+4:00:04 AM [tsx] change in ./src/modules/admin/admin.service.ts Restarting...
+cBackend running on port 3000
+Swagger UI: http://localhost:3000/api/docs
+Socket.IO ready
+4:00:26 AM [tsx] change in ./src/modules/admin/admin.service.ts Restarting...
+cBackend running on port 3000
+Swagger UI: http://localhost:3000/api/docs
+Socket.IO ready
