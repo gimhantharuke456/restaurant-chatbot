@@ -35,3 +35,13 @@
  GET /admin/restaurants/7e0b3036-8b44-430d-abf1-64d23bf8a1ef 200 in 1181ms (next.js: 28ms, application-code: 1153ms)
 ✓ Finished filesystem cache database compaction in 16.5s
 ✓ Compiled in 389ms
+ GET /admin/restaurants 200 in 3.2s (next.js: 194ms, application-code: 3.0s)
+[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+ POST /api/proxy/admin/restaurants 201 in 5.9s (next.js: 32ms, application-code: 5.8s)
+ GET /admin/restaurants 200 in 160ms (next.js: 10ms, application-code: 150ms)
+ GET /login 200 in 180ms (next.js: 56ms, application-code: 124ms)
+ GET /api/proxy/auth/me 200 in 2.7s (next.js: 300ms, application-code: 2.4s)
+ GET /restaurant 200 in 2.4s (next.js: 1542ms, application-code: 828ms)
+ GET / 200 in 1089ms (next.js: 222ms, application-code: 867ms)
+[?25h
