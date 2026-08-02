@@ -43,3 +43,232 @@
  GET /admin/verification 200 in 87ms (next.js: 7ms, application-code: 80ms)
  POST /api/proxy/admin/restaurants/c649453e-031b-4d0c-be65-650737155bb2/verify 200 in 61ms (next.js: 9ms, application-code: 51ms)
  GET /admin/verification 200 in 59ms (next.js: 10ms, application-code: 49ms)
+✓ Compiled in 1812ms
+ GET /restaurant 200 in 506ms (next.js: 284ms, application-code: 222ms)
+ GET /restaurant 200 in 28ms (next.js: 2ms, application-code: 26ms)
+ GET /restaurant/availability 200 in 252ms (next.js: 180ms, application-code: 72ms)
+⨯ TypeError: fetch failed
+    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
+  23 |       : undefined;
+  24 |
+> 25 |   const upstream = await fetch(url, {
+     |                    ^
+  26 |     method: req.method,
+  27 |     headers,
+  28 |     body, {
+  [cause]: AggregateError: 
+      at ignore-listed frames {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+ GET /api/proxy/restaurant-portal/availability/2026-07-27 500 in 672ms (next.js: 142ms, application-code: 530ms)
+⨯ TypeError: fetch failed
+    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
+  23 |       : undefined;
+  24 |
+> 25 |   const upstream = await fetch(url, {
+     |                    ^
+  26 |     method: req.method,
+  27 |     headers,
+  28 |     body, {
+  [cause]: AggregateError: 
+      at ignore-listed frames {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+ GET /api/proxy/restaurant-portal/availability/2026-08-01 500 in 775ms (next.js: 181ms, application-code: 594ms)
+⨯ TypeError: fetch failed
+    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
+  23 |       : undefined;
+  24 |
+> 25 |   const upstream = await fetch(url, {
+     |                    ^
+  26 |     method: req.method,
+  27 |     headers,
+  28 |     body, {
+  [cause]: AggregateError: 
+      at ignore-listed frames {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+ GET /api/proxy/restaurant-portal/availability/2026-07-28 500 in 868ms (next.js: 204ms, application-code: 664ms)
+⨯ TypeError: fetch failed
+    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
+  23 |       : undefined;
+  24 |
+> 25 |   const upstream = await fetch(url, {
+     |                    ^
+  26 |     method: req.method,
+  27 |     headers,
+  28 |     body, {
+  [cause]: AggregateError: 
+      at ignore-listed frames {
+    code: 'ETIMEDOUT',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+ GET /api/proxy/restaurant-portal/availability/2026-07-29 500 in 764ms (next.js: 14ms, application-code: 750ms)
+⨯ TypeError: fetch failed
+    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
+  23 |       : undefined;
+  24 |
+> 25 |   const upstream = await fetch(url, {
+     |                    ^
+  26 |     method: req.method,
+  27 |     headers,
+  28 |     body, {
+  [cause]: AggregateError: 
+      at ignore-listed frames {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+ GET /api/proxy/restaurant-portal/availability/2026-07-30 500 in 949ms (next.js: 547ms, application-code: 402ms)
+⨯ TypeError: fetch failed
+    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
+  23 |       : undefined;
+  24 |
+> 25 |   const upstream = await fetch(url, {
+     |                    ^
+  26 |     method: req.method,
+  27 |     headers,
+  28 |     body, {
+  [cause]: AggregateError: 
+      at ignore-listed frames {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+ GET /api/proxy/restaurant-portal/availability/2026-07-31 500 in 541ms (next.js: 194ms, application-code: 347ms)
+⨯ TypeError: fetch failed
+    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
+  23 |       : undefined;
+  24 |
+> 25 |   const upstream = await fetch(url, {
+     |                    ^
+  26 |     method: req.method,
+  27 |     headers,
+  28 |     body, {
+  [cause]: AggregateError: 
+      at ignore-listed frames {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+ GET /api/proxy/restaurant-portal/availability/2026-08-02 500 in 163ms (next.js: 29ms, application-code: 134ms)
+⨯ TypeError: fetch failed
+    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
+  23 |       : undefined;
+  24 |
+> 25 |   const upstream = await fetch(url, {
+     |                    ^
+  26 |     method: req.method,
+  27 |     headers,
+  28 |     body, {
+  [cause]: AggregateError: 
+      at ignore-listed frames {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+ GET /api/proxy/restaurant-portal/availability/2026-07-27 500 in 246ms (next.js: 35ms, application-code: 211ms)
+⨯ TypeError: fetch failed
+    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
+  23 |       : undefined;
+  24 |
+> 25 |   const upstream = await fetch(url, {
+     |                    ^
+  26 |     method: req.method,
+  27 |     headers,
+  28 |     body, {
+  [cause]: AggregateError: 
+      at ignore-listed frames {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+ GET /api/proxy/restaurant-portal/availability/2026-08-01 500 in 302ms (next.js: 33ms, application-code: 269ms)
+⨯ TypeError: fetch failed
+    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
+  23 |       : undefined;
+  24 |
+> 25 |   const upstream = await fetch(url, {
+     |                    ^
+  26 |     method: req.method,
+  27 |     headers,
+  28 |     body, {
+  [cause]: AggregateError: 
+      at ignore-listed frames {
+    code: 'ETIMEDOUT',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+ GET /api/proxy/restaurant-portal/availability/2026-07-28 500 in 370ms (next.js: 39ms, application-code: 331ms)
+⨯ TypeError: fetch failed
+    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
+  23 |       : undefined;
+  24 |
+> 25 |   const upstream = await fetch(url, {
+     |                    ^
+  26 |     method: req.method,
+  27 |     headers,
+  28 |     body, {
+  [cause]: AggregateError: 
+      at ignore-listed frames {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+ GET /api/proxy/restaurant-portal/availability/2026-07-29 500 in 390ms (next.js: 257ms, application-code: 133ms)
+⨯ TypeError: fetch failed
+    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
+  23 |       : undefined;
+  24 |
+> 25 |   const upstream = await fetch(url, {
+     |                    ^
+  26 |     method: req.method,
+  27 |     headers,
+  28 |     body, {
+  [cause]: AggregateError: 
+      at ignore-listed frames {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+ GET /api/proxy/restaurant-portal/availability/2026-07-30 500 in 135ms (next.js: 3ms, application-code: 132ms)
+⨯ TypeError: fetch failed
+    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
+  23 |       : undefined;
+  24 |
+> 25 |   const upstream = await fetch(url, {
+     |                    ^
+  26 |     method: req.method,
+  27 |     headers,
+  28 |     body, {
+  [cause]: AggregateError: 
+      at ignore-listed frames {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+ GET /api/proxy/restaurant-portal/availability/2026-07-31 500 in 137ms (next.js: 66ms, application-code: 71ms)
+⨯ TypeError: fetch failed
+    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
+  23 |       : undefined;
+  24 |
+> 25 |   const upstream = await fetch(url, {
+     |                    ^
+  26 |     method: req.method,
+  27 |     headers,
+  28 |     body, {
+  [cause]: AggregateError: 
+      at ignore-listed frames {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+ GET /api/proxy/restaurant-portal/availability/2026-08-02 500 in 195ms (next.js: 68ms, application-code: 127ms)
+ GET /restaurant/availability 200 in 174ms (next.js: 126ms, application-code: 49ms)
