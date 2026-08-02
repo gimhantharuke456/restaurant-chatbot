@@ -2,12 +2,12 @@
 > frontend@0.1.0 dev
 > next dev
 
-⚠ Port 3000 is in use by process 13970, using available port 3001 instead.
+⚠ Port 3000 is in use by process 24271, using available port 3001 instead.
 ▲ Next.js 16.2.6 (Turbopack)
 - Local:         http://localhost:3001
 - Network:       http://192.168.1.165:3001
 - Environments: .env
-✓ Ready in 539ms
+✓ Ready in 1085ms
 ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
  We detected multiple lockfiles and selected the directory of /Users/gimhanrajapaksha/Desktop/projects/agent_project/package-lock.json as the root directory.
  To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
@@ -18,257 +18,56 @@
 - Experiments (use with caution):
   · optimizePackageImports
 
- GET / 200 in 9.3s (next.js: 2.8s, application-code: 6.5s)
- GET / 200 in 309ms (next.js: 36ms, application-code: 274ms)
- GET /login 200 in 3.1s (next.js: 2.8s, application-code: 328ms)
- GET /api/proxy/auth/me 200 in 1608ms (next.js: 992ms, application-code: 615ms)
- GET /admin 200 in 424ms (next.js: 63ms, application-code: 361ms)
- GET /admin/verification 200 in 1454ms (next.js: 1208ms, application-code: 245ms)
- POST /api/proxy/admin/restaurants/7a0a9fab-68e4-4f68-b518-cef736e9f1a9/verify 200 in 480ms (next.js: 10ms, application-code: 470ms)
- GET /admin/verification 200 in 64ms (next.js: 19ms, application-code: 45ms)
- GET /admin/restaurants 200 in 690ms (next.js: 281ms, application-code: 409ms)
-[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
-[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
- POST /api/proxy/admin/restaurants 201 in 3.7s (next.js: 54ms, application-code: 3.6s)
- GET /admin/restaurants 200 in 142ms (next.js: 19ms, application-code: 124ms)
- GET /login 200 in 254ms (next.js: 53ms, application-code: 201ms)
- GET /api/proxy/auth/me 200 in 335ms (next.js: 10ms, application-code: 325ms)
- GET /restaurant 200 in 524ms (next.js: 198ms, application-code: 325ms)
- GET / 200 in 81ms (next.js: 11ms, application-code: 70ms)
- GET /login 200 in 36ms (next.js: 6ms, application-code: 30ms)
- GET /api/proxy/auth/me 200 in 376ms (next.js: 23ms, application-code: 353ms)
- GET /restaurant 200 in 155ms (next.js: 5ms, application-code: 151ms)
- GET /admin/restaurants 200 in 390ms (next.js: 11ms, application-code: 379ms)
- GET /admin/restaurants/c649453e-031b-4d0c-be65-650737155bb2 200 in 1037ms (next.js: 924ms, application-code: 114ms)
- GET /admin/verification 200 in 87ms (next.js: 7ms, application-code: 80ms)
- POST /api/proxy/admin/restaurants/c649453e-031b-4d0c-be65-650737155bb2/verify 200 in 61ms (next.js: 9ms, application-code: 51ms)
- GET /admin/verification 200 in 59ms (next.js: 10ms, application-code: 49ms)
-✓ Compiled in 1812ms
- GET /restaurant 200 in 506ms (next.js: 284ms, application-code: 222ms)
- GET /restaurant 200 in 28ms (next.js: 2ms, application-code: 26ms)
- GET /restaurant/availability 200 in 252ms (next.js: 180ms, application-code: 72ms)
-⨯ TypeError: fetch failed
-    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
-  23 |       : undefined;
-  24 |
-> 25 |   const upstream = await fetch(url, {
-     |                    ^
-  26 |     method: req.method,
-  27 |     headers,
-  28 |     body, {
-  [cause]: AggregateError: 
-      at ignore-listed frames {
-    code: 'ECONNREFUSED',
-    [errors]: [ [Error], [Error] ]
-  }
-}
- GET /api/proxy/restaurant-portal/availability/2026-07-27 500 in 672ms (next.js: 142ms, application-code: 530ms)
-⨯ TypeError: fetch failed
-    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
-  23 |       : undefined;
-  24 |
-> 25 |   const upstream = await fetch(url, {
-     |                    ^
-  26 |     method: req.method,
-  27 |     headers,
-  28 |     body, {
-  [cause]: AggregateError: 
-      at ignore-listed frames {
-    code: 'ECONNREFUSED',
-    [errors]: [ [Error], [Error] ]
-  }
-}
- GET /api/proxy/restaurant-portal/availability/2026-08-01 500 in 775ms (next.js: 181ms, application-code: 594ms)
-⨯ TypeError: fetch failed
-    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
-  23 |       : undefined;
-  24 |
-> 25 |   const upstream = await fetch(url, {
-     |                    ^
-  26 |     method: req.method,
-  27 |     headers,
-  28 |     body, {
-  [cause]: AggregateError: 
-      at ignore-listed frames {
-    code: 'ECONNREFUSED',
-    [errors]: [ [Error], [Error] ]
-  }
-}
- GET /api/proxy/restaurant-portal/availability/2026-07-28 500 in 868ms (next.js: 204ms, application-code: 664ms)
-⨯ TypeError: fetch failed
-    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
-  23 |       : undefined;
-  24 |
-> 25 |   const upstream = await fetch(url, {
-     |                    ^
-  26 |     method: req.method,
-  27 |     headers,
-  28 |     body, {
-  [cause]: AggregateError: 
-      at ignore-listed frames {
-    code: 'ETIMEDOUT',
-    [errors]: [ [Error], [Error] ]
-  }
-}
- GET /api/proxy/restaurant-portal/availability/2026-07-29 500 in 764ms (next.js: 14ms, application-code: 750ms)
-⨯ TypeError: fetch failed
-    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
-  23 |       : undefined;
-  24 |
-> 25 |   const upstream = await fetch(url, {
-     |                    ^
-  26 |     method: req.method,
-  27 |     headers,
-  28 |     body, {
-  [cause]: AggregateError: 
-      at ignore-listed frames {
-    code: 'ECONNREFUSED',
-    [errors]: [ [Error], [Error] ]
-  }
-}
- GET /api/proxy/restaurant-portal/availability/2026-07-30 500 in 949ms (next.js: 547ms, application-code: 402ms)
-⨯ TypeError: fetch failed
-    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
-  23 |       : undefined;
-  24 |
-> 25 |   const upstream = await fetch(url, {
-     |                    ^
-  26 |     method: req.method,
-  27 |     headers,
-  28 |     body, {
-  [cause]: AggregateError: 
-      at ignore-listed frames {
-    code: 'ECONNREFUSED',
-    [errors]: [ [Error], [Error] ]
-  }
-}
- GET /api/proxy/restaurant-portal/availability/2026-07-31 500 in 541ms (next.js: 194ms, application-code: 347ms)
-⨯ TypeError: fetch failed
-    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
-  23 |       : undefined;
-  24 |
-> 25 |   const upstream = await fetch(url, {
-     |                    ^
-  26 |     method: req.method,
-  27 |     headers,
-  28 |     body, {
-  [cause]: AggregateError: 
-      at ignore-listed frames {
-    code: 'ECONNREFUSED',
-    [errors]: [ [Error], [Error] ]
-  }
-}
- GET /api/proxy/restaurant-portal/availability/2026-08-02 500 in 163ms (next.js: 29ms, application-code: 134ms)
-⨯ TypeError: fetch failed
-    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
-  23 |       : undefined;
-  24 |
-> 25 |   const upstream = await fetch(url, {
-     |                    ^
-  26 |     method: req.method,
-  27 |     headers,
-  28 |     body, {
-  [cause]: AggregateError: 
-      at ignore-listed frames {
-    code: 'ECONNREFUSED',
-    [errors]: [ [Error], [Error] ]
-  }
-}
- GET /api/proxy/restaurant-portal/availability/2026-07-27 500 in 246ms (next.js: 35ms, application-code: 211ms)
-⨯ TypeError: fetch failed
-    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
-  23 |       : undefined;
-  24 |
-> 25 |   const upstream = await fetch(url, {
-     |                    ^
-  26 |     method: req.method,
-  27 |     headers,
-  28 |     body, {
-  [cause]: AggregateError: 
-      at ignore-listed frames {
-    code: 'ECONNREFUSED',
-    [errors]: [ [Error], [Error] ]
-  }
-}
- GET /api/proxy/restaurant-portal/availability/2026-08-01 500 in 302ms (next.js: 33ms, application-code: 269ms)
-⨯ TypeError: fetch failed
-    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
-  23 |       : undefined;
-  24 |
-> 25 |   const upstream = await fetch(url, {
-     |                    ^
-  26 |     method: req.method,
-  27 |     headers,
-  28 |     body, {
-  [cause]: AggregateError: 
-      at ignore-listed frames {
-    code: 'ETIMEDOUT',
-    [errors]: [ [Error], [Error] ]
-  }
-}
- GET /api/proxy/restaurant-portal/availability/2026-07-28 500 in 370ms (next.js: 39ms, application-code: 331ms)
-⨯ TypeError: fetch failed
-    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
-  23 |       : undefined;
-  24 |
-> 25 |   const upstream = await fetch(url, {
-     |                    ^
-  26 |     method: req.method,
-  27 |     headers,
-  28 |     body, {
-  [cause]: AggregateError: 
-      at ignore-listed frames {
-    code: 'ECONNREFUSED',
-    [errors]: [ [Error], [Error] ]
-  }
-}
- GET /api/proxy/restaurant-portal/availability/2026-07-29 500 in 390ms (next.js: 257ms, application-code: 133ms)
-⨯ TypeError: fetch failed
-    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
-  23 |       : undefined;
-  24 |
-> 25 |   const upstream = await fetch(url, {
-     |                    ^
-  26 |     method: req.method,
-  27 |     headers,
-  28 |     body, {
-  [cause]: AggregateError: 
-      at ignore-listed frames {
-    code: 'ECONNREFUSED',
-    [errors]: [ [Error], [Error] ]
-  }
-}
- GET /api/proxy/restaurant-portal/availability/2026-07-30 500 in 135ms (next.js: 3ms, application-code: 132ms)
-⨯ TypeError: fetch failed
-    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
-  23 |       : undefined;
-  24 |
-> 25 |   const upstream = await fetch(url, {
-     |                    ^
-  26 |     method: req.method,
-  27 |     headers,
-  28 |     body, {
-  [cause]: AggregateError: 
-      at ignore-listed frames {
-    code: 'ECONNREFUSED',
-    [errors]: [ [Error], [Error] ]
-  }
-}
- GET /api/proxy/restaurant-portal/availability/2026-07-31 500 in 137ms (next.js: 66ms, application-code: 71ms)
-⨯ TypeError: fetch failed
-    at async proxy (src/app/api/proxy/[...path]/route.ts:25:20)
-  23 |       : undefined;
-  24 |
-> 25 |   const upstream = await fetch(url, {
-     |                    ^
-  26 |     method: req.method,
-  27 |     headers,
-  28 |     body, {
-  [cause]: AggregateError: 
-      at ignore-listed frames {
-    code: 'ECONNREFUSED',
-    [errors]: [ [Error], [Error] ]
-  }
-}
- GET /api/proxy/restaurant-portal/availability/2026-08-02 500 in 195ms (next.js: 68ms, application-code: 127ms)
- GET /restaurant/availability 200 in 174ms (next.js: 126ms, application-code: 49ms)
+ GET /restaurant/availability 200 in 6.7s (next.js: 899ms, application-code: 5.8s)
+ PUT /api/proxy/restaurant-portal/availability/2026-07-28 200 in 12.0s (next.js: 5.8s, application-code: 6.1s)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/restauran..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="en" className="h-full ant...">
+                          <body
+                            className="min-h-full flex flex-col"
+-                           cz-shortcut-listen="true"
+                          >
+                  ...
+ 
+ GET / 200 in 20.2s (next.js: 2.6s, application-code: 17.6s)
+ GET /api/proxy/restaurant-portal/availability/2026-07-29 200 in 3.8s (next.js: 1022ms, application-code: 2.8s)
+ GET /api/proxy/restaurant-portal/availability/2026-07-31 200 in 2.8s (next.js: 36ms, application-code: 2.7s)
+ GET /api/proxy/restaurant-portal/availability/2026-07-30 200 in 4.0s (next.js: 1082ms, application-code: 2.9s)
+ GET /api/proxy/restaurant-portal/availability/2026-07-28 200 in 4.2s (next.js: 1005ms, application-code: 3.2s)
+ GET /api/proxy/restaurant-portal/availability/2026-08-01 200 in 3.1s (next.js: 200ms, application-code: 2.9s)
+ GET /api/proxy/restaurant-portal/availability/2026-07-27 200 in 4.5s (next.js: 615ms, application-code: 3.9s)
+ GET /api/proxy/restaurant-portal/availability/2026-08-02 200 in 4.5s (next.js: 1871ms, application-code: 2.7s)
+ GET /restaurant/availability 200 in 2.3s (next.js: 1114ms, application-code: 1204ms)
+ GET /restaurant/availability 200 in 974ms (next.js: 51ms, application-code: 923ms)
+ PUT /api/proxy/restaurant-portal/availability/2026-07-29 200 in 1045ms (next.js: 115ms, application-code: 930ms)
+ PUT /api/proxy/restaurant-portal/availability/2026-07-28 200 in 1460ms (next.js: 48ms, application-code: 1411ms)
+✓ Compiled in 1427ms
+ PUT /api/proxy/restaurant-portal/availability/2026-07-28 200 in 1256ms (next.js: 249ms, application-code: 1007ms)

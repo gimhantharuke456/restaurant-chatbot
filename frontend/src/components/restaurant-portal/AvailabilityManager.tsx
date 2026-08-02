@@ -200,6 +200,8 @@ function SlotSidePanel({
 
 // ── DayCell ────────────────────────────────────────────────────────────────────
 
+const PREVIEW_LIMIT = 3;
+
 function DayCell({
   slots,
   loading,
@@ -214,10 +216,16 @@ function DayCell({
   isToday: boolean;
   onClick: () => void;
 }) {
+  const visible = slots.slice(0, PREVIEW_LIMIT);
+  const overflow = slots.length - PREVIEW_LIMIT;
+
   return (
-    <button
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
-      className={`flex flex-col gap-1 rounded-lg border p-2 text-left transition-colors hover:border-primary/50 hover:bg-muted/50 min-h-[80px] w-full ${
+      onKeyDown={(e) => e.key === "Enter" && onClick()}
+      className={`flex flex-col gap-1 rounded-lg border p-2 text-left cursor-pointer transition-colors hover:border-primary/50 hover:bg-muted/50 min-h-[80px] w-full ${
         isToday ? "border-primary/40 bg-primary/5" : "border-border bg-card"
       }`}
     >
@@ -228,9 +236,14 @@ function DayCell({
       ) : slots.length === 0 ? (
         <span className="text-xs text-muted-foreground/50 italic">+ Add slots</span>
       ) : (
-        slots.map((s, i) => <SlotPill key={i} slot={s} />)
+        <>
+          {visible.map((s, i) => <SlotPill key={i} slot={s} />)}
+          {overflow > 0 && (
+            <span className="text-xs text-muted-foreground/70 pl-1">+{overflow} more</span>
+          )}
+        </>
       )}
-    </button>
+    </div>
   );
 }
 
