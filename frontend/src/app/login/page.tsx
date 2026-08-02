@@ -43,20 +43,28 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [resetSent, setResetSent] = useState(false);
+  const [showResetDialog, setShowResetDialog] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
 
   const toggleCuisine = (c: string) => {
     setCuisines((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
   };
 
-  async function handleForgotPassword() {
-    if (!email) { setError("Enter your email above first, then click 'Forgot password?'"); return; }
-    setError(null);
+  function handleForgotPassword() {
+    setResetEmail(email);
+    setShowResetDialog(true);
+  }
+
+  async function handleSendReset(e: React.FormEvent) {
+    e.preventDefault();
     setLoading(true);
     try {
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordResetEmail(auth, resetEmail);
       setResetSent(true);
+      setShowResetDialog(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not send reset email");
+      setShowResetDialog(false);
     } finally {
       setLoading(false);
     }
@@ -150,6 +158,34 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
+      {showResetDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowResetDialog(false)}>
+          <div className="w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-lg space-y-4" onClick={e => e.stopPropagation()}>
+            <div className="space-y-1">
+              <h2 className="text-lg font-semibold">Reset your password</h2>
+              <p className="text-sm text-muted-foreground">Enter your email and we&apos;ll send you a reset link.</p>
+            </div>
+            <form onSubmit={handleSendReset} className="space-y-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="reset-email">Email</Label>
+                <Input
+                  id="reset-email"
+                  type="email"
+                  required
+                  autoFocus
+                  value={resetEmail}
+                  onChange={e => setResetEmail(e.target.value)}
+                  placeholder="you@example.com"
+                />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button type="button" variant="outline" onClick={() => setShowResetDialog(false)} disabled={loading}>Cancel</Button>
+                <Button type="submit" disabled={loading}>{loading ? "Sending…" : "Send reset link"}</Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
       <div className="w-full max-w-sm rounded-xl border border-border bg-card p-8 shadow-sm space-y-6">
         <div className="space-y-1 text-center">
           <h1 className="text-2xl font-semibold tracking-tight">Restaurant Chatbot</h1>

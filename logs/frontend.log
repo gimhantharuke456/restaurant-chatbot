@@ -2,12 +2,12 @@
 > frontend@0.1.0 dev
 > next dev
 
-⚠ Port 3000 is in use by process 62826, using available port 3001 instead.
+⚠ Port 3000 is in use by process 13970, using available port 3001 instead.
 ▲ Next.js 16.2.6 (Turbopack)
 - Local:         http://localhost:3001
 - Network:       http://192.168.1.165:3001
 - Environments: .env
-✓ Ready in 945ms
+✓ Ready in 539ms
 ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
  We detected multiple lockfiles and selected the directory of /Users/gimhanrajapaksha/Desktop/projects/agent_project/package-lock.json as the root directory.
  To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
@@ -18,30 +18,28 @@
 - Experiments (use with caution):
   · optimizePackageImports
 
- GET / 200 in 8.6s (next.js: 2.3s, application-code: 6.3s)
- GET / 200 in 1764ms (next.js: 62ms, application-code: 1702ms)
- GET /login 200 in 156ms (next.js: 62ms, application-code: 94ms)
- GET /login 200 in 138ms (next.js: 38ms, application-code: 100ms)
- GET /api/proxy/auth/me 200 in 1540ms (next.js: 931ms, application-code: 609ms)
- GET /admin 200 in 358ms (next.js: 60ms, application-code: 298ms)
- GET /admin/restaurants 200 in 318ms (next.js: 91ms, application-code: 227ms)
+ GET / 200 in 9.3s (next.js: 2.8s, application-code: 6.5s)
+ GET / 200 in 309ms (next.js: 36ms, application-code: 274ms)
+ GET /login 200 in 3.1s (next.js: 2.8s, application-code: 328ms)
+ GET /api/proxy/auth/me 200 in 1608ms (next.js: 992ms, application-code: 615ms)
+ GET /admin 200 in 424ms (next.js: 63ms, application-code: 361ms)
+ GET /admin/verification 200 in 1454ms (next.js: 1208ms, application-code: 245ms)
+ POST /api/proxy/admin/restaurants/7a0a9fab-68e4-4f68-b518-cef736e9f1a9/verify 200 in 480ms (next.js: 10ms, application-code: 470ms)
+ GET /admin/verification 200 in 64ms (next.js: 19ms, application-code: 45ms)
+ GET /admin/restaurants 200 in 690ms (next.js: 281ms, application-code: 409ms)
 [browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
 [browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
- POST /api/proxy/admin/restaurants 201 in 483ms (next.js: 42ms, application-code: 441ms)
- GET /admin/restaurants 200 in 116ms (next.js: 10ms, application-code: 105ms)
-○ Compiling /admin/restaurants/[id] ...
- PATCH /api/proxy/admin/restaurants/7e0b3036-8b44-430d-abf1-64d23bf8a1ef 200 in 1082ms (next.js: 126ms, application-code: 956ms)
- GET /admin/restaurants/7e0b3036-8b44-430d-abf1-64d23bf8a1ef 200 in 15.7s (next.js: 14.1s, application-code: 1594ms)
- GET /admin/restaurants/7e0b3036-8b44-430d-abf1-64d23bf8a1ef 200 in 1181ms (next.js: 28ms, application-code: 1153ms)
-✓ Finished filesystem cache database compaction in 16.5s
-✓ Compiled in 389ms
- GET /admin/restaurants 200 in 3.2s (next.js: 194ms, application-code: 3.0s)
-[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
-[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
- POST /api/proxy/admin/restaurants 201 in 5.9s (next.js: 32ms, application-code: 5.8s)
- GET /admin/restaurants 200 in 160ms (next.js: 10ms, application-code: 150ms)
- GET /login 200 in 180ms (next.js: 56ms, application-code: 124ms)
- GET /api/proxy/auth/me 200 in 2.7s (next.js: 300ms, application-code: 2.4s)
- GET /restaurant 200 in 2.4s (next.js: 1542ms, application-code: 828ms)
- GET / 200 in 1089ms (next.js: 222ms, application-code: 867ms)
-[?25h
+ POST /api/proxy/admin/restaurants 201 in 3.7s (next.js: 54ms, application-code: 3.6s)
+ GET /admin/restaurants 200 in 142ms (next.js: 19ms, application-code: 124ms)
+ GET /login 200 in 254ms (next.js: 53ms, application-code: 201ms)
+ GET /api/proxy/auth/me 200 in 335ms (next.js: 10ms, application-code: 325ms)
+ GET /restaurant 200 in 524ms (next.js: 198ms, application-code: 325ms)
+ GET / 200 in 81ms (next.js: 11ms, application-code: 70ms)
+ GET /login 200 in 36ms (next.js: 6ms, application-code: 30ms)
+ GET /api/proxy/auth/me 200 in 376ms (next.js: 23ms, application-code: 353ms)
+ GET /restaurant 200 in 155ms (next.js: 5ms, application-code: 151ms)
+ GET /admin/restaurants 200 in 390ms (next.js: 11ms, application-code: 379ms)
+ GET /admin/restaurants/c649453e-031b-4d0c-be65-650737155bb2 200 in 1037ms (next.js: 924ms, application-code: 114ms)
+ GET /admin/verification 200 in 87ms (next.js: 7ms, application-code: 80ms)
+ POST /api/proxy/admin/restaurants/c649453e-031b-4d0c-be65-650737155bb2/verify 200 in 61ms (next.js: 9ms, application-code: 51ms)
+ GET /admin/verification 200 in 59ms (next.js: 10ms, application-code: 49ms)

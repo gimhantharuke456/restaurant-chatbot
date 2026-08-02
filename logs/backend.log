@@ -4,48 +4,28 @@
 
 [dedupe-restaurants] no duplicates found
 [dedupe-restaurants] no duplicate menu items found
-[backfill-coordinates] all restaurants already have coordinates
-Backend running on port 3000
-Swagger UI: http://localhost:3000/api/docs
-Socket.IO ready
-FirebaseAuthError: Firebase ID token has expired. Get a fresh ID token from your client app and try again (auth/id-token-expired). See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.
-    at FirebaseTokenVerifier.mapJwtErrorToAuthError (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/firebase-admin/lib/auth/token-verifier.js:271:20)
-    at /Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/firebase-admin/lib/auth/token-verifier.js:255:24
-    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
-    at async authenticate (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/src/middleware/auth.ts:17:19) {
-  errorInfo: {
-    code: 'auth/id-token-expired',
-    message: 'Firebase ID token has expired. Get a fresh ID token from your client app and try again (auth/id-token-expired). See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.'
-  },
-  codePrefix: 'auth'
+[backfill-coordinates] set coordinates on 0 restaurant(s)
+[backfill-coordinates] 1 restaurant(s) have an unrecognised area — skipped
+node:events:497
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at <anonymous> (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/src/index.ts:13:8)
+    at ModuleJob.run (node:internal/modules/esm/module_job:345:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
 }
-4:00:04 AM [tsx] change in ./src/modules/admin/admin.service.ts Restarting...
-cBackend running on port 3000
-Swagger UI: http://localhost:3000/api/docs
-Socket.IO ready
-4:00:26 AM [tsx] change in ./src/modules/admin/admin.service.ts Restarting...
-cBackend running on port 3000
-Swagger UI: http://localhost:3000/api/docs
-Socket.IO ready
-[2026-08-01T23:20:58.968Z] [PID: 64157] [32m[NODE-CRON][32m [33m[WARN][0m missed execution at Sun Aug 02 2026 04:45:00 GMT+0530 (India Standard Time)! Possible blocking IO or high CPU user at the same process used by node-cron.
-[2026-08-01T23:33:31.876Z] [PID: 64157] [32m[NODE-CRON][32m [33m[WARN][0m missed execution at Sun Aug 02 2026 05:00:00 GMT+0530 (India Standard Time)! Possible blocking IO or high CPU user at the same process used by node-cron.
-[2026-08-01T23:54:40.864Z] [PID: 64157] [32m[NODE-CRON][32m [33m[WARN][0m missed execution at Sun Aug 02 2026 05:15:00 GMT+0530 (India Standard Time)! Possible blocking IO or high CPU user at the same process used by node-cron.
-[2026-08-02T00:10:41.909Z] [PID: 64157] [32m[NODE-CRON][32m [33m[WARN][0m missed execution at Sun Aug 02 2026 05:30:00 GMT+0530 (India Standard Time)! Possible blocking IO or high CPU user at the same process used by node-cron.
-[2026-08-02T00:26:12.924Z] [PID: 64157] [32m[NODE-CRON][32m [33m[WARN][0m missed execution at Sun Aug 02 2026 05:45:00 GMT+0530 (India Standard Time)! Possible blocking IO or high CPU user at the same process used by node-cron.
-[2026-08-02T00:42:14.496Z] [PID: 64157] [32m[NODE-CRON][32m [33m[WARN][0m missed execution at Sun Aug 02 2026 06:00:00 GMT+0530 (India Standard Time)! Possible blocking IO or high CPU user at the same process used by node-cron.
-[2026-08-02T00:57:46.117Z] [PID: 64157] [32m[NODE-CRON][32m [33m[WARN][0m missed execution at Sun Aug 02 2026 06:15:00 GMT+0530 (India Standard Time)! Possible blocking IO or high CPU user at the same process used by node-cron.
-[2026-08-02T01:07:06.458Z] [PID: 64157] [32m[NODE-CRON][32m [33m[WARN][0m missed execution at Sun Aug 02 2026 06:30:00 GMT+0530 (India Standard Time)! Possible blocking IO or high CPU user at the same process used by node-cron.
-[2026-08-02T01:22:38.088Z] [PID: 64157] [32m[NODE-CRON][32m [33m[WARN][0m missed execution at Sun Aug 02 2026 06:45:00 GMT+0530 (India Standard Time)! Possible blocking IO or high CPU user at the same process used by node-cron.
-[2026-08-02T01:38:39.125Z] [PID: 64157] [32m[NODE-CRON][32m [33m[WARN][0m missed execution at Sun Aug 02 2026 07:00:00 GMT+0530 (India Standard Time)! Possible blocking IO or high CPU user at the same process used by node-cron.
-[2026-08-02T01:54:10.783Z] [PID: 64157] [32m[NODE-CRON][32m [33m[WARN][0m missed execution at Sun Aug 02 2026 07:15:00 GMT+0530 (India Standard Time)! Possible blocking IO or high CPU user at the same process used by node-cron.
-FirebaseAuthError: Firebase ID token has expired. Get a fresh ID token from your client app and try again (auth/id-token-expired). See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.
-    at FirebaseTokenVerifier.mapJwtErrorToAuthError (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/firebase-admin/lib/auth/token-verifier.js:271:20)
-    at /Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/node_modules/firebase-admin/lib/auth/token-verifier.js:255:24
-    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
-    at async authenticate (/Users/gimhanrajapaksha/Desktop/projects/agent_project/restaurant-chatbot/backend/src/middleware/auth.ts:17:19) {
-  errorInfo: {
-    code: 'auth/id-token-expired',
-    message: 'Firebase ID token has expired. Get a fresh ID token from your client app and try again (auth/id-token-expired). See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.'
-  },
-  codePrefix: 'auth'
-}
+
+Node.js v22.20.0
